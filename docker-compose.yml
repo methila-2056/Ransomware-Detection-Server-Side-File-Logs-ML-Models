@@ -1,0 +1,18 @@
+services:
+  ransomware-detection:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=change-me-in-production
+      - API_KEY=
+      - LOG_LEVEL=INFO
+      - RATE_LIMIT_DEFAULT=200 per minute
+    volumes:
+      - models:/app/models
+      - db:/app
+    restart: unless-stopped
+
+volumes:
+  models:
+  db:
