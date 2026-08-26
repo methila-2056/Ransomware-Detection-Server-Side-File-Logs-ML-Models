@@ -159,8 +159,8 @@ def process_tick(tick):
     }
 
     tick_history.append(tick_data)
-    if len(tick_history) > 120:
-        tick_history = tick_history[-120:]
+    if len(tick_history) > config.MAX_TICK_HISTORY:
+        tick_history = tick_history[-config.MAX_TICK_HISTORY:]
 
     # Log to database periodically
     if metrics["total_ticks"] % 10 == 0:
@@ -266,7 +266,7 @@ def monitoring_loop():
         tick = real_monitor.get_tick()
         tick["timestamp"] = metrics["total_ticks"] + 1
         process_tick(tick)
-        time.sleep(1.0)
+        time.sleep(config.MONITOR_INTERVAL)
 
     print("[MONITOR] Real-time monitoring stopped.")
 

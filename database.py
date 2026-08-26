@@ -15,16 +15,14 @@ from datetime import datetime
 from typing import List, Dict, Optional
 from contextlib import contextmanager
 
-
-DB_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(DB_DIR, "ransomware_detection.db")
+import config
 
 
 class Database:
     """SQLite database manager for the ransomware detection system."""
 
     def __init__(self, db_path: str = None):
-        self.db_path = db_path or DB_PATH
+        self.db_path = db_path or config.DB_PATH
         self._init_database()
 
     def _init_database(self):
