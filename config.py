@@ -21,7 +21,7 @@ RATE_LIMIT_DEFAULT = os.environ.get("RATE_LIMIT_DEFAULT", "200 per minute")
 
 # ML Models
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
-MODEL_PREFIX = "ransomware_"
+MODEL_PREFIX = "ransomware"
 GRID_SEARCH = False
 TRAINING_SAMPLES = 8000
 
