@@ -20,6 +20,7 @@ const socket = io();
 let currentMode = "idle";
 let isActive = false;
 let chart = null;
+let latestComparison = null;
 
 const chartLabels = [];
 const chartNC = [];
@@ -248,17 +249,19 @@ function updateTestCM(comparison) {
 }
 
 function updateModelTable(predictions, comparison) {
+    if (comparison && comparison.length > 0) latestComparison = comparison;
+    const cmp = (comparison && comparison.length > 0) ? comparison : latestComparison;
     const tbody = document.getElementById("modelTableBody");
 
-    if (comparison && comparison.length > 0) {
+    if (cmp && cmp.length > 0) {
         let bestIdx = 0;
         let bestSens = 0;
-        comparison.forEach((m, i) => { if (m.sensitivity > bestSens) { bestSens = m.sensitivity; bestIdx = i; } });
+        cmp.forEach((m, i) => { if (m.sensitivity > bestSens) { bestSens = m.sensitivity; bestIdx = i; } });
 
         let html = "";
-        comparison.forEach((m, i) => {
+        cmp.forEach((m, i) => {
             const isBest = i === bestIdx;
-            const pred = predictions[Object.keys(predictions)[i]];
+            const pred = (m.key && predictions && predictions[m.key]) ? predictions[m.key] : (predictions ? predictions[Object.keys(predictions)[i]] : null);
             const predText = pred
                 ? (pred.prediction === 1 ? '<span class="text-red-400 font-bold">ATTACK</span>' : '<span class="text-green-400">SAFE</span>')
                 : '<span class="text-gray-600">--</span>';
@@ -274,7 +277,7 @@ function updateModelTable(predictions, comparison) {
         });
         tbody.innerHTML = html;
 
-        updateTestCM(comparison);
+        updateTestCM(cmp);
     }
 }
 
@@ -555,7 +558,8 @@ socket.on("attack_forced", (data) => {
 });
 
 socket.on("speed_updated", (data) => {
-    document.getElementById("speedVal").textContent = data.speed + "x";
+    const speedVal = document.getElementById("speedVal");
+    if (speedVal) speedVal.textContent = data.speed + "x";
 });
 
 socket.on("metrics_reset", () => {
