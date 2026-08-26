@@ -19,7 +19,7 @@ import threading
 import json
 from datetime import datetime
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, Response
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 
@@ -361,6 +361,27 @@ def api_stats():
         "recent_alerts": db.get_recent_alerts(10),
         "attack_sessions": db.get_attack_sessions(10),
     })
+
+
+@app.route("/api/export")
+def api_export():
+    """Export full run data as a downloadable JSON file."""
+    import json
+    payload = {
+        "metrics": metrics,
+        "tick_history": tick_history,
+        "alerts": alert_log[:config.MAX_ALERT_LOG],
+        "model_comparison": model_comparison,
+        "db_stats": db.get_stats(),
+        "db_alerts": db.get_recent_alerts(100),
+        "db_sessions": db.get_attack_sessions(100),
+    }
+    data = json.dumps(payload, indent=2, default=str)
+    return Response(
+        data,
+        mimetype="application/json",
+        headers={"Content-Disposition": "attachment; filename=run_data.json"},
+    )
 
 
 # ──────────────────────────────────────────────────────────────
