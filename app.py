@@ -12,22 +12,30 @@ Based on Aranyi et al. (2026) paper:
 "Ransomware detection based on server-side file operation logs using machine learning"
 """
 
-import os
-import sys
+import logging
 import time
 import threading
-import json
-from datetime import datetime
+from functools import wraps
 
 from flask import Flask, render_template, jsonify, request, Response
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from simulation import FileOperationSimulator, generate_training_data
 from ml_engine import MLEngine, prepare_training_data
 from database import Database
 from real_monitor import RealFolderMonitor
 import config
+
+# ──────────────────────────────────────────────────────────────
+# Logging
+# ──────────────────────────────────────────────────────────────
+
+logging.basicConfig(level=getattr(logging, config.LOG_LEVEL, logging.INFO),
+                    format=config.LOG_FORMAT)
+log = logging.getLogger("ransomware.app")
 
 # ──────────────────────────────────────────────────────────────
 # App Configuration
@@ -37,6 +45,45 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = config.SECRET_KEY
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+limiter = Limiter(get_remote_address, app=app, default_limits=[config.RATE_LIMIT_DEFAULT])
+
+
+# ──────────────────────────────────────────────────────────────
+# Security Helpers
+# ──────────────────────────────────────────────────────────────
+
+def require_api_key(f):
+    """Decorator: skip auth when API_KEY is empty (dev mode)."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if config.API_KEY:
+            provided = request.headers.get("X-API-Key", "")
+            if provided != config.API_KEY:
+                return jsonify({"error": "Invalid or missing API key"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+
+def _validate_speed(speed):
+    """Validate and clamp simulation speed."""
+    try:
+        speed = float(speed)
+    except (TypeError, ValueError):
+        return 1.0
+    return max(0.1, min(10.0, speed))
+
+
+def _validate_family(family):
+    """Validate a ransomware family name or return None."""
+    if family is None:
+        return None
+    if not isinstance(family, str):
+        return None
+    allowed = set(RansomwareFamilies.FAMILIES.keys()) if False else None
+    from simulation import RansomwareFamilies
+    allowed = set(RansomwareFamilies.FAMILIES.keys())
+    return family if family in allowed else None
+
 
 # ──────────────────────────────────────────────────────────────
 # Global State
@@ -79,33 +126,31 @@ def init_ml_models():
     """Load or train ML models."""
     global model_comparison
 
-    print("=" * 60)
-    print("  RANSOMWARE DETECTION SYSTEM")
-    print("  ML Model Initialization")
-    print("=" * 60)
+    log.info("=" * 60)
+    log.info("  RANSOMWARE DETECTION SYSTEM")
+    log.info("  ML Model Initialization")
+    log.info("=" * 60)
 
     if ml_engine.load_models():
-        print("Loaded pre-trained models successfully.")
+        log.info("Loaded pre-trained models successfully.")
         model_comparison = ml_engine.get_model_comparison()
         return True
 
-    print("No saved models found. Training new models...")
-    print("Generating synthetic training data...")
+    log.info("No saved models found. Training new models...")
+    log.info("Generating synthetic training data...")
 
     data = generate_training_data(num_samples=config.TRAINING_SAMPLES)
     X, y = prepare_training_data(data)
 
-    print(f"Training data: {X.shape[0]} samples")
-    print(f"Class distribution: Benign={sum(y == 0)}, Attack={sum(y == 1)}")
-    print()
+    log.info("Training data: %d samples", X.shape[0])
+    log.info("Class distribution: Benign=%d, Attack=%d", sum(y == 0), sum(y == 1))
 
     results = ml_engine.train(X, y, use_grid_search=config.GRID_SEARCH)
     ml_engine.save_models()
     model_comparison = ml_engine.get_model_comparison()
 
-    print()
-    print("Training complete. Models saved.")
-    print("=" * 60)
+    log.info("Training complete. Models saved.")
+    log.info("=" * 60)
     return True
 
 
@@ -164,7 +209,7 @@ def process_tick(tick):
         tick_history = tick_history[-config.MAX_TICK_HISTORY:]
 
     # Log to database periodically
-    if metrics["total_ticks"] % 10 == 0:
+    if metrics["total_ticks"] % config.DB_LOG_INTERVAL == 0:
         db.log_file_operation(tick)
 
     # Build alert entry if detection occurred
@@ -185,29 +230,6 @@ def process_tick(tick):
                 alert_log = alert_log[:config.MAX_ALERT_LOG]
             db.log_detection_alert(tick, predictions)
 
-    # Detect attack end (transition True -> False) and persist the session
-    is_currently_attack = tick.get("is_attack", False)
-    if _previous_tick_was_attack and not is_currently_attack:
-        attacks = simulator.state.attack_history
-        if attacks:
-            last = attacks[-1]
-            detection_delay = 0
-            if tick.get("source") == "simulation":
-                db.log_attack_session({
-                    "attack_id": last.get("attack_id"),
-                    "family": last.get("family"),
-                    "start_second": last.get("start_second"),
-                    "end_second": tick_data["timestamp"],
-                    "duration": last.get("duration"),
-                    "detected_by": "XGBoost" if metrics["current_streak"] > 0 else "None",
-                    "detection_delay": detection_delay,
-                })
-    _previous_tick_was_attack = is_currently_attack
-
-    # Periodic database cleanup to prevent bloat
-    if metrics["total_ticks"] % 500 == 0 and metrics["total_ticks"] > 0:
-        db.clear_old_data(keep_last_n=2000)
-
     # Emit to all connected clients
     socketio.emit("tick_update", {
         "tick": tick_data,
@@ -222,6 +244,27 @@ def process_tick(tick):
         },
     })
 
+    # Detect attack end and persist session
+    is_currently_attack = tick.get("is_attack", False)
+    if _previous_tick_was_attack and not is_currently_attack:
+        attacks = simulator.state.attack_history
+        if attacks:
+            last = attacks[-1]
+            db.log_attack_session({
+                "attack_id": last.get("attack_id"),
+                "family": last.get("family"),
+                "start_second": last.get("start_second"),
+                "end_second": tick_data["timestamp"],
+                "duration": last.get("duration"),
+                "detected_by": "XGBoost" if metrics["current_streak"] > 0 else "None",
+                "detection_delay": 0,
+            })
+    _previous_tick_was_attack = is_currently_attack
+
+    # Periodic database cleanup
+    if metrics["total_ticks"] % 500 == 0 and metrics["total_ticks"] > 0:
+        db.clear_old_data(keep_last_n=2000)
+
 
 def _build_alert_message(tick, prob, xgb_pred):
     """Build a human-readable alert message with file details."""
@@ -234,7 +277,6 @@ def _build_alert_message(tick, prob, xgb_pred):
         base_msg = (f"Suspicious activity on your system! "
                     f"nc={nc} nr={nr} nu={nu} "
                     f"(XGB: {prob:.1%})")
-        # Add file details if available
         if file_events:
             creates = [e["path"] for e in file_events if e["type"] == "create"][:3]
             renames = [e["path"] for e in file_events if e["type"] == "rename"][:3]
@@ -264,7 +306,7 @@ def simulation_loop():
     global simulation_running
 
     simulator.start()
-    print("[SIM] Simulation started.")
+    log.info("Simulation started.")
 
     while simulation_running:
         tick = simulator.generate_next_tick()
@@ -273,7 +315,7 @@ def simulation_loop():
         speed = simulator.state.simulation_speed
         time.sleep(1.0 / speed)
 
-    print("[SIM] Simulation stopped.")
+    log.info("Simulation stopped.")
 
 
 # ──────────────────────────────────────────────────────────────
@@ -284,15 +326,15 @@ def monitoring_loop():
     """Real monitoring mode loop running in background thread."""
     global monitoring_running
 
-    print("[MONITOR] Real-time monitoring started.")
+    log.info("Real-time monitoring started.")
 
     while monitoring_running:
         tick = real_monitor.get_tick()
         tick["timestamp"] = metrics["total_ticks"] + 1
         process_tick(tick)
-        time.sleep(config.MONITOR_INTERVAL)
+        time.sleep(1.0)
 
-    print("[MONITOR] Real-time monitoring stopped.")
+    log.info("Real-time monitoring stopped.")
 
 
 # ──────────────────────────────────────────────────────────────
@@ -306,6 +348,7 @@ def index():
 
 
 @app.route("/api/status")
+@limiter.exempt
 def api_status():
     """Get current system status."""
     return jsonify({
@@ -321,15 +364,19 @@ def api_status():
 
 
 @app.route("/api/history")
+@limiter.exempt
 def api_history():
     """Get tick history for charts."""
+    limit = request.args.get("limit", 20, type=int)
+    limit = max(1, min(100, limit))
     return jsonify({
         "history": tick_history,
-        "alerts": alert_log[:20],
+        "alerts": alert_log[:limit],
     })
 
 
 @app.route("/api/models")
+@limiter.exempt
 def api_models():
     """Get model comparison data."""
     return jsonify({
@@ -338,6 +385,7 @@ def api_models():
 
 
 @app.route("/api/folders")
+@limiter.exempt
 def api_folders():
     """Get available monitoring folders."""
     return jsonify({
@@ -346,6 +394,7 @@ def api_folders():
 
 
 @app.route("/api/monitor_events")
+@require_api_key
 def api_monitor_events():
     """Get recent file events from real monitoring."""
     return jsonify({
@@ -354,6 +403,7 @@ def api_monitor_events():
 
 
 @app.route("/api/stats")
+@require_api_key
 def api_stats():
     """Get database statistics."""
     return jsonify({
@@ -364,9 +414,10 @@ def api_stats():
 
 
 @app.route("/api/export")
+@require_api_key
 def api_export():
     """Export full run data as a downloadable JSON file."""
-    import json
+    import json as _json
     payload = {
         "metrics": metrics,
         "tick_history": tick_history,
@@ -376,7 +427,7 @@ def api_export():
         "db_alerts": db.get_recent_alerts(100),
         "db_sessions": db.get_attack_sessions(100),
     }
-    data = json.dumps(payload, indent=2, default=str)
+    data = _json.dumps(payload, indent=2, default=str)
     return Response(
         data,
         mimetype="application/json",
@@ -391,7 +442,7 @@ def api_export():
 @socketio.on("connect")
 def handle_connect():
     """Handle new client connection."""
-    print("[WS] Client connected")
+    log.debug("Client connected")
     emit("initial_data", {
         "history": tick_history,
         "alerts": alert_log[:20],
@@ -414,7 +465,7 @@ def handle_connect():
 @socketio.on("disconnect")
 def handle_disconnect():
     """Handle client disconnection."""
-    print("[WS] Client disconnected")
+    log.debug("Client disconnected")
 
 
 # ── Simulation Events ──
@@ -424,7 +475,6 @@ def handle_start_simulation():
     """Start the simulation mode."""
     global simulation_running, simulation_thread, active_mode
 
-    # Stop monitoring if running
     if monitoring_running:
         handle_stop_monitoring()
 
@@ -458,7 +508,6 @@ def handle_start_monitoring(data=None):
     """Start real folder monitoring mode."""
     global monitoring_running, monitoring_thread, active_mode
 
-    # Stop simulation if running
     if simulation_running:
         handle_stop_simulation()
 
@@ -466,17 +515,17 @@ def handle_start_monitoring(data=None):
         emit("mode_status", {"status": "already_running", "mode": "monitoring"})
         return
 
-    # Get selected folders from frontend
     selected_folders = []
-    if data and "folders" in data:
-        selected_folders = [f for f in data["folders"] if f.get("selected")]
-        selected_folders = [f["path"] for f in selected_folders if f.get("path")]
+    if data and isinstance(data, dict) and "folders" in data:
+        raw = data["folders"]
+        if isinstance(raw, list):
+            selected_folders = [f for f in raw
+                                if isinstance(f, dict) and f.get("selected") and f.get("path")]
+            selected_folders = [f["path"] for f in selected_folders]
 
-    # Use defaults if none selected
     if not selected_folders:
         selected_folders = None
 
-    # Reinitialize monitor with selected folders
     global real_monitor
     real_monitor = RealFolderMonitor(folders=selected_folders)
 
@@ -518,7 +567,9 @@ def handle_force_attack(data=None):
     """Force an immediate attack (simulation mode only)."""
     if data is None:
         data = {}
-    family = data.get("family", None)
+    if not isinstance(data, dict):
+        data = {}
+    family = _validate_family(data.get("family"))
     success = simulator.force_attack(family)
     emit("attack_forced", {"success": success, "family": family})
 
@@ -526,7 +577,9 @@ def handle_force_attack(data=None):
 @socketio.on("set_speed")
 def handle_set_speed(data):
     """Set simulation speed."""
-    speed = float(data.get("speed", 1.0))
+    if not isinstance(data, dict):
+        data = {}
+    speed = _validate_speed(data.get("speed", 1.0))
     simulator.set_speed(speed)
     emit("speed_updated", {"speed": speed})
 
@@ -534,7 +587,7 @@ def handle_set_speed(data):
 @socketio.on("reset_metrics")
 def handle_reset_metrics():
     """Reset all metrics."""
-    global metrics, tick_history, alert_log
+    global metrics, tick_history, alert_log, _previous_tick_was_attack
     metrics = {
         "total_ticks": 0,
         "total_attacks": 0,
@@ -545,6 +598,7 @@ def handle_reset_metrics():
     }
     tick_history = []
     alert_log = []
+    _previous_tick_was_attack = False
     emit("metrics_reset", {"status": "reset"})
 
 
@@ -553,31 +607,22 @@ def handle_reset_metrics():
 # ──────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    print()
-    print("=" * 60)
-    print("  RANSOMWARE DETECTION SYSTEM")
-    print("  Based on Aranyi et al. (2026)")
-    print("  Server-Side File Operation Monitoring with ML")
-    print("=" * 60)
-    print()
+    log.info("=" * 60)
+    log.info("  RANSOMWARE DETECTION SYSTEM")
+    log.info("  Based on Aranyi et al. (2026)")
+    log.info("  Server-Side File Operation Monitoring with ML")
+    log.info("=" * 60)
 
-    # Initialize ML models
     init_ml_models()
-    print()
 
-    # Show available monitoring folders
     folders = real_monitor.get_default_folders()
-    print("Available monitoring folders:")
+    log.info("Available monitoring folders:")
     for f in folders:
         status = "READY" if f["exists"] else "NOT FOUND"
         marker = " [DEFAULT]" if f["selected"] else ""
-        print(f"  {f['name']:12s} {f['path']:50s} [{status}]{marker}")
-    print()
+        log.info("  %-12s %-50s [%s]%s", f["name"], f["path"], status, marker)
 
-    # Start the server
-    print("Starting web server at http://localhost:5000")
-    print("Open your browser and navigate to the URL above.")
-    print()
+    log.info("Starting web server at http://localhost:%d", config.PORT)
 
     socketio.run(
         app,

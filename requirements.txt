@@ -1,6 +1,7 @@
 flask==3.1.1
 flask-socketio==5.5.1
 flask-cors==5.0.1
+flask-limiter==3.12
 python-socketio==5.12.1
 python-engineio==4.11.2
 xgboost==2.1.3

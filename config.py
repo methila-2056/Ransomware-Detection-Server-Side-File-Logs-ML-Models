@@ -3,12 +3,21 @@ Ransomware Detection System - Configuration
 Centralized configuration for all system parameters.
 """
 import os
+import logging
+
+# Logging
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 
 # Server
 HOST = "0.0.0.0"
 PORT = 5000
 SECRET_KEY = os.environ.get("SECRET_KEY", "ransomware-detection-2026")
 DEBUG = False
+
+# Security
+API_KEY = os.environ.get("API_KEY", "")
+RATE_LIMIT_DEFAULT = os.environ.get("RATE_LIMIT_DEFAULT", "200 per minute")
 
 # ML Models
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")

@@ -69,7 +69,6 @@ class TestProcessTickMetrics:
         assert A.tick_history[0]["att"] == 0
 
     def test_tick_history_bounded(self):
-        A.MAX_TICK = A.config.MAX_TICK_HISTORY if hasattr(A, 'config') else 120
         for i in range(200):
             A.process_tick(_make_tick(ts=i + 1))
         assert len(A.tick_history) <= 130
