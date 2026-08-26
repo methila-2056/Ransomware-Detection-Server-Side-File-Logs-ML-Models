@@ -1,6 +1,12 @@
 # Ransomware Detection System
 ### Server-Side File Operation Monitoring with Machine Learning
 
+![CI](https://github.com/methila-2056/Ransomware-Detection-Server-Side-File-Logs-ML-Models/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-SocketIO-000000?logo=flask&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6-F7931E?logo=scikitlearn&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-2.1-AA0000)
+
 A real-time ransomware detection system based on the paper by **Aranyi, G., Miseta, T., & Szucs, V. (2026)** — *"Ransomware detection based on server-side file operation logs using machine learning"*, Journal on Information Security, 2026:8.
 
 ---
@@ -78,10 +84,15 @@ Open **http://localhost:5000** in your browser.
 
 ## How Detection Works
 
-```
-File operations occur → Counted per second (nc, nr, nu)
-→ XGBoost model analyzes the feature vector
-→ SAFE (green) / WARNING (yellow) / ATTACK (red)
+```mermaid
+flowchart LR
+    F["File operations<br/>Desktop / Downloads"] --> W["Per-second windowing<br/>nc · nr · nu"]
+    W --> X["XGBoost classifier<br/>(+ 4 comparison models)"]
+    X -->|p &lt; threshold| S["SAFE"]
+    X -->|mid probability| W2["WARNING"]
+    X -->|attack pattern| A["ATTACK alert<br/>file names + event feed"]
+    S & W2 & A --> DB[("SQLite history")]
+    S & W2 & A --> U["Live dashboard"]
 ```
 
 The ML models are trained on ratio patterns:
