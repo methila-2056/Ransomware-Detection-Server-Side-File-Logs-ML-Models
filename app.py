@@ -182,6 +182,7 @@ def process_tick(tick):
             alert_log.insert(0, alert_entry)
             if len(alert_log) > config.MAX_ALERT_LOG:
                 alert_log = alert_log[:config.MAX_ALERT_LOG]
+            db.log_detection_alert(tick, predictions)
 
     # Emit to all connected clients
     socketio.emit("tick_update", {
