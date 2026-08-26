@@ -31,3 +31,5 @@ models/*.joblib
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Test cache.pytest_cache/
