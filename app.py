@@ -34,7 +34,7 @@ import config
 # ──────────────────────────────────────────────────────────────
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "ransomware-detection-2026"
+app.config["SECRET_KEY"] = config.SECRET_KEY
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
@@ -42,7 +42,9 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 # Global State
 # ──────────────────────────────────────────────────────────────
 
-simulator = FileOperationSimulator(attack_interval_range=(12, 25))
+simulator = FileOperationSimulator(
+    attack_interval_range=(config.ATTACK_INTERVAL_MIN, config.ATTACK_INTERVAL_MAX)
+)
 real_monitor = RealFolderMonitor()
 ml_engine = MLEngine()
 db = Database()
@@ -166,7 +168,7 @@ def process_tick(tick):
 
     # Build alert entry if detection occurred
     alert_entry = None
-    if is_detected and prob > 0.5:
+    if is_detected and prob > config.ALERT_PROBABILITY_THRESHOLD:
         if metrics["current_streak"] == 1 or tick.get("source") == "real":
             alert_entry = {
                 "timestamp": tick_data["timestamp"],
@@ -178,8 +180,8 @@ def process_tick(tick):
                 "message": _build_alert_message(tick, prob, xgb_pred),
             }
             alert_log.insert(0, alert_entry)
-            if len(alert_log) > 50:
-                alert_log = alert_log[:50]
+            if len(alert_log) > config.MAX_ALERT_LOG:
+                alert_log = alert_log[:config.MAX_ALERT_LOG]
 
     # Emit to all connected clients
     socketio.emit("tick_update", {
@@ -533,8 +535,8 @@ if __name__ == "__main__":
 
     socketio.run(
         app,
-        host="0.0.0.0",
-        port=5000,
-        debug=False,
+        host=config.HOST,
+        port=config.PORT,
+        debug=config.DEBUG,
         allow_unsafe_werkzeug=True,
     )
