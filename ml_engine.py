@@ -33,7 +33,9 @@ from sklearn.metrics import (
 import xgboost as xgb
 
 
-MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+import config
+
+MODELS_DIR = config.MODEL_DIR
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 
@@ -272,10 +274,12 @@ class MLEngine:
 
         return results
 
-    def save_models(self, prefix: str = "ransomware"):
+    def save_models(self, prefix: str = None):
         """Save all trained models and scaler to disk."""
         if not self.is_trained:
             return False
+
+        prefix = prefix or config.MODEL_PREFIX
 
         for key in self.model_keys:
             if key in self.models:
@@ -291,8 +295,9 @@ class MLEngine:
         print(f"Models saved to {MODELS_DIR}")
         return True
 
-    def load_models(self, prefix: str = "ransomware") -> bool:
+    def load_models(self, prefix: str = None) -> bool:
         """Load trained models from disk."""
+        prefix = prefix or config.MODEL_PREFIX
         try:
             for key in self.model_keys:
                 path = os.path.join(MODELS_DIR, f"{prefix}_{key}.joblib")

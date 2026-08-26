@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from simulation import generate_training_data
 from ml_engine import MLEngine, prepare_training_data
+import config
 
 
 def main():
@@ -17,8 +18,8 @@ def main():
     print("=" * 60)
     print()
 
-    print("Generating training data (8000 samples)...")
-    data = generate_training_data(num_samples=8000)
+    print(f"Generating training data ({config.TRAINING_SAMPLES} samples)...")
+    data = generate_training_data(num_samples=config.TRAINING_SAMPLES)
     X, y = prepare_training_data(data)
 
     print(f"Features: {X.shape[1]} (nc, nr, nu)")

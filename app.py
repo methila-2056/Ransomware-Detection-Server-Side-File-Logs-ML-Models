@@ -19,7 +19,7 @@ import threading
 import json
 from datetime import datetime
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, Response
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 
@@ -58,6 +58,7 @@ active_mode = "idle"  # "idle", "simulation", "monitoring"
 tick_history = []
 alert_log = []
 model_comparison = []
+_previous_tick_was_attack = False
 
 # Running metrics (shared between modes)
 metrics = {
@@ -117,7 +118,7 @@ def process_tick(tick):
     Process a single tick through ML inference and emit to clients.
     Shared between simulation and real monitoring modes.
     """
-    global metrics, tick_history, alert_log
+    global metrics, tick_history, alert_log, _previous_tick_was_attack
 
     # Run ML inference
     features = [tick["nc"], tick["nr"], tick["nu"]]
@@ -159,8 +160,8 @@ def process_tick(tick):
     }
 
     tick_history.append(tick_data)
-    if len(tick_history) > 120:
-        tick_history = tick_history[-120:]
+    if len(tick_history) > config.MAX_TICK_HISTORY:
+        tick_history = tick_history[-config.MAX_TICK_HISTORY:]
 
     # Log to database periodically
     if metrics["total_ticks"] % 10 == 0:
@@ -183,6 +184,29 @@ def process_tick(tick):
             if len(alert_log) > config.MAX_ALERT_LOG:
                 alert_log = alert_log[:config.MAX_ALERT_LOG]
             db.log_detection_alert(tick, predictions)
+
+    # Detect attack end (transition True -> False) and persist the session
+    is_currently_attack = tick.get("is_attack", False)
+    if _previous_tick_was_attack and not is_currently_attack:
+        attacks = simulator.state.attack_history
+        if attacks:
+            last = attacks[-1]
+            detection_delay = 0
+            if tick.get("source") == "simulation":
+                db.log_attack_session({
+                    "attack_id": last.get("attack_id"),
+                    "family": last.get("family"),
+                    "start_second": last.get("start_second"),
+                    "end_second": tick_data["timestamp"],
+                    "duration": last.get("duration"),
+                    "detected_by": "XGBoost" if metrics["current_streak"] > 0 else "None",
+                    "detection_delay": detection_delay,
+                })
+    _previous_tick_was_attack = is_currently_attack
+
+    # Periodic database cleanup to prevent bloat
+    if metrics["total_ticks"] % 500 == 0 and metrics["total_ticks"] > 0:
+        db.clear_old_data(keep_last_n=2000)
 
     # Emit to all connected clients
     socketio.emit("tick_update", {
@@ -266,7 +290,7 @@ def monitoring_loop():
         tick = real_monitor.get_tick()
         tick["timestamp"] = metrics["total_ticks"] + 1
         process_tick(tick)
-        time.sleep(1.0)
+        time.sleep(config.MONITOR_INTERVAL)
 
     print("[MONITOR] Real-time monitoring stopped.")
 
@@ -337,6 +361,27 @@ def api_stats():
         "recent_alerts": db.get_recent_alerts(10),
         "attack_sessions": db.get_attack_sessions(10),
     })
+
+
+@app.route("/api/export")
+def api_export():
+    """Export full run data as a downloadable JSON file."""
+    import json
+    payload = {
+        "metrics": metrics,
+        "tick_history": tick_history,
+        "alerts": alert_log[:config.MAX_ALERT_LOG],
+        "model_comparison": model_comparison,
+        "db_stats": db.get_stats(),
+        "db_alerts": db.get_recent_alerts(100),
+        "db_sessions": db.get_attack_sessions(100),
+    }
+    data = json.dumps(payload, indent=2, default=str)
+    return Response(
+        data,
+        mimetype="application/json",
+        headers={"Content-Disposition": "attachment; filename=run_data.json"},
+    )
 
 
 # ──────────────────────────────────────────────────────────────
