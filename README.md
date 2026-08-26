@@ -34,6 +34,8 @@ Five ML models classify each window as benign or attack:
   - **Simulation Mode** — Generates synthetic file operations with simulated ransomware attacks (Ryuk, WannaCry, NotPetya, LockBit, TeslaCrypt)
   - **Real Monitor Mode** — Watches your actual Desktop/Downloads folders using Windows OS-level notifications (completely read-only)
 
+- **OneDrive-aware folder detection** — Real folders (Desktop, Documents, Downloads, Pictures) are resolved from the Windows registry (`User Shell Folders`), so OneDrive-redirected profiles are monitored correctly; each event appears in the feed exactly once
+
 - **Real-time Dashboard** with:
   - Live operation counters (create/rename/delete per second)
   - XGBoost probability gauge with threat levels
@@ -45,10 +47,19 @@ Five ML models classify each window as benign or attack:
   - Adjustable speed (1x / 3x / 5x / 10x)
 
 - **ML Pipeline:**
+  - Ships with pre-trained models in `models/` — starts instantly; delete the `.joblib` files to force a retrain
   - Auto-trains on first run if no saved models exist
-  - GridSearchCV hyperparameter optimization
+  - GridSearchCV hyperparameter optimization (toggle via `GRID_SEARCH` in `config.py`)
   - Models saved/loaded from disk for fast startup
   - CalibratedClassifierCV for reliable probability estimates
+
+## Testing
+
+```bash
+python -m pytest tests/
+```
+
+Covers the simulator, ML engine, SQLite layer and real folder monitor (32 tests).
 
 ## Installation
 
@@ -70,10 +81,15 @@ Open **http://localhost:5000** in your browser.
 
 ```
 ├── app.py                  # Flask + SocketIO server (dual mode)
+├── config.py               # Centralized runtime settings
 ├── simulation.py           # File operation simulator
 ├── real_monitor.py         # Watchdog-based folder observer
 ├── ml_engine.py            # 5 ML models with training pipeline
 ├── database.py             # SQLite storage layer
+├── models/                 # Pre-trained .joblib model files
+├── scripts/
+│   └── evaluate.py         # Standalone training/eval CLI
+├── tests/                  # Pytest suite (sim, ML, DB, monitor)
 ├── requirements.txt        # Python dependencies
 ├── templates/
 │   └── index.html          # Dashboard UI (TailwindCSS)
