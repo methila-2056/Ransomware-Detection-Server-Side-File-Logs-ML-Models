@@ -4,8 +4,7 @@ Shared helpers used across the application.
 """
 import time
 import hashlib
-import os
-from typing import List, Dict
+from typing import Dict
 
 
 def format_bytes(size: int) -> str:

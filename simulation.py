@@ -9,10 +9,11 @@ Based on the Aranyi et al. (2026) paper's methodology:
 """
 
 import random
-import time
-import math
+import logging
 from dataclasses import dataclass, field
 from typing import List, Tuple, Optional
+
+log = logging.getLogger("ransomware.sim")
 
 
 @dataclass
@@ -131,21 +132,17 @@ class FileOperationSimulator:
         self._reset_attack_timer()
 
     def _reset_attack_timer(self):
-        """Set time until next attack."""
         self.state.seconds_until_next_attack = random.randint(
             self.attack_interval_range[0], self.attack_interval_range[1]
         )
 
     def _pick_random_user(self) -> str:
-        """Randomly select a user profile."""
         return random.choice(list(self.user_profiles.keys()))
 
     def _pick_random_family(self) -> str:
-        """Randomly select a ransomware family."""
         return random.choice(list(self.ransomware_families.keys()))
 
     def _generate_benign_ops(self, user: str) -> Tuple[int, int, int]:
-        """Generate benign file operation counts for a user profile."""
         profile = self.user_profiles[user]
         nc = random.randint(*profile["create"])
         nr = random.randint(*profile["rename"])
@@ -153,16 +150,7 @@ class FileOperationSimulator:
         return nc, nr, nu
 
     def _generate_attack_ops(self, family: str, progress: float) -> Tuple[int, int, int]:
-        """
-        Generate attack file operation counts with ramp-up effect.
-
-        Args:
-            family: Ransomware family name
-            progress: Float 0.0-1.0 indicating attack progress
-        """
         fam = self.ransomware_families[family]
-
-        # Ramp-up: operations increase during first few seconds
         ramp_factor = min(1.0, progress / 0.3) if fam["ramp_up"] > 0 else 1.0
 
         base_nc = random.randint(*fam["create"])
@@ -176,28 +164,16 @@ class FileOperationSimulator:
         return nc, nr, nu
 
     def generate_next_tick(self) -> dict:
-        """
-        Generate the next 1-second tick of file operations.
-
-        Returns:
-            dict with keys: nc, nr, nu, att, user, family, description
-        """
         self.state.total_seconds_simulated += 1
 
         result = {
             "timestamp": self.state.total_seconds_simulated,
-            "nc": 0,
-            "nr": 0,
-            "nu": 0,
-            "att": 0,
-            "user": "",
-            "family": None,
-            "description": "",
-            "is_attack": False,
+            "nc": 0, "nr": 0, "nu": 0,
+            "att": 0, "user": "", "family": None,
+            "description": "", "is_attack": False,
         }
 
         if self.state.is_attack_active:
-            # Currently in an attack
             self.state.attack_seconds_remaining -= 1
             total_duration = self.ransomware_families[self.state.current_attack_family]["duration_range"]
             elapsed = max(1, (total_duration[0] + total_duration[1]) // 2 - self.state.attack_seconds_remaining)
@@ -205,7 +181,6 @@ class FileOperationSimulator:
 
             nc, nr, nu = self._generate_attack_ops(self.state.current_attack_family, progress)
 
-            # Add some noise during attack (mixed benign traffic)
             if random.random() < 0.3:
                 benign_nc, benign_nr, benign_nu = self._generate_benign_ops(self.state.current_user)
                 nc += benign_nc // 3
@@ -222,13 +197,11 @@ class FileOperationSimulator:
             result["is_attack"] = True
 
             if self.state.attack_seconds_remaining <= 0:
-                # Attack ended
                 self.state.is_attack_active = False
                 self.state.current_attack_family = None
                 self._reset_attack_timer()
 
         else:
-            # Benign operations
             nc, nr, nu = self._generate_benign_ops(self.state.current_user)
             result["nc"] = nc
             result["nr"] = nr
@@ -237,10 +210,8 @@ class FileOperationSimulator:
             result["user"] = self.state.current_user
             result["description"] = self.user_profiles[self.state.current_user]["description"]
 
-            # Check if it's time for an attack
             self.state.seconds_until_next_attack -= 1
             if self.state.seconds_until_next_attack <= 0:
-                # Start a new attack
                 family = self._pick_random_family()
                 duration_range = self.ransomware_families[family]["duration_range"]
                 duration = random.randint(*duration_range)
@@ -257,7 +228,6 @@ class FileOperationSimulator:
                     "duration": duration,
                 })
 
-                # Generate first tick of attack
                 nc, nr, nu = self._generate_attack_ops(family, 0.0)
                 result["nc"] = nc
                 result["nr"] = nr
@@ -273,24 +243,20 @@ class FileOperationSimulator:
                     self.state.current_attack_family = None
                     self._reset_attack_timer()
 
-            # Occasionally switch user profile
             if random.random() < 0.1:
                 self.state.current_user = self._pick_random_user()
 
         return result
 
     def start(self):
-        """Start the simulation."""
         self.state.is_running = True
         self.state.current_user = self._pick_random_user()
         self._reset_attack_timer()
 
     def stop(self):
-        """Stop the simulation."""
         self.state.is_running = False
 
     def get_state(self) -> dict:
-        """Get current simulation state."""
         return {
             "is_running": self.state.is_running,
             "is_attack_active": self.state.is_attack_active,
@@ -305,11 +271,9 @@ class FileOperationSimulator:
         }
 
     def set_speed(self, speed: float):
-        """Set simulation speed multiplier."""
         self.state.simulation_speed = max(0.1, min(10.0, speed))
 
-    def force_attack(self, family: str = None):
-        """Force an immediate attack for demo purposes."""
+    def force_attack(self, family: str = None) -> bool:
         if self.state.is_attack_active:
             return False
 
@@ -333,36 +297,25 @@ class FileOperationSimulator:
             "duration": duration,
         })
 
+        log.info("Forced attack: %s (duration %ds)", family, duration)
         return True
 
 
 def generate_training_data(num_samples: int = 10000) -> List[dict]:
-    """
-    Generate synthetic training data for ML model development.
-
-    Creates a balanced dataset of benign and attack patterns
-    based on the paper's simulation parameters.
-
-    Key design: zero-value operations (nc=nr=nu=0) are ALWAYS labeled
-    as benign (att=0). Attack samples always have at least some activity.
-    """
+    """Generate synthetic training data for ML model development."""
     data = []
 
-    # Generate benign samples
     benign_count = 0
     attack_count = 0
     target_per_class = num_samples // 2
 
-    # Phase 1: Benign-only data
     users = list(UserProfiles.PROFILES.keys())
 
-    # Add explicit idle/zero samples as benign (fixes the 0,0,0 false positive)
     idle_samples = target_per_class // 10
     for _ in range(idle_samples):
         data.append({"nc": 0, "nr": 0, "nu": 0, "att": 0})
         benign_count += 1
 
-    # Add low-activity benign samples
     while benign_count < target_per_class:
         user = random.choice(users)
         profile = UserProfiles.PROFILES[user]
@@ -370,22 +323,14 @@ def generate_training_data(num_samples: int = 10000) -> List[dict]:
         nr = random.randint(*profile["rename"])
         nu = random.randint(*profile["delete"])
 
-        # Add occasional spikes (heavy file operations)
         if random.random() < 0.05:
             nc = int(nc * random.uniform(1.5, 2.5))
             nr = int(nr * random.uniform(1.3, 2.0))
             nu = int(nu * random.uniform(1.2, 1.8))
 
-        data.append({
-            "nc": nc,
-            "nr": nr,
-            "nu": nu,
-            "att": 0,
-        })
+        data.append({"nc": nc, "nr": nr, "nu": nu, "att": 0})
         benign_count += 1
 
-    # Phase 2: Attack data with ramp-up
-    # CRITICAL: Never generate zero-value attack samples
     families = list(RansomwareFamilies.FAMILIES.keys())
     while attack_count < target_per_class:
         family = random.choice(families)
@@ -398,9 +343,6 @@ def generate_training_data(num_samples: int = 10000) -> List[dict]:
 
             progress = second / max(1, duration)
             ramp_factor = min(1.0, progress / 0.3) if fam["ramp_up"] > 0 else 1.0
-
-            # Enforce minimum values for attack samples
-            # Even during ramp-up, there must be SOME activity
             min_activity = max(3, int(ramp_factor * 10))
 
             nc = int(random.randint(*fam["create"]) * ramp_factor)
@@ -411,7 +353,6 @@ def generate_training_data(num_samples: int = 10000) -> List[dict]:
             nr = max(nr, min_activity // 2)
             nu = max(nu, min_activity // 2)
 
-            # Add noise
             if random.random() < 0.2:
                 user = random.choice(users)
                 profile = UserProfiles.PROFILES[user]
@@ -419,21 +360,14 @@ def generate_training_data(num_samples: int = 10000) -> List[dict]:
                 nr += random.randint(*profile["rename"]) // 4
                 nu += random.randint(*profile["delete"]) // 4
 
-            data.append({
-                "nc": max(1, nc),
-                "nr": max(0, nr),
-                "nu": max(0, nu),
-                "att": 1,
-            })
+            data.append({"nc": max(1, nc), "nr": max(0, nr), "nu": max(0, nu), "att": 1})
             attack_count += 1
 
-    # Phase 3: Transition data (attack ramp-up and wind-down)
     transitions = max(1, num_samples // 20)
     for _ in range(transitions):
         family = random.choice(families)
         fam = RansomwareFamilies.FAMILIES[family]
 
-        # Ramp-up transition — minimum activity enforced
         for i in range(5):
             factor = (i + 1) / 5.0
             nc = max(3, int(random.randint(*fam["create"]) * factor * 0.7))
@@ -442,11 +376,11 @@ def generate_training_data(num_samples: int = 10000) -> List[dict]:
             data.append({"nc": nc, "nr": nr, "nu": nu, "att": 1})
 
     random.shuffle(data)
+    log.info("Generated %d training samples", len(data))
     return data
 
 
 if __name__ == "__main__":
-    # Quick test
     sim = FileOperationSimulator(attack_interval_range=(5, 10))
     sim.start()
 

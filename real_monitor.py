@@ -13,21 +13,16 @@ Based on Aranyi et al. (2026):
 
 import os
 import time
+import logging
 import threading
-from collections import defaultdict
-from typing import Dict, List, Optional, Callable
+from typing import Dict, List
 
 from watchdog.observers import Observer
-from watchdog.events import (
-    FileSystemEventHandler,
-    FileCreatedEvent,
-    FileDeletedEvent,
-    FileMovedEvent,
-    FileModifiedEvent,
-)
+from watchdog.events import FileSystemEventHandler
+
+log = logging.getLogger("ransomware.monitor")
 
 
-# Registry values for Windows known folders (handles OneDrive redirection)
 _WINREG_KNOWN_FOLDERS = {
     "Desktop": "Desktop",
     "Documents": "Personal",
@@ -66,8 +61,8 @@ def resolve_known_folders() -> Dict[str, str]:
                         resolved[name] = path
                 except OSError:
                     continue
-    except (ImportError, OSError):
-        pass
+    except (ImportError, OSError) as exc:
+        log.debug("Registry folder resolution unavailable: %s", exc)
 
     home = os.path.expanduser("~")
     for name, rel_candidates in _FOLDER_FALLBACKS.items():
@@ -85,7 +80,7 @@ def resolve_known_folders() -> Dict[str, str]:
 class FileCountHandler(FileSystemEventHandler):
     """
     Event handler that counts file operations.
-    
+
     Uses Windows ReadDirectoryChangesW API under the hood.
     Completely passive - only receives notifications, never modifies anything.
     """
@@ -94,7 +89,7 @@ class FileCountHandler(FileSystemEventHandler):
         super().__init__()
         self._lock = threading.Lock()
         self._counts = {"nc": 0, "nr": 0, "nu": 0, "nm": 0}
-        self._recent_events = []
+        self._recent_events: List[Dict] = []
         self._drain_index = 0
 
     def on_created(self, event):
@@ -121,7 +116,6 @@ class FileCountHandler(FileSystemEventHandler):
                 self._counts["nm"] += 1
 
     def _log_event(self, event_type, path):
-        """Store last 50 events for display."""
         self._recent_events.append({
             "time": time.strftime("%H:%M:%S"),
             "type": event_type,
@@ -133,27 +127,20 @@ class FileCountHandler(FileSystemEventHandler):
             self._recent_events = self._recent_events[-50:]
 
     def get_and_reset_counts(self) -> Dict:
-        """Get current counts and reset. Thread-safe."""
         with self._lock:
             counts = self._counts.copy()
             self._counts = {"nc": 0, "nr": 0, "nu": 0, "nm": 0}
             return counts
 
     def get_recent_events(self) -> List[Dict]:
-        """Get recent file events."""
         with self._lock:
             return list(self._recent_events)
 
     def drain_new_events(self) -> List[Dict]:
-        """
-        Get events logged since the last drain and mark them consumed.
-        Thread-safe. Keeps the internal buffer bounded.
-        """
         with self._lock:
             new_events = list(self._recent_events[self._drain_index:])
             self._drain_index = len(self._recent_events)
 
-            # Keep the buffer bounded; reset the cursor after a trim
             if len(self._recent_events) > 200:
                 self._recent_events = self._recent_events[-100:]
                 self._drain_index = len(self._recent_events)
@@ -164,10 +151,10 @@ class FileCountHandler(FileSystemEventHandler):
 class RealFolderMonitor:
     """
     Monitors real folders (Desktop, Downloads) for file system events.
-    
+
     Uses watchdog's Observer which hooks into Windows ReadDirectoryChangesW.
     This is a kernel-level notification mechanism - completely passive observation.
-    
+
     Features:
     - Watches multiple folders simultaneously
     - Aggregates events per second into nc/nr/nu counts
@@ -176,13 +163,6 @@ class RealFolderMonitor:
     """
 
     def __init__(self, folders: List[str] = None):
-        """
-        Initialize the real folder monitor.
-        
-        Args:
-            folders: List of folder paths to monitor.
-                     Defaults to user's Desktop and Downloads.
-        """
         if folders is None:
             known = resolve_known_folders()
             home = os.path.expanduser("~")
@@ -194,25 +174,16 @@ class RealFolderMonitor:
             ]
 
         self.folders = [f for f in folders if os.path.isdir(f)]
-        self.observers = []
-        self.handlers = []
+        self.observers: List[Observer] = []
+        self.handlers: List[FileCountHandler] = []
         self.is_running = False
         self._lock = threading.Lock()
-        self._event_log = []
         self._total_events = 0
 
-        # Create a handler for each folder
-        for folder in self.folders:
-            handler = FileCountHandler()
-            self.handlers.append(handler)
+        for _folder in self.folders:
+            self.handlers.append(FileCountHandler())
 
     def start(self) -> Dict:
-        """
-        Start monitoring all configured folders.
-        
-        Returns:
-            Status dict with folder list and success flag.
-        """
         if self.is_running:
             return {"success": False, "message": "Already running"}
 
@@ -226,10 +197,10 @@ class RealFolderMonitor:
                 observer.start()
                 self.observers.append(observer)
                 results.append({"folder": folder, "status": "started"})
-                print(f"[MONITOR] Watching: {folder}")
+                log.info("Watching: %s", folder)
             except Exception as e:
-                results.append({"folder": folder, "status": f"error: {str(e)}"})
-                print(f"[MONITOR] Error watching {folder}: {e}")
+                results.append({"folder": folder, "status": f"error: {e}"})
+                log.error("Error watching %s: %s", folder, e)
 
         self.is_running = len(self.observers) > 0
 
@@ -240,7 +211,6 @@ class RealFolderMonitor:
         }
 
     def stop(self) -> Dict:
-        """Stop all monitoring."""
         if not self.is_running:
             return {"success": False, "message": "Not running"}
 
@@ -252,18 +222,11 @@ class RealFolderMonitor:
 
         self.observers = []
         self.is_running = False
-        print("[MONITOR] Stopped all folder monitoring")
+        log.info("Stopped all folder monitoring")
 
         return {"success": True, "message": "Monitoring stopped"}
 
     def get_tick(self) -> Dict:
-        """
-        Get aggregated file operation counts for the current second.
-        
-        This is called every second by the main loop.
-        Returns counts from ALL monitored folders combined,
-        plus recent file-level events for display.
-        """
         total_nc = 0
         total_nr = 0
         total_nu = 0
@@ -274,12 +237,10 @@ class RealFolderMonitor:
             total_nc += counts["nc"]
             total_nr += counts["nr"]
             total_nu += counts["nu"]
-            # Collect only events that occurred since the previous tick
             tick_events.extend(handler.drain_new_events())
 
         self._total_events += total_nc + total_nr + total_nu
 
-        # Keep only the most recent events from this tick
         tick_events.sort(key=lambda x: x["time"], reverse=True)
         tick_events = tick_events[:20]
 
@@ -296,17 +257,14 @@ class RealFolderMonitor:
         }
 
     def get_recent_events(self) -> List[Dict]:
-        """Get recent file events from all monitored folders."""
         events = []
         for handler in self.handlers:
             events.extend(handler.get_recent_events())
 
-        # Sort by time, most recent first
         events.sort(key=lambda x: x["time"], reverse=True)
         return events[:30]
 
     def get_status(self) -> Dict:
-        """Get current monitoring status."""
         return {
             "is_running": self.is_running,
             "folders": self.folders,
@@ -315,7 +273,6 @@ class RealFolderMonitor:
         }
 
     def get_default_folders(self) -> List[Dict]:
-        """Get default monitoring folders with existence check."""
         known = resolve_known_folders()
         candidates = [
             ("Desktop", known.get("Desktop")),

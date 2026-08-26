@@ -8,14 +8,14 @@ SQLite-based storage for:
 - System statistics
 """
 
-import os
+import logging
 import sqlite3
-import time
-from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict
 from contextlib import contextmanager
 
 import config
+
+log = logging.getLogger("ransomware.db")
 
 
 class Database:
@@ -26,11 +26,9 @@ class Database:
         self._init_database()
 
     def _init_database(self):
-        """Initialize database schema."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
-            # File operations log
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS file_operations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +43,6 @@ class Database:
                 )
             """)
 
-            # Detection alerts
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS detection_alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,7 +58,6 @@ class Database:
                 )
             """)
 
-            # Attack sessions
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS attack_sessions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,7 +72,6 @@ class Database:
                 )
             """)
 
-            # System statistics
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS system_stats (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,16 +84,15 @@ class Database:
                 )
             """)
 
-            # Initialize stats if empty
             cursor.execute("SELECT COUNT(*) FROM system_stats")
             if cursor.fetchone()[0] == 0:
                 cursor.execute("INSERT INTO system_stats (total_ticks, total_attacks) VALUES (0, 0)")
 
             conn.commit()
+            log.debug("Database initialized: %s", self.db_path)
 
     @contextmanager
     def _get_connection(self):
-        """Get database connection with automatic cleanup."""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         try:
@@ -107,7 +101,6 @@ class Database:
             conn.close()
 
     def log_file_operation(self, tick: Dict):
-        """Log a file operation tick to the database."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -119,7 +112,6 @@ class Database:
             conn.commit()
 
     def log_detection_alert(self, tick: Dict, predictions: Dict):
-        """Log a detection alert when attack is predicted."""
         xgb = predictions.get("xgb", {})
         with self._get_connection() as conn:
             cursor = conn.cursor()
@@ -142,7 +134,6 @@ class Database:
             conn.commit()
 
     def log_attack_session(self, attack_info: Dict):
-        """Log a completed attack session."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -163,7 +154,6 @@ class Database:
             conn.commit()
 
     def update_stats(self, **kwargs):
-        """Update system statistics."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             updates = []
@@ -181,7 +171,6 @@ class Database:
                 conn.commit()
 
     def get_stats(self) -> Dict:
-        """Get current system statistics."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM system_stats WHERE id = 1")
@@ -197,7 +186,6 @@ class Database:
             }
 
     def get_recent_operations(self, limit: int = 60) -> List[Dict]:
-        """Get recent file operations for the timeline."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -210,7 +198,6 @@ class Database:
             return [dict(row) for row in reversed(rows)]
 
     def get_recent_alerts(self, limit: int = 20) -> List[Dict]:
-        """Get recent detection alerts."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -224,7 +211,6 @@ class Database:
             return [dict(row) for row in rows]
 
     def get_attack_sessions(self, limit: int = 10) -> List[Dict]:
-        """Get attack session history."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -236,7 +222,6 @@ class Database:
             return [dict(row) for row in rows]
 
     def clear_old_data(self, keep_last_n: int = 1000):
-        """Clear old data to prevent database bloat."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -256,8 +241,8 @@ class Database:
                 (keep_last_n // 5,),
             )
             conn.commit()
+            log.debug("Cleaned old data, kept last %d operations", keep_last_n)
 
 
 def get_database(db_path: str = None) -> Database:
-    """Factory function to get database instance."""
     return Database(db_path)
