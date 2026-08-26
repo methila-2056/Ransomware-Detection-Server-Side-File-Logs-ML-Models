@@ -22,7 +22,6 @@ env/
 *~
 
 # Project specific
-models/*.joblib
 *.db
 *.db-journal
 *.log
