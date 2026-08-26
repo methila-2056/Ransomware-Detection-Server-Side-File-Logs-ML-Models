@@ -27,6 +27,7 @@ from simulation import FileOperationSimulator, generate_training_data
 from ml_engine import MLEngine, prepare_training_data
 from database import Database
 from real_monitor import RealFolderMonitor
+import config
 
 # ──────────────────────────────────────────────────────────────
 # App Configuration
@@ -88,14 +89,14 @@ def init_ml_models():
     print("No saved models found. Training new models...")
     print("Generating synthetic training data...")
 
-    data = generate_training_data(num_samples=8000)
+    data = generate_training_data(num_samples=config.TRAINING_SAMPLES)
     X, y = prepare_training_data(data)
 
     print(f"Training data: {X.shape[0]} samples")
     print(f"Class distribution: Benign={sum(y == 0)}, Attack={sum(y == 1)}")
     print()
 
-    results = ml_engine.train(X, y, use_grid_search=True)
+    results = ml_engine.train(X, y, use_grid_search=config.GRID_SEARCH)
     ml_engine.save_models()
     model_comparison = ml_engine.get_model_comparison()
 

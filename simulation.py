@@ -306,7 +306,7 @@ class FileOperationSimulator:
 
     def set_speed(self, speed: float):
         """Set simulation speed multiplier."""
-        self.state.simulation_speed = max(0.1, min(5.0, speed))
+        self.state.simulation_speed = max(0.1, min(10.0, speed))
 
     def force_attack(self, family: str = None):
         """Force an immediate attack for demo purposes."""
