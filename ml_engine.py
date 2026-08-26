@@ -192,7 +192,8 @@ class MLEngine:
             self.models[key] = best_model
 
             results[key] = {
-                "name": self.model_keys[self.model_keys.index(key)],
+                "name": self.model_names[self.model_keys.index(key)],
+                "key": key,
                 "accuracy": round(accuracy, 4),
                 "f1_score": round(f1, 4),
                 "precision": round(precision, 4),
@@ -239,7 +240,8 @@ class MLEngine:
                 proba = model.predict_proba(X_scaled)[0] if hasattr(model, "predict_proba") else [0, 0]
 
                 predictions[key] = {
-                    "name": self.model_keys[self.model_keys.index(key)],
+                    "name": self.model_names[self.model_keys.index(key)],
+                    "key": key,
                     "prediction": int(pred),
                     "probability": round(float(proba[1]), 4),
                     "confidence": round(float(max(proba)) * 100, 1),
@@ -262,7 +264,8 @@ class MLEngine:
                 probas = model.predict_proba(X_scaled) if hasattr(model, "predict_proba") else None
 
                 results.append({
-                    "model": self.model_keys[self.model_keys.index(key)],
+                    "model": self.model_names[self.model_keys.index(key)],
+                    "key": key,
                     "predictions": preds.tolist(),
                     "probabilities": probas.tolist() if probas is not None else None,
                 })
@@ -324,6 +327,7 @@ class MLEngine:
                 m = self.training_metrics[key]
                 comparison.append({
                     "name": m["name"],
+                    "key": key,
                     "accuracy": m["accuracy"],
                     "f1_score": m["f1_score"],
                     "sensitivity": m["sensitivity"],
