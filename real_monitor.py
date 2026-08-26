@@ -27,6 +27,61 @@ from watchdog.events import (
 )
 
 
+# Registry values for Windows known folders (handles OneDrive redirection)
+_WINREG_KNOWN_FOLDERS = {
+    "Desktop": "Desktop",
+    "Documents": "Personal",
+    "Pictures": "My Pictures",
+    "{374DE290-123F-4565-9164-39C4925E467B}": "Downloads",
+}
+
+_FOLDER_FALLBACKS = {
+    "Desktop": ["Desktop", os.path.join("OneDrive", "Desktop")],
+    "Downloads": ["Downloads", os.path.join("OneDrive", "Downloads")],
+    "Documents": ["Documents", os.path.join("OneDrive", "Documents")],
+    "Pictures": ["Pictures", os.path.join("OneDrive", "Pictures")],
+}
+
+
+def resolve_known_folders() -> Dict[str, str]:
+    """
+    Resolve the real paths of user folders (Desktop, Downloads, Documents,
+    Pictures). Reads HKCU User Shell Folders from the registry first so
+    OneDrive-redirected folders are detected correctly; falls back to
+    common paths under the user profile.
+    """
+    resolved = {}
+
+    try:
+        import winreg
+        key_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+            for reg_value, name in _WINREG_KNOWN_FOLDERS.items():
+                try:
+                    raw_value, _ = winreg.QueryValueEx(key, reg_value)
+                    if not isinstance(raw_value, str):
+                        continue
+                    path = os.path.expandvars(raw_value.strip())
+                    if name not in resolved and os.path.isdir(path):
+                        resolved[name] = path
+                except OSError:
+                    continue
+    except (ImportError, OSError):
+        pass
+
+    home = os.path.expanduser("~")
+    for name, rel_candidates in _FOLDER_FALLBACKS.items():
+        if name in resolved:
+            continue
+        for rel in rel_candidates:
+            candidate = os.path.join(home, rel)
+            if os.path.isdir(candidate):
+                resolved[name] = candidate
+                break
+
+    return resolved
+
+
 class FileCountHandler(FileSystemEventHandler):
     """
     Event handler that counts file operations.
@@ -40,6 +95,7 @@ class FileCountHandler(FileSystemEventHandler):
         self._lock = threading.Lock()
         self._counts = {"nc": 0, "nr": 0, "nu": 0, "nm": 0}
         self._recent_events = []
+        self._drain_index = 0
 
     def on_created(self, event):
         if not event.is_directory:
@@ -88,6 +144,22 @@ class FileCountHandler(FileSystemEventHandler):
         with self._lock:
             return list(self._recent_events)
 
+    def drain_new_events(self) -> List[Dict]:
+        """
+        Get events logged since the last drain and mark them consumed.
+        Thread-safe. Keeps the internal buffer bounded.
+        """
+        with self._lock:
+            new_events = list(self._recent_events[self._drain_index:])
+            self._drain_index = len(self._recent_events)
+
+            # Keep the buffer bounded; reset the cursor after a trim
+            if len(self._recent_events) > 200:
+                self._recent_events = self._recent_events[-100:]
+                self._drain_index = len(self._recent_events)
+
+            return new_events
+
 
 class RealFolderMonitor:
     """
@@ -112,10 +184,13 @@ class RealFolderMonitor:
                      Defaults to user's Desktop and Downloads.
         """
         if folders is None:
+            known = resolve_known_folders()
             home = os.path.expanduser("~")
+            fallback_desktop = os.path.join(home, "OneDrive", "Desktop")
+            fallback_downloads = os.path.join(home, "Downloads")
             folders = [
-                os.path.join(home, "Desktop"),
-                os.path.join(home, "Downloads"),
+                known.get("Desktop") or (fallback_desktop if os.path.isdir(fallback_desktop) else os.path.join(home, "Desktop")),
+                known.get("Downloads") or fallback_downloads,
             ]
 
         self.folders = [f for f in folders if os.path.isdir(f)]
@@ -199,8 +274,8 @@ class RealFolderMonitor:
             total_nc += counts["nc"]
             total_nr += counts["nr"]
             total_nu += counts["nu"]
-            # Collect events that happened in this tick window
-            tick_events.extend(handler.get_recent_events())
+            # Collect only events that occurred since the previous tick
+            tick_events.extend(handler.drain_new_events())
 
         self._total_events += total_nc + total_nr + total_nu
 
@@ -241,16 +316,19 @@ class RealFolderMonitor:
 
     def get_default_folders(self) -> List[Dict]:
         """Get default monitoring folders with existence check."""
-        home = os.path.expanduser("~")
+        known = resolve_known_folders()
         candidates = [
-            ("Desktop", os.path.join(home, "Desktop")),
-            ("Downloads", os.path.join(home, "Downloads")),
-            ("Documents", os.path.join(home, "Documents")),
-            ("Pictures", os.path.join(home, "Pictures")),
+            ("Desktop", known.get("Desktop")),
+            ("Downloads", known.get("Downloads")),
+            ("Documents", known.get("Documents")),
+            ("Pictures", known.get("Pictures")),
         ]
 
         folders = []
         for name, path in candidates:
+            if path is None:
+                home = os.path.expanduser("~")
+                path = os.path.join(home, name)
             folders.append({
                 "name": name,
                 "path": path,
