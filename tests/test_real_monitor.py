@@ -5,6 +5,8 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+import pytest
+
 from real_monitor import (
     FileCountHandler,
     RealFolderMonitor,
@@ -21,6 +23,8 @@ class FakeEvent:
         self.is_directory = is_directory
 
 
+@pytest.mark.skipif(sys.platform != "win32",
+                    reason="Registry-based known folders only resolve on Windows")
 class TestResolveKnownFolders:
     """Test Windows known-folder resolution (OneDrive-aware)."""
 
@@ -37,6 +41,9 @@ class TestResolveKnownFolders:
         home = os.path.expanduser("~")
         for path in resolve_known_folders().values():
             assert path.lower().startswith(home.lower())
+
+    def test_returns_dict_of_strings(self):
+        assert isinstance(resolve_known_folders(), dict)
 
 
 class TestFileCountHandler:
