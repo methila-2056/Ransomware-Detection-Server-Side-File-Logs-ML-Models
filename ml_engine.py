@@ -382,41 +382,45 @@ def prepare_training_data(data: List[Dict]) -> Tuple[np.ndarray, np.ndarray]:
     return X, y
 
 
-def train_and_save_models(data: List[Dict]) -> MLEngine:
+def train_and_save_models(data: List[Dict], use_grid_search: bool = None) -> MLEngine:
     """Complete training pipeline: prepare data, train, save."""
+    if use_grid_search is None:
+        use_grid_search = config.GRID_SEARCH
+
     engine = MLEngine()
 
     X, y = prepare_training_data(data)
     log.info("Training data: %d samples, %d features", X.shape[0], X.shape[1])
     log.info("Class distribution: Benign=%d, Attack=%d", sum(y == 0), sum(y == 1))
 
-    results = engine.train(X, y, use_grid_search=True)
+    results = engine.train(X, y, use_grid_search=use_grid_search)
     engine.save_models()
 
     return engine
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     from simulation import generate_training_data
 
-    print("Generating training data...")
-    data = generate_training_data(num_samples=8000)
-    print(f"Generated {len(data)} samples")
+    log.info("Generating training data...")
+    data = generate_training_data(num_samples=config.TRAINING_SAMPLES)
+    log.info("Generated %d samples", len(data))
 
-    print("\nTraining models...")
+    log.info("Training models...")
     engine = train_and_save_models(data)
 
-    print("\n=== Model Comparison ===")
+    log.info("=== Model Comparison ===")
     for m in engine.get_model_comparison():
-        print(f"\n{m['name']}:")
-        print(f"  Accuracy:    {m['accuracy']:.4f}")
-        print(f"  Sensitivity: {m['sensitivity']:.4f}")
-        print(f"  Specificity: {m['specificity']:.4f}")
-        print(f"  F1-Score:    {m['f1_score']:.4f}")
-        print(f"  Latency:     {m['prediction_latency_ms']:.3f} ms")
-        print(f"  CM: TP={m['tp']} FP={m['fp']} TN={m['tn']} FN={m['fn']}")
+        log.info(
+            "%s: acc=%.4f sens=%.4f spec=%.4f f1=%.4f latency=%.3fms "
+            "CM(TP=%d FP=%d TN=%d FN=%d)",
+            m["name"], m["accuracy"], m["sensitivity"], m["specificity"],
+            m["f1_score"], m["prediction_latency_ms"],
+            m["tp"], m["fp"], m["tn"], m["fn"],
+        )
 
-    print("\n=== Inference Test ===")
+    log.info("=== Inference Test ===")
     test_samples = [
         [5, 2, 1],
         [45, 15, 8],
@@ -426,8 +430,9 @@ if __name__ == "__main__":
 
     for sample in test_samples:
         pred = engine.predict(sample)
-        print(f"\nInput: nc={sample[0]}, nr={sample[1]}, nu={sample[2]}")
+        log.info("Input: nc=%d, nr=%d, nu=%d", sample[0], sample[1], sample[2])
         for key, value in pred.items():
             if key != "error":
                 label = "ATTACK" if value["prediction"] == 1 else "BENIGN"
-                print(f"  {value['name']:15s}: {label} (conf: {value['confidence']:.1f}%)")
+                log.info("  %-15s: %s (conf: %.1f%%)", value["name"], label,
+                         value["confidence"])
