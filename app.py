@@ -23,7 +23,7 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from simulation import FileOperationSimulator, generate_training_data
+from simulation import FileOperationSimulator, generate_training_data, RansomwareFamilies
 from ml_engine import MLEngine, prepare_training_data
 from database import Database
 from real_monitor import RealFolderMonitor
@@ -79,8 +79,6 @@ def _validate_family(family):
         return None
     if not isinstance(family, str):
         return None
-    allowed = set(RansomwareFamilies.FAMILIES.keys()) if False else None
-    from simulation import RansomwareFamilies
     allowed = set(RansomwareFamilies.FAMILIES.keys())
     return family if family in allowed else None
 
