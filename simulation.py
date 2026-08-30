@@ -161,6 +161,15 @@ class FileOperationSimulator:
         nr = int(base_nr * ramp_factor)
         nu = int(base_nu * ramp_factor)
 
+        # Enforce a minimum-activity floor so that heavily-ramped first
+        # seconds never collapse to an all-zero feature vector. This mirrors
+        # the floor used in generate_training_data so the live simulation
+        # stays consistent with the training distribution.
+        min_activity = max(3, int(ramp_factor * 10))
+        nc = max(nc, min_activity)
+        nr = max(nr, min_activity // 2)
+        nu = max(nu, min_activity // 2)
+
         return nc, nr, nu
 
     def generate_next_tick(self) -> dict:
