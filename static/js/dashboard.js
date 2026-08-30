@@ -378,8 +378,8 @@ function addEventToFeed(tick) {
 // Mode Management
 // ──────────────────────────────────────────────────────────────
 
-function switchMode(mode) {
-    if (isActive) {
+function switchMode(mode, silent) {
+    if (!silent && isActive) {
         if (currentMode === "simulation") socket.emit("stop_simulation");
         else if (currentMode === "monitoring") socket.emit("stop_monitoring");
     }
@@ -505,12 +505,15 @@ socket.on("initial_data", (data) => {
     }
     if (data.model_comparison) updateModelTable({}, data.model_comparison);
     if (data.history) data.history.forEach(tick => { updateChart(tick); updateLiveOps(tick); });
+    if (data.alerts && data.alerts.length) {
+        [...data.alerts].reverse().forEach(alert => addAlert(alert));
+    }
     if (data.metrics) updateMetrics(data.metrics);
     if (data.live_cm) updateLiveCM(data.live_cm);
     if (data.active_mode && data.active_mode !== "idle") {
         currentMode = data.active_mode === "simulation" ? "simulation" : "real";
         isActive = true;
-        switchMode(currentMode);
+        switchMode(currentMode, true);
         isActive = true;
         updateButtonStates();
     }
