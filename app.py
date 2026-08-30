@@ -596,6 +596,10 @@ def handle_force_attack(data=None):
         data = {}
     if not isinstance(data, dict):
         data = {}
+    if active_mode != "simulation" or not simulation_running:
+        emit("attack_forced", {"success": False, "family": None,
+                               "error": "force_attack requires active simulation"})
+        return
     family = _validate_family(data.get("family"))
     success = simulator.force_attack(family)
     emit("attack_forced", {"success": success, "family": family})
