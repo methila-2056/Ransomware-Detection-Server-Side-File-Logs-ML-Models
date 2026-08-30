@@ -209,6 +209,30 @@ class MLEngine:
         self.training_metrics = results
         return results
 
+    @staticmethod
+    def validate_features(features: List[float]) -> List[float]:
+        """
+        Validate and coerce a feature vector (nc, nr, nu).
+
+        Ensures the input is a numeric collection of exactly
+        ``len(self.feature_names)`` non-negative values, clamping
+        negative counts to zero.
+
+        Raises:
+            ValueError: if the shape or types are not valid.
+        """
+        if features is None or not isinstance(features, (list, tuple)):
+            raise ValueError("features must be a list or tuple")
+        if len(features) != 3:
+            raise ValueError(f"expected 3 features, got {len(features)}")
+        cleaned = []
+        for value in features:
+            try:
+                cleaned.append(max(0.0, float(value)))
+            except (TypeError, ValueError):
+                raise ValueError(f"non-numeric feature value: {value!r}")
+        return cleaned
+
     def predict(self, features: List[float]) -> Dict:
         """
         Run inference on a single sample using all trained models.
@@ -222,6 +246,7 @@ class MLEngine:
         if not self.is_trained:
             return {"error": "Models not trained"}
 
+        features = self.validate_features(features)
         X = np.array(features).reshape(1, -1)
         X_scaled = self.scaler.transform(X)
 
@@ -264,6 +289,16 @@ class MLEngine:
                 })
 
         return results
+
+    def predict_from_ops(self, nc: int, nr: int, nu: int) -> Dict:
+        """
+        Convenience wrapper around :meth:`predict` using named operation
+        counts (nc, nr, nu) instead of a positional list.
+
+        Example:
+            >>> engine.predict_from_ops(nc=5, nr=2, nu=1)
+        """
+        return self.predict([nc, nr, nu])
 
     def save_models(self, prefix: str = None) -> bool:
         """Save all trained models and scaler to disk."""
