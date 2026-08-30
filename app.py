@@ -345,6 +345,18 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/api/health")
+@limiter.exempt
+def api_health():
+    """Liveness probe: returns service status without heavy state."""
+    return jsonify({
+        "status": "ok",
+        "models_trained": ml_engine.is_trained,
+        "active_mode": active_mode,
+        "process_tick_count": metrics["total_ticks"],
+    })
+
+
 @app.route("/api/status")
 @limiter.exempt
 def api_status():
@@ -431,6 +443,23 @@ def api_export():
         mimetype="application/json",
         headers={"Content-Disposition": "attachment; filename=run_data.json"},
     )
+
+
+# ──────────────────────────────────────────────────────────────
+# HTTP Error Handlers
+# ──────────────────────────────────────────────────────────────
+
+@app.errorhandler(404)
+def handle_not_found(_error):
+    """Return a JSON 404 for unknown API routes."""
+    return jsonify({"error": "Not found", "status": 404}), 404
+
+
+@app.errorhandler(500)
+def handle_server_error(error):
+    """Return a JSON 500 and log the underlying exception."""
+    log.exception("Unhandled server error: %s", error)
+    return jsonify({"error": "Internal server error", "status": 500}), 500
 
 
 # ──────────────────────────────────────────────────────────────
