@@ -330,7 +330,7 @@ def monitoring_loop():
         tick = real_monitor.get_tick()
         tick["timestamp"] = metrics["total_ticks"] + 1
         process_tick(tick)
-        time.sleep(1.0)
+        time.sleep(config.MONITOR_INTERVAL)
 
     log.info("Real-time monitoring stopped.")
 
