@@ -88,6 +88,24 @@ class Database:
             if cursor.fetchone()[0] == 0:
                 cursor.execute("INSERT INTO system_stats (total_ticks, total_attacks) VALUES (0, 0)")
 
+            # Indexes for the ORDER BY / range queries used by the reporters
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_file_ops_timestamp "
+                "ON file_operations(timestamp)"
+            )
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_file_ops_att "
+                "ON file_operations(att)"
+            )
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_alerts_timestamp "
+                "ON detection_alerts(timestamp)"
+            )
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_sessions_timestamp "
+                "ON attack_sessions(start_second)"
+            )
+
             conn.commit()
             log.debug("Database initialized: %s", self.db_path)
 
@@ -95,6 +113,8 @@ class Database:
     def _get_connection(self):
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute("PRAGMA foreign_keys = ON")
         try:
             yield conn
         finally:
