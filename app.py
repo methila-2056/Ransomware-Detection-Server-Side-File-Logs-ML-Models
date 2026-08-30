@@ -88,7 +88,8 @@ def _validate_family(family):
 # ──────────────────────────────────────────────────────────────
 
 simulator = FileOperationSimulator(
-    attack_interval_range=(config.ATTACK_INTERVAL_MIN, config.ATTACK_INTERVAL_MAX)
+    attack_interval_range=(config.ATTACK_INTERVAL_MIN, config.ATTACK_INTERVAL_MAX),
+    default_speed=config.DEFAULT_SPEED,
 )
 real_monitor = RealFolderMonitor()
 ml_engine = MLEngine()

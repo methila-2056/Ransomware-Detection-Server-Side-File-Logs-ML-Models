@@ -105,7 +105,6 @@ class SimulationState:
     current_user: str = "Secretary"
     current_attack_family: Optional[str] = None
     attack_seconds_remaining: int = 0
-    attack_ramp_up_remaining: int = 0
     seconds_until_next_attack: int = 0
     total_seconds_simulated: int = 0
     total_attacks: int = 0
@@ -124,10 +123,12 @@ class FileOperationSimulator:
     - att: binary attack indicator (0=benign, 1=attack)
     """
 
-    def __init__(self, attack_interval_range=(15, 30)):
+    def __init__(self, attack_interval_range=(15, 30), default_speed: float = None):
         self.user_profiles = UserProfiles.PROFILES
         self.ransomware_families = RansomwareFamilies.FAMILIES
         self.state = SimulationState()
+        if default_speed is not None:
+            self.state.simulation_speed = default_speed
         self.attack_interval_range = attack_interval_range
         self._reset_attack_timer()
 
