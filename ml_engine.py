@@ -12,12 +12,11 @@ Based on Aranyi et al. (2026) methodology.
 """
 
 import os
-import logging
 import time
 import numpy as np
 import pandas as pd
 import joblib
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -29,14 +28,12 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     confusion_matrix,
+    classification_report,
 )
 import xgboost as xgb
 
-import config
 
-log = logging.getLogger("ransomware.ml")
-
-MODELS_DIR = config.MODEL_DIR
+MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 
@@ -48,13 +45,13 @@ class MLEngine:
     """
 
     def __init__(self):
-        self.models: Dict[str, object] = {}
+        self.models = {}
         self.scaler = StandardScaler()
         self.model_names = ["Random Forest", "SVM", "Decision Tree", "AdaBoost", "XGBoost"]
         self.model_keys = ["rf", "svm", "dt", "ada", "xgb"]
         self.is_trained = False
-        self.training_metrics: Dict = {}
-        self.feature_names = ["nc", "nr", "nu"]
+        self.training_metrics = {}
+        self.feature_names = ["nc", "nw", "nr", "nm", "nu"]
 
     def _get_model_configs(self) -> Dict:
         """Get model constructors and hyperparameter grids."""
@@ -112,17 +109,19 @@ class MLEngine:
         Train all 5 ML models.
 
         Args:
-            X: Feature matrix (nc, nr, nu)
+            X: Feature matrix (nc, nw, nr, nm, nu)
             y: Labels (0=benign, 1=attack)
             use_grid_search: Whether to use GridSearchCV for hyperparameter tuning
 
         Returns:
             Dictionary of training metrics per model
         """
+        # Split data
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42, stratify=y
         )
 
+        # Scale features
         X_train_scaled = self.scaler.fit_transform(X_train)
         X_test_scaled = self.scaler.transform(X_test)
 
@@ -130,16 +129,16 @@ class MLEngine:
         results = {}
 
         for key in self.model_keys:
-            model_cfg = configs[key]
-            model = model_cfg["model"]
-            params = model_cfg["params"]
+            config = configs[key]
+            model = config["model"]
+            params = config["params"]
 
-            name = self.model_names[self.model_keys.index(key)]
-            log.info("Training %s...", name)
+            print(f"Training {self.model_keys[self.model_keys.index(key)]}...")
 
             start_time = time.time()
 
             if use_grid_search and key != "svm":
+                # GridSearchCV for all models except SVM (too slow)
                 grid = GridSearchCV(
                     model,
                     params,
@@ -152,6 +151,7 @@ class MLEngine:
                 best_model = grid.best_estimator_
                 best_params = grid.best_params_
             else:
+                # For SVM, use CalibratedClassifierCV for probability support
                 if key == "svm":
                     from sklearn.calibration import CalibratedClassifierCV
                     model.set_params(C=10, kernel="rbf", gamma="scale")
@@ -166,7 +166,14 @@ class MLEngine:
 
             train_time = time.time() - start_time
 
+            # Evaluate
             y_pred = best_model.predict(X_test_scaled)
+            y_proba = (
+                best_model.predict_proba(X_test_scaled)[:, 1]
+                if hasattr(best_model, "predict_proba")
+                else None
+            )
+
             cm = confusion_matrix(y_test, y_pred)
             tn, fp, fn, tp = cm.ravel()
 
@@ -176,16 +183,16 @@ class MLEngine:
             sensitivity = recall_score(y_test, y_pred)
             specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
 
+            # Prediction latency
             pred_start = time.time()
             for _ in range(100):
                 best_model.predict(X_test_scaled[:1])
-            avg_latency = (time.time() - pred_start) / 100 * 1000
+            avg_latency = (time.time() - pred_start) / 100 * 1000  # ms
 
             self.models[key] = best_model
 
             results[key] = {
-                "name": name,
-                "key": key,
+                "name": self.model_keys[self.model_keys.index(key)],
                 "accuracy": round(accuracy, 4),
                 "f1_score": round(f1, 4),
                 "precision": round(precision, 4),
@@ -202,43 +209,18 @@ class MLEngine:
                 "best_params": str(best_params)[:200],
             }
 
-            log.info("  -> Accuracy: %.4f, Sensitivity: %.4f, F1: %.4f",
-                     accuracy, sensitivity, f1)
+            print(f"  -> Accuracy: {accuracy:.4f}, Sensitivity: {sensitivity:.4f}, F1: {f1:.4f}")
 
         self.is_trained = True
         self.training_metrics = results
         return results
-
-    @staticmethod
-    def validate_features(features: List[float]) -> List[float]:
-        """
-        Validate and coerce a feature vector (nc, nr, nu).
-
-        Ensures the input is a numeric collection of exactly
-        ``len(self.feature_names)`` non-negative values, clamping
-        negative counts to zero.
-
-        Raises:
-            ValueError: if the shape or types are not valid.
-        """
-        if features is None or not isinstance(features, (list, tuple)):
-            raise ValueError("features must be a list or tuple")
-        if len(features) != 3:
-            raise ValueError(f"expected 3 features, got {len(features)}")
-        cleaned = []
-        for value in features:
-            try:
-                cleaned.append(max(0.0, float(value)))
-            except (TypeError, ValueError):
-                raise ValueError(f"non-numeric feature value: {value!r}")
-        return cleaned
 
     def predict(self, features: List[float]) -> Dict:
         """
         Run inference on a single sample using all trained models.
 
         Args:
-            features: [nc, nr, nu] file operation counts
+            features: [nc, nw, nr, nm, nu] file operation counts
 
         Returns:
             Dictionary of predictions per model
@@ -246,7 +228,6 @@ class MLEngine:
         if not self.is_trained:
             return {"error": "Models not trained"}
 
-        features = self.validate_features(features)
         X = np.array(features).reshape(1, -1)
         X_scaled = self.scaler.transform(X)
 
@@ -258,8 +239,7 @@ class MLEngine:
                 proba = model.predict_proba(X_scaled)[0] if hasattr(model, "predict_proba") else [0, 0]
 
                 predictions[key] = {
-                    "name": self.model_names[self.model_keys.index(key)],
-                    "key": key,
+                    "name": self.model_keys[self.model_keys.index(key)],
                     "prediction": int(pred),
                     "probability": round(float(proba[1]), 4),
                     "confidence": round(float(max(proba)) * 100, 1),
@@ -282,30 +262,17 @@ class MLEngine:
                 probas = model.predict_proba(X_scaled) if hasattr(model, "predict_proba") else None
 
                 results.append({
-                    "model": self.model_names[self.model_keys.index(key)],
-                    "key": key,
+                    "model": self.model_keys[self.model_keys.index(key)],
                     "predictions": preds.tolist(),
                     "probabilities": probas.tolist() if probas is not None else None,
                 })
 
         return results
 
-    def predict_from_ops(self, nc: int, nr: int, nu: int) -> Dict:
-        """
-        Convenience wrapper around :meth:`predict` using named operation
-        counts (nc, nr, nu) instead of a positional list.
-
-        Example:
-            >>> engine.predict_from_ops(nc=5, nr=2, nu=1)
-        """
-        return self.predict([nc, nr, nu])
-
-    def save_models(self, prefix: str = None) -> bool:
+    def save_models(self, prefix: str = "ransomware"):
         """Save all trained models and scaler to disk."""
         if not self.is_trained:
             return False
-
-        prefix = prefix or config.MODEL_PREFIX
 
         for key in self.model_keys:
             if key in self.models:
@@ -318,12 +285,11 @@ class MLEngine:
         metrics_path = os.path.join(MODELS_DIR, f"{prefix}_metrics.joblib")
         joblib.dump(self.training_metrics, metrics_path)
 
-        log.info("Models saved to %s", MODELS_DIR)
+        print(f"Models saved to {MODELS_DIR}")
         return True
 
-    def load_models(self, prefix: str = None) -> bool:
+    def load_models(self, prefix: str = "ransomware") -> bool:
         """Load trained models from disk."""
-        prefix = prefix or config.MODEL_PREFIX
         try:
             for key in self.model_keys:
                 path = os.path.join(MODELS_DIR, f"{prefix}_{key}.joblib")
@@ -340,11 +306,11 @@ class MLEngine:
 
             self.is_trained = len(self.models) == len(self.model_keys)
             if self.is_trained:
-                log.info("Loaded %d models from %s", len(self.models), MODELS_DIR)
+                print(f"Loaded {len(self.models)} models from {MODELS_DIR}")
             return self.is_trained
 
         except Exception as e:
-            log.error("Error loading models: %s", e)
+            print(f"Error loading models: {e}")
             return False
 
     def get_model_comparison(self) -> List[Dict]:
@@ -358,7 +324,6 @@ class MLEngine:
                 m = self.training_metrics[key]
                 comparison.append({
                     "name": m["name"],
-                    "key": key,
                     "accuracy": m["accuracy"],
                     "f1_score": m["f1_score"],
                     "sensitivity": m["sensitivity"],
@@ -377,62 +342,58 @@ class MLEngine:
 def prepare_training_data(data: List[Dict]) -> Tuple[np.ndarray, np.ndarray]:
     """Convert list of dicts to numpy arrays for training."""
     df = pd.DataFrame(data)
-    X = df[["nc", "nr", "nu"]].values
+    X = df[["nc", "nw", "nr", "nm", "nu"]].values
     y = df["att"].values
     return X, y
 
 
-def train_and_save_models(data: List[Dict], use_grid_search: bool = None) -> MLEngine:
+def train_and_save_models(data: List[Dict]) -> MLEngine:
     """Complete training pipeline: prepare data, train, save."""
-    if use_grid_search is None:
-        use_grid_search = config.GRID_SEARCH
-
     engine = MLEngine()
 
     X, y = prepare_training_data(data)
-    log.info("Training data: %d samples, %d features", X.shape[0], X.shape[1])
-    log.info("Class distribution: Benign=%d, Attack=%d", sum(y == 0), sum(y == 1))
+    print(f"Training data: {X.shape[0]} samples, {X.shape[1]} features")
+    print(f"Class distribution: Benign={sum(y==0)}, Attack={sum(y==1)}")
 
-    results = engine.train(X, y, use_grid_search=use_grid_search)
+    results = engine.train(X, y, use_grid_search=True)
     engine.save_models()
 
     return engine
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     from simulation import generate_training_data
 
-    log.info("Generating training data...")
-    data = generate_training_data(num_samples=config.TRAINING_SAMPLES)
-    log.info("Generated %d samples", len(data))
+    print("Generating training data...")
+    data = generate_training_data(num_samples=8000)
+    print(f"Generated {len(data)} samples")
 
-    log.info("Training models...")
+    print("\nTraining models...")
     engine = train_and_save_models(data)
 
-    log.info("=== Model Comparison ===")
+    print("\n=== Model Comparison ===")
     for m in engine.get_model_comparison():
-        log.info(
-            "%s: acc=%.4f sens=%.4f spec=%.4f f1=%.4f latency=%.3fms "
-            "CM(TP=%d FP=%d TN=%d FN=%d)",
-            m["name"], m["accuracy"], m["sensitivity"], m["specificity"],
-            m["f1_score"], m["prediction_latency_ms"],
-            m["tp"], m["fp"], m["tn"], m["fn"],
-        )
+        print(f"\n{m['name']}:")
+        print(f"  Accuracy:    {m['accuracy']:.4f}")
+        print(f"  Sensitivity: {m['sensitivity']:.4f}")
+        print(f"  Specificity: {m['specificity']:.4f}")
+        print(f"  F1-Score:    {m['f1_score']:.4f}")
+        print(f"  Latency:     {m['prediction_latency_ms']:.3f} ms")
+        print(f"  CM: TP={m['tp']} FP={m['fp']} TN={m['tn']} FN={m['fn']}")
 
-    log.info("=== Inference Test ===")
+    # Test inference
+    print("\n=== Inference Test ===")
     test_samples = [
-        [5, 2, 1],
-        [45, 15, 8],
-        [100, 60, 40],
-        [95, 70, 45],
+        [5, 15, 40, 2, 1],       # Low activity (benign)
+        [45, 60, 120, 15, 8],    # Normal user (benign)
+        [100, 160, 240, 60, 40], # High activity (attack)
+        [95, 140, 220, 70, 45],  # Attack pattern
     ]
 
     for sample in test_samples:
         pred = engine.predict(sample)
-        log.info("Input: nc=%d, nr=%d, nu=%d", sample[0], sample[1], sample[2])
+        print(f"\nInput: nc={sample[0]}, nw={sample[1]}, nr={sample[2]}, nm={sample[3]}, nu={sample[4]}")
         for key, value in pred.items():
             if key != "error":
                 label = "ATTACK" if value["prediction"] == 1 else "BENIGN"
-                log.info("  %-15s: %s (conf: %.1f%%)", value["name"], label,
-                         value["confidence"])
+                print(f"  {value['name']:15s}: {label} (conf: {value['confidence']:.1f}%)")
