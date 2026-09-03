@@ -1,8 +1,9 @@
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
+.Python
 *.egg-info/
 dist/
 build/
@@ -12,23 +13,24 @@ build/
 venv/
 env/
 .venv/
-.env/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-
-# Project specific
-*.db
-*.db-journal
-*.log
 
 # OS
 .DS_Store
 Thumbs.db
-desktop.ini
+Desktop.ini
 
-# Test cache.pytest_cache/
+# Database (runtime data, regenerate)
+*.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
