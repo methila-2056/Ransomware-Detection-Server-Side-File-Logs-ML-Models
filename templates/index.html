@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,22 +12,13 @@
                 extend: {
                     colors: {
                         cyber: {
-                            950: '#060a12',
-                            900: '#0a0e17',
-                            800: '#111827',
-                            700: '#1a2332',
-                            600: '#243044',
-                            500: '#2d3d56',
-                            400: '#3b4f6e',
+                            950: '#060a12', 900: '#0a0e17', 800: '#111827',
+                            700: '#1a2332', 600: '#243044', 500: '#2d3d56', 400: '#3b4f6e',
                         },
                         neon: {
-                            green: '#00ff88',
-                            red: '#ff3366',
-                            blue: '#00ccff',
-                            yellow: '#ffcc00',
-                            purple: '#cc66ff',
-                            cyan: '#00e5ff',
-                        }
+                            green: '#00ff88', red: '#ff3366', blue: '#00ccff',
+                            yellow: '#ffcc00', purple: '#cc66ff', cyan: '#00e5ff',
+                        },
                     }
                 }
             }
@@ -39,11 +30,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-cyber-950 text-gray-100 min-h-screen" style="font-family: 'Inter', sans-serif;">
+<body class="bg-cyber-950 text-gray-100 min-h-screen">
 
     <!-- ═══ HEADER ═══ -->
-    <header class="bg-cyber-900/80 backdrop-blur-xl border-b border-cyber-600/50 sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-5 py-3 flex items-center justify-between">
+    <header class="header px-5 py-3">
+        <div class="max-w-[1600px] mx-auto flex items-center justify-between flex-wrap gap-3">
             <div class="flex items-center gap-4">
                 <div class="relative">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-neon-green via-neon-blue to-neon-purple flex items-center justify-center shadow-lg shadow-neon-green/20">
@@ -54,146 +45,153 @@
                     <div id="headerPulse" class="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-gray-500 border-2 border-cyber-900"></div>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold tracking-wide" style="font-family: 'JetBrains Mono', monospace;">
+                    <h1 class="text-base font-bold tracking-wide mono">
                         RANSOMWARE <span class="text-neon-green">DETECTOR</span>
                     </h1>
-                    <p class="text-[10px] text-gray-500 tracking-widest uppercase">Server-Side File Operation Monitoring &bull; Aranyi et al. (2026)</p>
+                    <p class="text-[10px] text-gray-500 tracking-widest uppercase mono">Server-Side File Operation Monitoring &bull; Aranyi et al. (2026)</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-5">
-                <div class="flex items-center gap-2 bg-cyber-800/60 px-3 py-1.5 rounded-lg border border-cyber-600/30">
-                    <div id="mlDot" class="w-2 h-2 rounded-full bg-gray-500"></div>
-                    <span id="mlLabel" class="text-[11px] text-gray-400 font-medium">ML Loading</span>
-                </div>
-                <div class="flex items-center gap-2 bg-cyber-800/60 px-3 py-1.5 rounded-lg border border-cyber-600/30">
-                    <div id="modeDot" class="w-2 h-2 rounded-full bg-gray-500"></div>
-                    <span id="modeLabel" class="text-[11px] text-gray-400 font-medium">Idle</span>
-                </div>
-                <div class="text-xs text-gray-500 tabular-nums font-mono" id="clock">00:00:00</div>
+            <div class="flex items-center gap-3">
+                <span class="pill"><span id="mlDot" class="status-dot bg-gray-500"></span><span id="mlLabel" class="text-gray-400">ML Loading</span></span>
+                <span class="pill"><span id="modeDot" class="status-dot bg-gray-500"></span><span id="modeLabel" class="text-gray-400">Idle</span></span>
+                <span id="clock" class="text-xs text-gray-500 tabular-nums mono">00:00:00</span>
             </div>
         </div>
     </header>
 
-    <!-- ═══ MAIN CONTENT ═══ -->
-    <main class="max-w-[1600px] mx-auto px-5 py-4 space-y-4">
+    <!-- ═══ CONNECTION BANNER (hidden when connected) ═══ -->
+    <div id="connBanner" class="hidden bg-neon-red/15 border-b border-neon-red/30 px-5 py-2 text-center text-xs text-red-300">
+        Not connected to server. Waiting for connection...
+    </div>
+
+    <!-- ═══ MAIN ═══ -->
+    <main id="main" class="max-w-[1600px] mx-auto px-5 py-4 space-y-4">
 
         <!-- ─── MODE SELECTOR ─── -->
-        <div class="bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-6">
-                    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em]" style="font-family: 'JetBrains Mono', monospace;">Operation Mode</h2>
+        <div class="card">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-6 flex-wrap">
+                    <h2 class="card-title !mb-0">Operation Mode</h2>
                     <div class="flex bg-cyber-800 rounded-xl p-1 border border-cyber-600/30">
-                        <button id="modeSimBtn" onclick="switchMode('simulation')"
-                            class="mode-btn px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-500 hover:text-gray-300">
+                        <button id="modeSimBtn" onclick="switchMode('simulation')" class="mode-btn">
                             <span class="flex items-center gap-2">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Simulation
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Simulation
                             </span>
                         </button>
-                        <button id="modeRealBtn" onclick="switchMode('real')"
-                            class="mode-btn px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-500 hover:text-gray-300">
+                        <button id="modeRealBtn" onclick="switchMode('real')" class="mode-btn">
                             <span class="flex items-center gap-2">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                Real Monitor
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            Real Monitor
                             </span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Simulation Controls (shown in sim mode) -->
-                <div id="simControls" class="flex items-center gap-3">
-                    <button id="toggleBtn" onclick="toggleActive()" class="px-5 py-2 rounded-xl text-xs font-bold transition-all duration-200 bg-neon-green/90 text-cyber-950 hover:bg-neon-green hover:shadow-lg hover:shadow-neon-green/20 active:scale-95">
-                        START
-                    </button>
-                    <button id="forceBtn" onclick="forceAttack()" disabled class="px-4 py-2 rounded-xl text-xs font-bold bg-neon-red/80 text-white hover:bg-neon-red disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95">
-                        FORCE ATTACK
-                    </button>
+                <!-- Simulation controls -->
+                <div id="simControls" class="flex items-center gap-3 flex-wrap">
+                    <button id="toggleBtn" onclick="toggleActive()" class="btn btn-green">START</button>
+                    <button id="forceBtn" onclick="forceAttack()" disabled class="btn btn-red">FORCE ATTACK</button>
                     <div class="flex items-center gap-1 bg-cyber-800 px-2 py-1 rounded-lg border border-cyber-600/30">
-                        <span class="text-[10px] text-gray-500 mr-1">Speed</span>
-                        <button onclick="setSpeed(1)" class="speed-btn px-2 py-1 rounded text-[10px] font-bold bg-neon-blue/20 text-neon-blue border border-neon-blue/30 hover:bg-neon-blue/30 transition-all" data-speed="1">1x</button>
-                        <button onclick="setSpeed(3)" class="speed-btn px-2 py-1 rounded text-[10px] font-bold text-gray-500 border border-cyber-600/30 hover:text-gray-300 transition-all" data-speed="3">3x</button>
-                        <button onclick="setSpeed(5)" class="speed-btn px-2 py-1 rounded text-[10px] font-bold text-gray-500 border border-cyber-600/30 hover:text-gray-300 transition-all" data-speed="5">5x</button>
-                        <button onclick="setSpeed(10)" class="speed-btn px-2 py-1 rounded text-[10px] font-bold text-gray-500 border border-cyber-600/30 hover:text-gray-300 transition-all" data-speed="10">10x</button>
+                        <span class="text-[10px] text-gray-500 mr-1 mono">Speed</span>
+                        <button onclick="setSpeed(1)" class="speed-btn speed-btn-active" data-speed="1">1x</button>
+                        <button onclick="setSpeed(3)" class="speed-btn" data-speed="3">3x</button>
+                        <button onclick="setSpeed(5)" class="speed-btn" data-speed="5">5x</button>
+                        <button onclick="setSpeed(10)" class="speed-btn" data-speed="10">10x</button>
                     </div>
                 </div>
 
-                <!-- Real Monitor Controls (shown in real mode) -->
-                <div id="realControls" class="flex items-center gap-3 hidden">
-                    <div id="folderInfo" class="text-[11px] text-gray-400 bg-cyber-800 px-3 py-2 rounded-lg border border-cyber-600/30">
+                <!-- Real monitor controls -->
+                <div id="realControls" class="hidden flex items-center gap-3 flex-wrap">
+                    <div class="pill">
                         <span class="text-gray-500">Watching:</span>
-                        <span id="folderList" class="text-neon-cyan">Desktop, Downloads</span>
+                        <span id="folderList" class="text-neon-cyan mono text-[11px]">Desktop, Downloads</span>
                     </div>
-                    <button id="toggleRealBtn" onclick="toggleActive()" class="px-5 py-2 rounded-xl text-xs font-bold transition-all duration-200 bg-neon-cyan/90 text-cyber-950 hover:bg-neon-cyan hover:shadow-lg hover:shadow-neon-cyan/20 active:scale-95">
-                        START MONITORING
-                    </button>
+                    <button id="toggleRealBtn" onclick="toggleActive()" class="btn btn-cyan">START MONITORING</button>
                 </div>
 
-                <button onclick="resetAll()" class="px-3 py-2 rounded-xl text-[10px] text-gray-500 border border-cyber-600/30 hover:border-gray-500 hover:text-gray-300 transition-all">
-                    Reset
-                </button>
+                <button onclick="resetAll()" class="btn btn-ghost">Reset</button>
             </div>
         </div>
 
-        <!-- ─── ROW 1: Live Ops + Detection Gauge + Real Events ─── -->
-        <div class="grid grid-cols-12 gap-4">
+        <!-- ─── ROW 1: Live Ops + Detection Gauge + Event Feed ─── -->
+        <div class="grid grid-main-532">
 
             <!-- Live Operations -->
-            <div class="col-span-4 bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-4" style="font-family: 'JetBrains Mono', monospace;">Operations / sec</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/20">
-                            <svg class="w-5 h-5 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <div class="card">
+                <h3 class="card-title">Operations / sec</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-neon-green/10 flex items-center justify-center border border-neon-green/20 flex-shrink-0">
+                            <svg class="w-4 h-4 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-baseline justify-between">
                                 <span class="text-[10px] text-gray-500 uppercase tracking-wider">Create</span>
-                                <span id="liveNC" class="text-2xl font-bold text-neon-green tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span>
+                                <span id="liveNC" class="text-xl font-bold text-neon-green tabular-nums mono">0</span>
                             </div>
-                            <div class="w-full h-1.5 bg-cyber-700 rounded-full mt-1.5 overflow-hidden">
-                                <div id="ncBar" class="h-full rounded-full transition-all duration-300 bg-gradient-to-r from-neon-green/60 to-neon-green" style="width: 0%"></div>
-                            </div>
+                            <div class="op-bar"><div id="ncBar" class="op-bar-fill nc"></div></div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-neon-yellow/10 flex items-center justify-center border border-neon-yellow/20">
-                            <svg class="w-5 h-5 text-neon-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-neon-blue/10 flex items-center justify-center border border-neon-blue/20 flex-shrink-0">
+                            <svg class="w-4 h-4 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h6m-3-3v6M5 8l-1 11a2 2 0 002 2h12a2 2 0 002-2L19 8M8 11h8"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-baseline justify-between">
+                                <span class="text-[10px] text-gray-500 uppercase tracking-wider">Write</span>
+                                <span id="liveNW" class="text-xl font-bold text-neon-blue tabular-nums mono">0</span>
+                            </div>
+                            <div class="op-bar"><div id="nwBar" class="op-bar-fill nw"></div></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-neon-purple/10 flex items-center justify-center border border-neon-purple/20 flex-shrink-0">
+                            <svg class="w-4 h-4 text-neon-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-baseline justify-between">
+                                <span class="text-[10px] text-gray-500 uppercase tracking-wider">Read</span>
+                                <span id="liveNR" class="text-xl font-bold text-neon-purple tabular-nums mono">0</span>
+                            </div>
+                            <div class="op-bar"><div id="nrBar" class="op-bar-fill nr"></div></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-neon-yellow/10 flex items-center justify-center border border-neon-yellow/20 flex-shrink-0">
+                            <svg class="w-4 h-4 text-neon-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-baseline justify-between">
                                 <span class="text-[10px] text-gray-500 uppercase tracking-wider">Rename</span>
-                                <span id="liveNR" class="text-2xl font-bold text-neon-yellow tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span>
+                                <span id="liveNM" class="text-xl font-bold text-neon-yellow tabular-nums mono">0</span>
                             </div>
-                            <div class="w-full h-1.5 bg-cyber-700 rounded-full mt-1.5 overflow-hidden">
-                                <div id="nrBar" class="h-full rounded-full transition-all duration-300 bg-gradient-to-r from-neon-yellow/60 to-neon-yellow" style="width: 0%"></div>
-                            </div>
+                            <div class="op-bar"><div id="nmBar" class="op-bar-fill nm"></div></div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-neon-red/10 flex items-center justify-center border border-neon-red/20">
-                            <svg class="w-5 h-5 text-neon-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-neon-red/10 flex items-center justify-center border border-neon-red/20 flex-shrink-0">
+                            <svg class="w-4 h-4 text-neon-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-baseline justify-between">
                                 <span class="text-[10px] text-gray-500 uppercase tracking-wider">Delete</span>
-                                <span id="liveNU" class="text-2xl font-bold text-neon-red tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span>
+                                <span id="liveNU" class="text-xl font-bold text-neon-red tabular-nums mono">0</span>
                             </div>
-                            <div class="w-full h-1.5 bg-cyber-700 rounded-full mt-1.5 overflow-hidden">
-                                <div id="nuBar" class="h-full rounded-full transition-all duration-300 bg-gradient-to-r from-neon-red/60 to-neon-red" style="width: 0%"></div>
-                            </div>
+                            <div class="op-bar"><div id="nuBar" class="op-bar-fill nu"></div></div>
                         </div>
                     </div>
                 </div>
                 <div class="mt-4 flex items-center justify-between text-[11px] pt-3 border-t border-cyber-600/30">
                     <span class="text-gray-500">Source</span>
-                    <span id="currentUser" class="text-gray-300 font-medium">--</span>
+                    <span id="currentUser" class="text-gray-300 font-medium mono">--</span>
                 </div>
             </div>
 
             <!-- Detection Gauge -->
-            <div class="col-span-4 bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-4" style="font-family: 'JetBrains Mono', monospace;">XGBoost Detection</h3>
+            <div class="card">
+                <h3 class="card-title">XGBoost Detection</h3>
                 <div class="flex items-center gap-5">
                     <div class="relative w-32 h-32 flex-shrink-0">
                         <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
@@ -201,39 +199,41 @@
                             <circle id="gaugeArc" cx="60" cy="60" r="50" fill="none" stroke="#00ff88" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 314" class="gauge-animate"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span id="gaugeValue" class="text-2xl font-bold tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0%</span>
+                            <span id="gaugeValue" class="text-2xl font-bold tabular-nums mono">0%</span>
                             <span id="gaugeLabel" class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Safe</span>
                         </div>
                     </div>
-                    <div class="flex-1 space-y-2.5">
+                    <div class="flex-1 space-y-2.5 min-w-[120px]">
                         <div id="threatBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">
-                            <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
-                            NO THREAT
+                            <div id="threatDot" class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                            <span id="threatLabel">NO THREAT</span>
                         </div>
                         <div class="space-y-1.5 text-[11px]">
-                            <div class="flex justify-between"><span class="text-gray-500">Confidence</span><span id="confidenceVal" class="text-gray-300 font-mono">--</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Family</span><span id="attackFamily" class="text-gray-300 font-mono">None</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Duration</span><span id="attackDuration" class="text-gray-300 font-mono">0s</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Confidence</span><span id="confidenceVal" class="text-gray-300 mono">--</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Family</span><span id="attackFamily" class="text-gray-300 mono">None</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Status</span><span id="attackStatus" class="text-gray-300 mono">Idle</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Real-time File Events Feed -->
-            <div class="col-span-4 bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3" style="font-family: 'JetBrains Mono', monospace;">Live Event Feed</h3>
-                <div id="eventFeed" class="space-y-1 max-h-[200px] overflow-y-auto custom-scrollbar font-mono text-[10px]">
-                    <div class="text-gray-600 text-center py-6">Waiting for events...</div>
+            <div class="card">
+                <h3 class="card-title">Live Event Feed</h3>
+                <div id="eventFeed" class="feed space-y-1 max-h-200 overflow-y-auto custom-scrollbar">
+                    <div class="placeholder">Waiting for events...</div>
                 </div>
             </div>
         </div>
 
         <!-- ─── ROW 2: Timeline Chart ─── -->
-        <div class="bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]" style="font-family: 'JetBrains Mono', monospace;">Operation Timeline</h3>
-                <div class="flex items-center gap-5 text-[10px]">
+        <div class="card">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                <h3 class="card-title !mb-0">Operation Timeline</h3>
+                <div class="flex items-center gap-4 text-[10px] flex-wrap">
                     <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neon-green"></span><span class="text-gray-400">Create</span></span>
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neon-blue"></span><span class="text-gray-400">Write</span></span>
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neon-purple"></span><span class="text-gray-400">Read</span></span>
                     <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neon-yellow"></span><span class="text-gray-400">Rename</span></span>
                     <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neon-red"></span><span class="text-gray-400">Delete</span></span>
                     <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neon-red/40 border border-neon-red"></span><span class="text-gray-400">Attack Zone</span></span>
@@ -245,104 +245,75 @@
         </div>
 
         <!-- ─── ROW 3: Model Comparison + Metrics + Alerts ─── -->
-        <div class="grid grid-cols-12 gap-4">
+        <div class="grid grid-534">
 
-            <!-- Model Comparison -->
-            <div class="col-span-5 bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-4" style="font-family: 'JetBrains Mono', monospace;">Model Comparison</h3>
+            <!-- Model Comparison + Confusion Matrices -->
+            <div class="card">
+                <h3 class="card-title">Model Comparison</h3>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-[11px]">
+                    <table class="tbl">
                         <thead>
-                            <tr class="text-gray-500 border-b border-cyber-600/30">
-                                <th class="text-left py-2 pr-3 font-semibold">Model</th>
-                                <th class="text-center py-2 px-1 font-semibold">Acc</th>
-                                <th class="text-center py-2 px-1 font-semibold">Sens</th>
-                                <th class="text-center py-2 px-1 font-semibold">F1</th>
-                                <th class="text-center py-2 px-1 font-semibold">Latency</th>
-                                <th class="text-center py-2 pl-1 font-semibold">Live</th>
+                            <tr>
+                                <th>Model</th>
+                                <th>Acc</th>
+                                <th>Sens</th>
+                                <th>F1</th>
+                                <th>Latency</th>
+                                <th>Live</th>
                             </tr>
                         </thead>
                         <tbody id="modelTableBody">
-                            <tr><td colspan="6" class="text-center py-6 text-gray-600">Loading models...</td></tr>
+                            <tr><td colspan="6" class="placeholder">Loading models...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Confusion Matrices -->
                 <div class="mt-4 pt-3 border-t border-cyber-600/30 space-y-3">
-                    <!-- Live Session CM -->
                     <div>
                         <h4 class="text-[10px] font-bold text-neon-cyan uppercase tracking-[0.15em] mb-2 flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-neon-cyan dot-pulse"></span>
                             Live Session CM
                         </h4>
-                        <div class="grid grid-cols-2 gap-1.5 max-w-[220px]">
-                            <div class="bg-green-500/8 border border-green-500/20 rounded-lg p-2 text-center">
-                                <div class="text-base font-bold text-green-400 tabular-nums" id="liveCM_TP" style="font-family: 'JetBrains Mono', monospace;">0</div>
-                                <div class="text-[9px] text-gray-500">True Positive</div>
-                            </div>
-                            <div class="bg-red-500/8 border border-red-500/20 rounded-lg p-2 text-center">
-                                <div class="text-base font-bold text-red-400 tabular-nums" id="liveCM_FP" style="font-family: 'JetBrains Mono', monospace;">0</div>
-                                <div class="text-[9px] text-gray-500">False Positive</div>
-                            </div>
-                            <div class="bg-blue-500/8 border border-blue-500/20 rounded-lg p-2 text-center">
-                                <div class="text-base font-bold text-blue-400 tabular-nums" id="liveCM_TN" style="font-family: 'JetBrains Mono', monospace;">0</div>
-                                <div class="text-[9px] text-gray-500">True Negative</div>
-                            </div>
-                            <div class="bg-orange-500/8 border border-orange-500/20 rounded-lg p-2 text-center">
-                                <div class="text-base font-bold text-orange-400 tabular-nums" id="liveCM_FN" style="font-family: 'JetBrains Mono', monospace;">0</div>
-                                <div class="text-[9px] text-gray-500">False Negative</div>
-                            </div>
+                        <div class="cm-grid">
+                            <div class="cm-cell cm-tp"><div class="cm-val" id="liveCM_TP">0</div><div class="cm-label">True Positive</div></div>
+                            <div class="cm-cell cm-fp"><div class="cm-val" id="liveCM_FP">0</div><div class="cm-label">False Positive</div></div>
+                            <div class="cm-cell cm-tn"><div class="cm-val" id="liveCM_TN">0</div><div class="cm-label">True Negative</div></div>
+                            <div class="cm-cell cm-fn"><div class="cm-val" id="liveCM_FN">0</div><div class="cm-label">False Negative</div></div>
                         </div>
                     </div>
-                    <!-- Test Set CM -->
                     <div>
-                        <h4 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] mb-2">Test Set CM (Training)</h4>
-                        <div class="grid grid-cols-2 gap-1.5 max-w-[220px]">
-                            <div class="bg-green-500/5 border border-green-500/10 rounded-lg p-2 text-center">
-                                <div class="text-sm font-bold text-green-400/70 tabular-nums" id="testCM_TP" style="font-family: 'JetBrains Mono', monospace;">--</div>
-                                <div class="text-[9px] text-gray-600">True Positive</div>
-                            </div>
-                            <div class="bg-red-500/5 border border-red-500/10 rounded-lg p-2 text-center">
-                                <div class="text-sm font-bold text-red-400/70 tabular-nums" id="testCM_FP" style="font-family: 'JetBrains Mono', monospace;">--</div>
-                                <div class="text-[9px] text-gray-600">False Positive</div>
-                            </div>
-                            <div class="bg-blue-500/5 border border-blue-500/10 rounded-lg p-2 text-center">
-                                <div class="text-sm font-bold text-blue-400/70 tabular-nums" id="testCM_TN" style="font-family: 'JetBrains Mono', monospace;">--</div>
-                                <div class="text-[9px] text-gray-600">True Negative</div>
-                            </div>
-                            <div class="bg-orange-500/5 border border-orange-500/10 rounded-lg p-2 text-center">
-                                <div class="text-sm font-bold text-orange-400/70 tabular-nums" id="testCM_FN" style="font-family: 'JetBrains Mono', monospace;">--</div>
-                                <div class="text-[9px] text-gray-600">False Negative</div>
-                            </div>
+                        <h4 class="card-title !text-[10px] !text-gray-500 !uppercase !tracking-[0.15em] !mb-2">Test Set CM (Training)</h4>
+                        <div class="cm-grid">
+                            <div class="cm-cell cm-tp"><div class="cm-val" id="testCM_TP">--</div><div class="cm-label">True Positive</div></div>
+                            <div class="cm-cell cm-fp"><div class="cm-val" id="testCM_FP">--</div><div class="cm-label">False Positive</div></div>
+                            <div class="cm-cell cm-tn"><div class="cm-val" id="testCM_TN">--</div><div class="cm-label">True Negative</div></div>
+                            <div class="cm-cell cm-fn"><div class="cm-val" id="testCM_FN">--</div><div class="cm-label">False Negative</div></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Runtime Metrics -->
-            <div class="col-span-3 bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-4" style="font-family: 'JetBrains Mono', monospace;">Runtime Metrics</h3>
+            <div class="card">
+                <h3 class="card-title">Runtime Metrics</h3>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center"><span class="text-[11px] text-gray-500">Total Ticks</span><span id="metricTicks" class="text-sm font-bold tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span></div>
-                    <div class="flex justify-between items-center"><span class="text-[11px] text-gray-500">Attacks</span><span id="metricAttacks" class="text-sm font-bold text-neon-red tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span></div>
-                    <div class="flex justify-between items-center"><span class="text-[11px] text-gray-500">Detected</span><span id="metricDetections" class="text-sm font-bold text-neon-green tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span></div>
-                    <div class="flex justify-between items-center"><span class="text-[11px] text-gray-500">False Positives</span><span id="metricFP" class="text-sm font-bold text-neon-yellow tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span></div>
-                    <div class="flex justify-between items-center"><span class="text-[11px] text-gray-500">Missed (FN)</span><span id="metricFN" class="text-sm font-bold text-orange-400 tabular-nums" style="font-family: 'JetBrains Mono', monospace;">0</span></div>
+                    <div class="metric-row"><span class="lbl">Total Ticks</span><span id="metricTicks" class="val">0</span></div>
+                    <div class="metric-row"><span class="lbl">Attacks</span><span id="metricAttacks" class="val" style="color:var(--red)">0</span></div>
+                    <div class="metric-row"><span class="lbl">Detected</span><span id="metricDetections" class="val" style="color:var(--green)">0</span></div>
+                    <div class="metric-row"><span class="lbl">False Positives</span><span id="metricFP" class="val" style="color:var(--yellow)">0</span></div>
+                    <div class="metric-row"><span class="lbl">Missed (FN)</span><span id="metricFN" class="val" style="color:#ffa500">0</span></div>
                     <div class="border-t border-cyber-600/30 pt-3">
-                        <div class="flex justify-between items-center mb-2"><span class="text-[11px] text-gray-500">Detection Rate</span><span id="metricDetRate" class="text-sm font-bold text-neon-green tabular-nums" style="font-family: 'JetBrains Mono', monospace;">--%</span></div>
-                        <div class="w-full h-2 bg-cyber-700 rounded-full overflow-hidden">
-                            <div id="detRateBar" class="h-full rounded-full bg-gradient-to-r from-neon-green/50 to-neon-green transition-all duration-500" style="width: 0%"></div>
-                        </div>
+                        <div class="metric-row mb-2"><span class="lbl">Detection Rate</span><span id="metricDetRate" class="val" style="color:var(--green)">--%</span></div>
+                        <div class="op-bar !h-2"><div id="detRateBar" class="op-bar-fill nc"></div></div>
                     </div>
                 </div>
             </div>
 
             <!-- Alert Log -->
-            <div class="col-span-4 bg-cyber-900/60 backdrop-blur-sm rounded-2xl border border-cyber-600/40 p-5">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3" style="font-family: 'JetBrains Mono', monospace;">Alert Log</h3>
-                <div id="alertLog" class="space-y-1.5 max-h-[280px] overflow-y-auto custom-scrollbar">
-                    <div class="text-[11px] text-gray-600 text-center py-6">No alerts yet.</div>
+            <div class="card">
+                <h3 class="card-title">Alert Log</h3>
+                <div id="alertLog" class="space-y-1.5 max-h-280 overflow-y-auto custom-scrollbar">
+                    <div class="placeholder">No alerts yet.</div>
                 </div>
             </div>
         </div>
@@ -351,9 +322,9 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer class="border-t border-cyber-600/20 px-5 py-3 mt-4">
-        <div class="max-w-[1600px] mx-auto flex items-center justify-between text-[9px] text-gray-600">
-            <span>Aranyi, G., Miseta, T., & Szucs, V. (2026). Journal on Information Security, 2026:8</span>
-            <span style="font-family: 'JetBrains Mono', monospace;">RF | SVM | DT | ADA | XGBoost &bull; Features: nc, nr, nu &bull; 1s windows</span>
+        <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-3 flex-wrap text-[9px] text-gray-600">
+            <span>Aranyi, G., Miseta, T., &amp; Szucs, V. (2026). Journal on Information Security, 2026:8</span>
+            <span class="mono">RF | SVM | DT | ADA | XGBoost &bull; Features: nc, nw, nr, nm, nu &bull; 1s windows</span>
         </div>
     </footer>
 
