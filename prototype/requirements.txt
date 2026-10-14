@@ -1,0 +1,19 @@
+# ASSRD prototype dependencies.
+#
+# This prototype is deliberately self-contained: it imports nothing from the
+# project's existing `ml/` package. It needs the same core scientific stack plus
+# watchdog for the live folder monitor (Phase 5).
+#
+# Version notes
+# -------------
+# scikit-learn 1.6 + xgboost 2.1.3 is a known-incompatible pair: xgboost orders
+# ClassifierMixin after BaseEstimator, so sklearn's __sklearn_tags__ lookup fails.
+# assrd/compat.py repairs this at import time and is verified by a targeted test.
+# See prototype/README.md and the compat caveat in the Phase 1 report.
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+joblib>=1.3.0
+scipy>=1.10.0
+watchdog>=3.0.0
