@@ -13,6 +13,8 @@ F. backend        — tuning really runs under assrd.compat.threading_backend
 G. end to end     — the driver reproduces itself exactly for a fixed seed
 """
 
+import itertools
+
 import numpy as np
 import pytest
 
@@ -381,9 +383,10 @@ def test_driver_refuses_to_train_on_a_leaky_split(small_splits, monkeypatch):
 # ---------------------------------------------------------------------------
 # E. Models
 # ---------------------------------------------------------------------------
-def test_all_five_models_are_declared_and_buildable():
+def test_all_six_models_are_declared_and_buildable():
     assert set(models.MODEL_NAMES) == {
-        "decision_tree", "random_forest", "svm_calibrated", "adaboost", "xgboost"}
+        "decision_tree", "random_forest", "svm_calibrated", "adaboost", "xgboost",
+        "logistic_regression"}
     assert set(models.MODEL_LABELS) == set(MODEL_NAMES)
 
     for name in MODEL_NAMES:
@@ -398,12 +401,12 @@ def test_all_five_models_are_declared_and_buildable():
         assert proba.shape == (7, 2)
 
 
-def test_only_the_svm_is_standardised():
+def test_only_scale_dependent_models_are_standardised():
     """Tree ensembles are scale-invariant; rescaling them would be misleading."""
-    assert models._STANDARDISE == {"svm_calibrated"}
+    assert models._STANDARDISE == {"svm_calibrated", "logistic_regression"}
     for name in MODEL_NAMES:
         steps = dict(build_estimator(name, seed=0).named_steps)
-        assert ("scaler" in steps) == (name == "svm_calibrated")
+        assert ("scaler" in steps) == (name in models._STANDARDISE)
 
 
 def test_calibrated_svm_produces_calibrated_probabilities():
@@ -422,6 +425,85 @@ def test_calibrated_svm_produces_calibrated_probabilities():
     inner = estimator.named_steps["clf"].estimator
     assert isinstance(inner, SVC)
     assert inner.probability is False
+
+
+def test_logistic_regression_grid_is_cartesian_safe():
+    """Every grid point must be a valid estimator config.
+
+    ``make_search`` sets ``error_score="raise"``, so an invalid grid point would
+    crash the search rather than being skipped. ``penalty="l1"`` is only valid
+    under the pinned liblinear solver.
+    """
+    from sklearn.linear_model import LogisticRegression
+    grid = param_grid("logistic_regression")
+    assert grid_size("logistic_regression") == 16
+    for combo in itertools.product(*grid.values()):
+        kwargs = {k.replace("clf__", ""): v for k, v in zip(grid, combo)}
+        estimator = LogisticRegression(solver="liblinear", max_iter=1000,
+                                       **kwargs)
+        assert estimator.penalty == kwargs["penalty"]
+        if kwargs["penalty"] == "l1":
+            assert estimator.solver == "liblinear"
+
+
+def test_logistic_regression_accepts_cost_sample_weights():
+    rng = np.random.RandomState(0)
+    X = rng.randn(400, 4)
+    y = ((X[:, 0] + 0.5 * X[:, 1]) > 0).astype(int)
+    estimator = build_estimator("logistic_regression", seed=0)
+
+    estimator.fit(X, y)
+    unweighted = estimator.named_steps["clf"].coef_.copy()
+
+    estimator.fit(X, y, clf__sample_weight=cost_sample_weights(y))
+    weighted = estimator.named_steps["clf"].coef_.copy()
+
+    assert unweighted.shape == (1, 4)
+    assert np.all(np.isfinite(weighted))
+    assert not np.allclose(unweighted, weighted), \
+        "10:1 cost weights must actually reach the logistic coefficients"
+
+
+def test_logistic_regression_probabilities_are_not_degenerate():
+    rng = np.random.RandomState(0)
+    X = rng.randn(400, 4)
+    y = ((X[:, 0] + 0.5 * X[:, 1]) > 0).astype(int)
+    estimator = build_estimator("logistic_regression", seed=0)
+    estimator.fit(X, y, clf__sample_weight=cost_sample_weights(y))
+
+    proba = probability(estimator, X)
+    assert proba.shape == (400,)
+    assert proba.min() >= 0.0 and proba.max() <= 1.0
+    # A sigmoid, not a hard 0/1 decision.
+    assert np.any((proba > 0.01) & (proba < 0.99))
+
+
+def test_logistic_regression_coefficients_span_the_full_feature_set():
+    """Coefficients must exist for all 29 model inputs on the E_full arm."""
+    from assrd.ablation import arm_columns
+    from assrd.features import MODEL_FEATURE_COLUMNS
+
+    assert len(MODEL_FEATURE_COLUMNS) == 29
+    assert len(arm_columns("E_full")) == 29
+    rng = np.random.RandomState(0)
+    X = rng.randn(300, 29)
+    y = (X[:, 0] + 0.25 * X[:, 5] > 0).astype(int)
+    estimator = build_estimator("logistic_regression", seed=0)
+    estimator.fit(X, y, clf__sample_weight=cost_sample_weights(y))
+
+    coef = estimator.named_steps["clf"].coef_
+    assert coef.shape == (1, 29)
+    assert np.all(np.isfinite(coef))
+    # Standardisation happens inside the pipeline, so coefficients are comparable.
+    assert estimator.named_steps["scaler"].with_mean is True
+
+
+def test_logistic_regression_grid_is_registered_and_finite():
+    grid = param_grid("logistic_regression")
+    assert set(grid) == {"clf__C", "clf__penalty", "clf__class_weight"}
+    assert grid["clf__C"] == [0.1, 1.0, 10.0, 100.0]
+    assert grid["clf__penalty"] == ["l1", "l2"]
+    assert grid["clf__class_weight"] == [None, "balanced"]
 
 
 def test_unknown_model_name_is_rejected():

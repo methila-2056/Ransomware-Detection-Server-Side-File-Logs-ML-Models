@@ -1,0 +1,27 @@
+{
+  "schema": "assrd.rebaseline/quick-manifest/1",
+  "authoritative": false,
+  "created_utc": "2026-10-15T17:10:50.995794+00:00",
+  "ledger": {
+    "stages": [
+      "quick_phase3"
+    ],
+    "complete": true,
+    "claims": [
+      "phase3_results.json",
+      "phase3_results_splits.csv",
+      "phase3_results_ablation.csv",
+      "phase3_results_per_family.csv",
+      "phase3_results_thresholds.csv",
+      "phase3_results_diagnostics.csv"
+    ],
+    "digests": {
+      "phase3_results.json": "692255e7de52cded88cd688861ed24f76c747f40a8a21e099174252010f9e7bd",
+      "phase3_results_splits.csv": "f2df46e85ca2575e189ca5d0f2c9f78995ac66dd586ca3dfc6eda877714c763f",
+      "phase3_results_ablation.csv": "e866d25a31a0e4fd1c764ef55229390cfee283cb637bee73d262c1093bbab848",
+      "phase3_results_per_family.csv": "3ec5a33ecb7407001773cc609a3419da3cb9a62d42ad4ddb535e378e977157c8",
+      "phase3_results_thresholds.csv": "a1bc01fc1ddfd7d978449786f5ff272d68cb01efe67dc2203ec3258de9452f10",
+      "phase3_results_diagnostics.csv": "335e7b570266805c3c328ded7c47d2daf96c78315566ea2cbc595f3c701531b9"
+    }
+  }
+}

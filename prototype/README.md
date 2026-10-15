@@ -23,10 +23,10 @@ Implemented in phases. Current status is reported in the section below.
 ### Phase 2 — models, cost-sensitive tuning, threshold selection
 - `assrd/metrics.py` — confusion matrix, sensitivity/specificity/precision/F1,
   ROC-AUC, average precision, and the `C_FP`/`C_FN` cost terms
-- `assrd/models.py` — the five classifiers, their search spaces, cost-weighted
+- `assrd/models.py` — the six classifiers, their search spaces, cost-weighted
   fitting, and validation-only threshold selection
 - `assrd/phase2.py` — the experiment driver and CLI; writes `results/`
-- `tests/test_phase2.py` — 34 targeted tests
+- `tests/test_phase2.py` — 39 targeted tests
 
 **Cost model.** `C_FP = 1`, `C_FN = 10` (`assrd.metrics`), applied twice for
 two distinct reasons:
@@ -112,12 +112,21 @@ reproducible reports.
 
 ```powershell
 cd prototype
-python -m pytest -q                          # Phases 1–3 (75 tests)
+python -m pytest -q                          # all tests (114: 1 skipped, needs symlink rights)
 python -m assrd.phase2 --n-windows 20000 --seed 42 --folds 5
 
 python -m assrd.phase3 --quick --self-check  # preflight only; fits nothing
 python -m assrd.phase3 --quick               # acceptance run (small trace)
 python -m assrd.phase3                       # full experiment
+
+# six-model re-baselining (Logistic Regression added; originals left untouched)
+python -m assrd.rebaseline check
+python -m assrd.rebaseline run-phase2
+python -m assrd.rebaseline compare-params    # GR3 advisory gate
+python -m assrd.rebaseline run-phase3 --mode quick
+python -m assrd.rebaseline run-phase3 --mode full
+python -m assrd.rebaseline preflight --stage full
+python -m assrd.rebaseline verify            # Tier A: 9/9 byte-identical
 ```
 
 Phase 2 results land in `results/phase2_results.json` plus two CSVs
@@ -126,6 +135,26 @@ Phase 2 results land in `results/phase2_results.json` plus two CSVs
 separate basenames, so a Phase 3 run never overwrites Phase 2 evidence. Every
 figure in them is measured on the run that wrote the file; nothing is asserted
 in advance.
+
+### Six-model re-baselining
+
+Adding Logistic Regression as a sixth model would otherwise make Phase 3 fall
+back to hardcoded parameters for the new model while using tuned parameters for
+the other five. `assrd/rebaseline.py` re-runs Phase 2 first and passes the
+resulting six parameter sets into Phase 3 explicitly.
+
+* The nine **original** Phase 2/Phase 3 artifacts stay byte-for-byte identical;
+  their SHA-256 digests are embedded in `rebaseline.py` and re-verified on every
+  command.
+* New output is written to `results/rebaseline_6model/` (authoritative) and
+  `results/rebaseline_6model/quick/` (smoke test, marked non-authoritative).
+* `results/_rebaseline_forensics/` holds the lock and any forensic snapshot. It
+  must exist before use and is **never created automatically**.
+* Every mutating command takes an exclusive lock outside the directory it
+  protects, and any destructive reset first captures a sealed, uniquely created
+  forensic snapshot. There is no bypass flag.
+
+These are **emulator** results on generated data, not real-world detection.
 
 ## Environment
 

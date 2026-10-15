@@ -1,0 +1,49 @@
+model,split,actual,predicted,count
+Decision Tree,validation,benign,benign,1876
+Decision Tree,validation,benign,attack,36
+Decision Tree,validation,attack,benign,2
+Decision Tree,validation,attack,attack,127
+Decision Tree,test,benign,benign,1879
+Decision Tree,test,benign,attack,29
+Decision Tree,test,attack,benign,2
+Decision Tree,test,attack,attack,112
+Random Forest,validation,benign,benign,1899
+Random Forest,validation,benign,attack,13
+Random Forest,validation,attack,benign,1
+Random Forest,validation,attack,attack,128
+Random Forest,test,benign,benign,1891
+Random Forest,test,benign,attack,17
+Random Forest,test,attack,benign,1
+Random Forest,test,attack,attack,113
+"Calibrated SVM (RBF, Platt scaling)",validation,benign,benign,1900
+"Calibrated SVM (RBF, Platt scaling)",validation,benign,attack,12
+"Calibrated SVM (RBF, Platt scaling)",validation,attack,benign,0
+"Calibrated SVM (RBF, Platt scaling)",validation,attack,attack,129
+"Calibrated SVM (RBF, Platt scaling)",test,benign,benign,1888
+"Calibrated SVM (RBF, Platt scaling)",test,benign,attack,20
+"Calibrated SVM (RBF, Platt scaling)",test,attack,benign,0
+"Calibrated SVM (RBF, Platt scaling)",test,attack,attack,114
+AdaBoost,validation,benign,benign,1896
+AdaBoost,validation,benign,attack,16
+AdaBoost,validation,attack,benign,2
+AdaBoost,validation,attack,attack,127
+AdaBoost,test,benign,benign,1894
+AdaBoost,test,benign,attack,14
+AdaBoost,test,attack,benign,1
+AdaBoost,test,attack,attack,113
+XGBoost,validation,benign,benign,1908
+XGBoost,validation,benign,attack,4
+XGBoost,validation,attack,benign,0
+XGBoost,validation,attack,attack,129
+XGBoost,test,benign,benign,1900
+XGBoost,test,benign,attack,8
+XGBoost,test,attack,benign,1
+XGBoost,test,attack,attack,113
+"Logistic Regression (L1/L2, standardised)",validation,benign,benign,1858
+"Logistic Regression (L1/L2, standardised)",validation,benign,attack,54
+"Logistic Regression (L1/L2, standardised)",validation,attack,benign,1
+"Logistic Regression (L1/L2, standardised)",validation,attack,attack,128
+"Logistic Regression (L1/L2, standardised)",test,benign,benign,1866
+"Logistic Regression (L1/L2, standardised)",test,benign,attack,42
+"Logistic Regression (L1/L2, standardised)",test,attack,benign,0
+"Logistic Regression (L1/L2, standardised)",test,attack,attack,114

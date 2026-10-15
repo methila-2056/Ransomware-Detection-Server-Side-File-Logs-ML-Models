@@ -39,6 +39,7 @@ from __future__ import annotations
 import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -55,6 +56,7 @@ MODEL_NAMES = (
     "svm_calibrated",
     "adaboost",
     "xgboost",
+    "logistic_regression",
 )
 
 MODEL_LABELS = {
@@ -63,11 +65,14 @@ MODEL_LABELS = {
     "svm_calibrated": "Calibrated SVM (RBF, Platt scaling)",
     "adaboost": "AdaBoost",
     "xgboost": "XGBoost",
+    "logistic_regression": "Logistic Regression (L1/L2, standardised)",
 }
 
 #: Features whose scale matters. Tree ensembles are invariant to monotone
-#: rescaling, so only the distance/kernel-based SVM is standardised.
-_STANDARDISE = {"svm_calibrated"}
+#: rescaling, so they are deliberately left unscaled. The distance/kernel-based
+#: SVM and the L2-regularised logistic regression both define an objective that
+#: is not scale-invariant, so those two are standardised.
+_STANDARDISE = {"svm_calibrated", "logistic_regression"}
 
 
 def cost_sample_weights(y, c_fp=C_FP, c_fn=C_FN):
@@ -111,6 +116,14 @@ def build_estimator(name, *, seed=42, n_splits_inner=3):
         )
     elif name == "adaboost":
         clf = AdaBoostClassifier(random_state=seed)
+    elif name == "logistic_regression":
+        # ``liblinear`` is pinned rather than searched because it supports every
+        # penalty/class_weight combination in param_grid AND per-sample weights.
+        # A grid crossing ``penalty="l1"`` with an lbfgs/saga solver would raise,
+        # and ``make_search`` sets ``error_score="raise"``, so an invalid point
+        # would crash the search instead of being skipped.
+        clf = LogisticRegression(solver="liblinear", max_iter=1000,
+                                 random_state=seed)
     else:  # xgboost
         from xgboost import XGBClassifier
 
@@ -157,6 +170,14 @@ def param_grid(name):
         return {
             "clf__n_estimators": [50, 100, 150, 200],
             "clf__learning_rate": [0.5, 0.8, 1.0, 1.5],
+        }
+    if name == "logistic_regression":
+        # 4 x 2 x 2 = 16 points. Every combination is valid under the pinned
+        # liblinear solver, so the Cartesian product is safe.
+        return {
+            "clf__C": [0.1, 1.0, 10.0, 100.0],
+            "clf__penalty": ["l1", "l2"],
+            "clf__class_weight": [None, "balanced"],
         }
     if name == "xgboost":
         return {

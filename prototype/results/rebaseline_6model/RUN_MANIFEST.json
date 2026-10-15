@@ -1,0 +1,56 @@
+{
+  "schema": "assrd.rebaseline/manifest/1",
+  "generation": 3,
+  "created_utc": "2026-10-15T17:18:40.326085+00:00",
+  "head": "4e585ff76204c57abf8284b1e76f9b0e85d5fa86",
+  "documents": {
+    "BASELINE_HASHES.txt": "b975b1570e41b8d047453f132bc0a549b8839e9b80223f41c49f97a54a3d597d",
+    "quick/RUN_MANIFEST.json": "595a61fd6a65f7350fe67cdab91d4a3754441564d10bc12584c7886cde49e78b"
+  },
+  "stages": {
+    "baseline": {
+      "complete": true,
+      "claims": [
+        "BASELINE_HASHES.txt"
+      ]
+    },
+    "phase2": {
+      "complete": true,
+      "claims": [
+        "phase2_results.json",
+        "phase2_results_models.csv",
+        "phase2_results_confusion.csv"
+      ],
+      "digests": {
+        "phase2_results.json": "96e7441b6dab728fb52a9c2f38af1a4091bbaf7a667c439b17a018eac73397d6",
+        "phase2_results_models.csv": "eab849f617acc971518e590e88dcd7b5e57bfa0a47c7850707d9d08947568a54",
+        "phase2_results_confusion.csv": "ff6451cbd5e2346797fc51f2791d68ca1ca69ccfdc7c97fe45a4c7312e26924d"
+      }
+    },
+    "quick_phase3": {
+      "complete": true,
+      "claimed_by": "quick/RUN_MANIFEST.json",
+      "manifest_digest": "595a61fd6a65f7350fe67cdab91d4a3754441564d10bc12584c7886cde49e78b"
+    },
+    "phase3_full": {
+      "complete": true,
+      "claims": [
+        "phase3_results.json",
+        "phase3_results_splits.csv",
+        "phase3_results_ablation.csv",
+        "phase3_results_per_family.csv",
+        "phase3_results_thresholds.csv",
+        "phase3_results_diagnostics.csv"
+      ],
+      "digests": {
+        "phase3_results.json": "61140a45636f4d36216a4e0d5af986f921f14d23e2a5d0fd44a9476c2775e77e",
+        "phase3_results_splits.csv": "cb29ef297b6b3a6e8f27925abca2a373e61ed08c2b6bb0d0d56e267072e34dd4",
+        "phase3_results_ablation.csv": "57c0242a396e299b9ab77c71fad9d5e4678c17e8f782f6ae3579986f66cc0484",
+        "phase3_results_per_family.csv": "cd8282c00e3d7b1768e186eb78e2977336fb3a353b2011d78963ef79e366128e",
+        "phase3_results_thresholds.csv": "39d5b902cfeec4a97814cce6a9584e0eb6866f3d0e3a96d60caeae9d3558142d",
+        "phase3_results_diagnostics.csv": "577615b0722887cdc8e09e633413844535f541df57fb0927bdfd2e6b6515c9ec"
+      }
+    }
+  },
+  "run_complete": true
+}

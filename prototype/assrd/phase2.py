@@ -6,7 +6,7 @@ Pipeline
 2. Split it **by attack episode** with ``assrd.data.split_by_episode``.
 3. Compute the 26 temporal features on the **whole trace in temporal order**
    before slicing, exactly as ``assrd.features`` documents.
-4. Tune each of the five models on the **training** split only.
+4. Tune each of the six models on the **training** split only.
 5. Choose the cost-minimising threshold on the **validation** split only.
 6. Score the frozen model + threshold **once** on the test split.
 

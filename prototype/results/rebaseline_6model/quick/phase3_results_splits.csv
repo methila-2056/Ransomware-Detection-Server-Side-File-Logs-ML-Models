@@ -1,0 +1,4 @@
+split,rows,benign_rows,attack_rows,attack_fraction,attack_episodes,benign_episodes,benign_managed_blocks,attack_episodes_stealth,attack_episodes_non_stealth,attack_rows_stealth,attack_rows_non_stealth,cells_present_of,attack_episodes_lockbit,attack_rows_lockbit,attack_episodes_notpetya,attack_rows_notpetya,attack_episodes_ryuk,attack_rows_ryuk,attack_episodes_teslacrypt,attack_rows_teslacrypt,attack_episodes_wannacry,attack_rows_wannacry
+train,11970,11381,589,0.049206,49,0,120,2,47,23,566,6/10,10,127,11,125,17,202,4,44,7,91
+validation,4024,3827,197,0.048956,17,0,40,6,11,64,133,9/10,3,33,3,29,3,36,4,44,4,55
+test,4006,3800,206,0.051423,17,0,40,7,10,99,107,10/10,4,51,3,32,3,36,4,53,3,34
