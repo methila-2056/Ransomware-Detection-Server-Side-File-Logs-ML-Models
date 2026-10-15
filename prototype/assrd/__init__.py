@@ -12,7 +12,7 @@ Abstract components and where they live
 * cost-optimal threshold (C_FN=10, C_FP=1) ........................ ``models`` (Phase 2)
 * decision-path + permutation attribution ......................... ``explain`` (Phase 4)
 * PSI concept-drift monitoring + offline retraining .............. ``drift`` (Phase 4)
-* zero-shot (leave-one-family-out) transfer ...................... ``transfer`` (Phase 3)
+* feature ablation + robustness study ........................ ``ablation``, ``phase3`` (Phase 3)
 
 The scikit-learn/xgboost compatibility workaround lives in ``compat`` and must
 be imported before any sklearn estimator introspection.

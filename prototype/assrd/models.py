@@ -199,11 +199,15 @@ def make_search(name, *, seed=42, n_splits=5, scoring="recall", n_jobs=-1):
 
 
 def tune_model(name, X, y, *, seed=42, n_splits=5, scoring="recall", n_jobs=-1,
-               c_fp=C_FP, c_fn=C_FN):
+               c_fp=C_FP, c_fn=C_FN, cost_weighted=True):
     """Tune one model on ``(X, y)`` — the training split, by contract.
 
     Returns a dict with the fitted search, the best parameters, the best CV
     score and the cost weights actually applied.
+
+    ``cost_weighted=False`` disables the per-sample weights, which is the M3/M4
+    half of the Phase 3 matrix: it isolates the effect of *weighting* from the
+    effect of *threshold selection*. The default is unchanged.
     """
     X = np.asarray(X, dtype=float)
     y = np.asarray(y).astype(int)
@@ -212,14 +216,20 @@ def tune_model(name, X, y, *, seed=42, n_splits=5, scoring="recall", n_jobs=-1,
     if np.unique(y).size < 2:
         raise ValueError("tuning requires both classes in the training split")
 
-    weights = cost_sample_weights(y, c_fp, c_fn)
+    weights = cost_sample_weights(y, c_fp, c_fn) if cost_weighted else None
     search = make_search(name, seed=seed, n_splits=n_splits, scoring=scoring,
                          n_jobs=n_jobs)
 
+    fit_params = {"clf__sample_weight": weights} if weights is not None else {}
+
     # Required while the xgboost/sklearn tag patch is active; see module docstring.
     with compat.threading_backend():
-        search.fit(X, y, clf__sample_weight=weights)
+        search.fit(X, y, **fit_params)
 
+    sample_weight = (
+        {"weighted": True, "attack": float(c_fn), "benign": float(c_fp),
+         "mean": float(weights.mean())} if weights is not None
+        else {"weighted": False, "attack": 1.0, "benign": 1.0, "mean": 1.0})
     return {
         "model": name,
         "search": search,
@@ -231,11 +241,45 @@ def tune_model(name, X, y, *, seed=42, n_splits=5, scoring="recall", n_jobs=-1,
         "grid_points": grid_size(name),
         "cv_folds": n_splits,
         "scoring": scoring,
-        "sample_weight": {
-            "attack": float(c_fn),
-            "benign": float(c_fp),
-            "mean": float(weights.mean()),
-        },
+        "cost_weighted": bool(cost_weighted),
+        "sample_weight": sample_weight,
+    }
+
+
+def fit_fixed(name, X, y, params=None, *, seed=42, cost_weighted=True,
+              c_fp=C_FP, c_fn=C_FN):
+    """Fit one model at **fixed** hyperparameters — no search.
+
+    Phase 3's ablation applies the parameters Phase 2 already selected, so that
+    every arm differs only in its feature set. ``cost_weighted`` selects whether
+    the 10:1 per-sample weights reach the estimator; the threshold half of the
+    experiment is applied by the caller.
+    """
+    X = np.asarray(X, dtype=float)
+    y = np.asarray(y).astype(int)
+    if X.shape[0] != y.shape[0]:
+        raise ValueError(f"X/y length mismatch: {X.shape[0]} vs {y.shape[0]}")
+
+    estimator = build_estimator(name, seed=seed)
+    if params:
+        estimator.set_params(**params)
+
+    weights = cost_sample_weights(y, c_fp, c_fn) if cost_weighted else None
+    fit_params = {"clf__sample_weight": weights} if weights is not None else {}
+
+    with compat.threading_backend():
+        estimator.fit(X, y, **fit_params)
+
+    sample_weight = (
+        {"weighted": True, "attack": float(c_fn), "benign": float(c_fp),
+         "mean": float(weights.mean())} if weights is not None
+        else {"weighted": False, "attack": 1.0, "benign": 1.0, "mean": 1.0})
+    return {
+        "model": name,
+        "estimator": estimator,
+        "params": dict(params or {}),
+        "cost_weighted": bool(cost_weighted),
+        "sample_weight": sample_weight,
     }
 
 

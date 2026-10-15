@@ -139,6 +139,11 @@ def apply():
     return True
 
 
+# Captured *before* the patch so the audit trail can distinguish "this
+# environment genuinely needed the repair" from the post-patch state (after
+# apply(), is_classifier works and needs_shim() would report False either way).
+REQUIRED_AT_IMPORT = needs_shim()
+
 # Applied at import time. assrd/__init__.py imports this module, so any use of
 # the package (including importing assrd.models) installs the shim first.
 APPLIED = apply()
@@ -156,11 +161,19 @@ def threading_backend():
 
 
 def diagnose():
-    """Human-readable state of the compatibility layer, for reports/logs."""
+    """Human-readable state of the compatibility layer, for reports/logs.
+
+    ``needs_shim`` reports whether the repair was genuinely required *when this
+    module was imported* (:data:`REQUIRED_AT_IMPORT`). After ``apply()`` the live
+    ``is_classifier`` check passes regardless, so ``needs_shim_now`` is also
+    exposed to keep the two facts separate in the audit trail.
+    """
     indices = _mro_indices()
     info = {
         "sklearn_version": sklearn.__version__,
-        "needs_shim": needs_shim(),
+        "needs_shim": bool(REQUIRED_AT_IMPORT),
+        "needs_shim_at_import": bool(REQUIRED_AT_IMPORT),
+        "needs_shim_now": needs_shim(),
         "shim_applied": bool(APPLIED),
     }
     if indices is not None:

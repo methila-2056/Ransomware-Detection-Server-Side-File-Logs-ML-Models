@@ -52,20 +52,80 @@ never used to score anything.
 would not carry the xgboost tag patch, so a test spies on the context manager to
 prove it is entered rather than merely available.
 
-Later phases: ablation/transfer evaluation (Phase 3), explainability + drift
-(Phase 4), live monitor (Phase 5), reproducible reports.
+### Phase 3 — feature ablation and robustness
+- `assrd/splits.py` — stratified, episode-aware allocator; validates that the
+  training reserve and minimum stealth-episode targets can be met and raises
+  `SplitConstraintError` (with a reported shortfall) rather than silently
+  under-filling a stratum; emits a composition manifest
+- `assrd/ablation.py` — the nested feature-group arms, `fit_fixed` (Phase 2
+  `best_params` applied without re-tuning), per-subgroup evaluation, and
+  bootstrap threshold-stability analysis
+- `assrd/phase3.py` — the driver, the M1–M4 matrix, the C1–C5 comparisons,
+  test-oracle quarantine, preflight self-check, artifact writers and CLI
+- `tests/test_phase3.py` — 34 targeted tests (75 in total with Phases 1–2)
+
+**Feature arms (nested except the last).** `A_raw_only` (3 baseline counts) →
+`B_trailing_level` (15) → `C_plus_activity` (19) → `D_plus_volatility` (27) →
+`E_full` (29); plus the non-nested `T_temporal_only` (26, dropping the raw
+counts). Each arm is exactly a column set, so B ⊂ C ⊂ D ⊂ E by construction.
+
+**One unambiguous matrix.** Two axes are crossed and every cell is reported:
+
+| mode | cost weighting | decision threshold |
+|------|----------------|--------------------|
+| M1 **(primary)** | cost-weighted | selected on validation |
+| M2 | cost-weighted | fixed 0.5 |
+| M3 | unweighted | selected on validation |
+| M4 | unweighted | fixed 0.5 |
+
+The primary comparisons, declared before the run: **C1** `E_full` vs
+`A_raw_only` (M1); **C2–C4** M1 vs M2/M3/M4 per arm; **C5** `E_full` vs
+`T_temporal_only` (M1).
+
+**Tuning is off the ablation path.** `fit_fixed` applies Phase 2's recorded
+`best_params`; a test spies on the search constructor to prove the ablation path
+builds no `GridSearchCV`. `--retune-full` separately re-tunes *only* the
+`E_full` arm (recorded as `E_full_retuned`) to quantify the tuning effect.
+
+**The test oracle is quarantined.** The test-optimal threshold is computed only
+as a labelled upper bound on the generalisation gap. It lives in a separate
+`diagnostics` block with `achievable_deployment_performance: false`, never
+enters model/feature/hyperparameter/threshold selection, and is checked three
+ways (static source scan, runtime spy, preflight self-check).
+
+**Preflight before any fit.** `python -m assrd.phase3 --quick --self-check`
+evaluates leakage, composition, reproducibility, output schema, oracle
+isolation, runtime/memory feasibility and Phase 2 artifact preservation, then
+exits **without fitting a model**.
+
+**Honest subgroup support.** The manifest reports total/attack/benign episodes,
+per-family and stealth/non-stealth episodes in every split, and the
+(family, stealth) cells present. Support is flagged `absent` / `insufficient` /
+`thin` / `adequate`, and no comparison is drawn from an `insufficient` or
+`absent` cell. Family coverage is guaranteed; individual (family, stealth)
+cells are reported, not guaranteed.
+
+Later phases: explainability + drift (Phase 4), live monitor (Phase 5),
+reproducible reports.
 
 ## Running
 
 ```powershell
 cd prototype
-python -m pytest -v                          # Phase 1 + Phase 2 (41 tests)
+python -m pytest -q                          # Phases 1–3 (75 tests)
 python -m assrd.phase2 --n-windows 20000 --seed 42 --folds 5
+
+python -m assrd.phase3 --quick --self-check  # preflight only; fits nothing
+python -m assrd.phase3 --quick               # acceptance run (small trace)
+python -m assrd.phase3                       # full experiment
 ```
 
-Results land in `results/phase2_results.json` plus two CSVs
-(`_models.csv`, `_confusion.csv`). Every figure in them is measured on the run
-that wrote the file; nothing is asserted in advance.
+Phase 2 results land in `results/phase2_results.json` plus two CSVs
+(`_models.csv`, `_confusion.csv`). Phase 3 writes `phase3_results.json` plus
+`_splits`, `_ablation`, `_per_family`, `_thresholds` and `_diagnostics` CSVs —
+separate basenames, so a Phase 3 run never overwrites Phase 2 evidence. Every
+figure in them is measured on the run that wrote the file; nothing is asserted
+in advance.
 
 ## Environment
 
@@ -96,16 +156,29 @@ Measured, not assumed. Recorded here so they travel with the numbers.
   fraction, validation receives 2 episodes (~129 attack windows) and test 2 more.
   Threshold selection therefore rests on a small number of independent episodes;
   confidence intervals over episodes, not over windows, are the honest error bar.
-  Increasing `n_episodes` is the fix.
+  Increasing `n_episodes` is the fix. Phase 3's allocator splits more
+  generously (20 % / 20 %) and reports what it actually produced.
 * **Stealth windows are unevenly distributed.** The seed-42 trace puts 256
   stealth windows in train, 0 in validation and 38 in test, so the reported
-  threshold is selected without ever seeing a rate-limited window. Evasion
-  robustness is Phase 3 work and is *not* demonstrated here.
+  threshold is selected without ever seeing a rate-limited window. Phase 3
+  raises minimum stealth-episode targets for validation and test to address this.
 * **Emulated data.** See the provenance note at the top. No field detection rate
   is claimed.
 * **Precision is prevalence-bound.** At ~5.6 % attack prevalence in test, a
   detector with high sensitivity pays for it in false alarms; precision of
   0.79–0.93 reflects the class balance, not a defect.
 * **The raw-count vs temporal-feature ablation is not run.** Phase 2 uses all 29
-  model inputs. No claim about what the 26 temporal features add over the 3 raw
-  counts is made or implied here.
+  model inputs. That ablation is Phase 3's job and is not claimed here.
+
+## Known Phase 3 limitations
+
+* **Emulated data.** See the provenance note at the top; no field detection rate
+  is claimed.
+* **Transferred hyperparameters.** `best_params` come from Phase 2, selected on
+  a different trace. That transfer assumption is documented and `--retune-full`
+  probes it rather than hiding it.
+* **Thin cells.** Some (family, stealth) cells hold too few independent episodes
+  to support a comparison and are flagged with a support flag instead.
+* **Stealth is modelled.** Robustness is measured against the emulator's
+  rate-limited generator; it bounds behaviour on modelled evasion, not real
+  evasion.
