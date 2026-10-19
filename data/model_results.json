@@ -1,0 +1,255 @@
+[
+  {
+    "Model": "Decision Tree",
+    "Accuracy": 1.0,
+    "Precision": 1.0,
+    "Recall": 1.0,
+    "F1 Score": 1.0,
+    "Avg Latency (ms)": 0.126,
+    "Train Time (s)": 0.17,
+    "Best Params": "{'criterion': 'gini', 'max_depth': 3, 'min_samples_leaf': 1, 'min_samples_split': 2}",
+    "Confusion Matrix": [
+      [
+        40,
+        0
+      ],
+      [
+        0,
+        40
+      ]
+    ],
+    "TP": 40,
+    "TN": 40,
+    "FP": 0,
+    "FN": 0,
+    "Total Cost": 0,
+    "ROC AUC": 1.0,
+    "ROC Data": {
+      "fpr": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "tpr": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        1.0,
+        0.0
+      ],
+      "auc": 1.0
+    }
+  },
+  {
+    "Model": "Random Forest",
+    "Accuracy": 1.0,
+    "Precision": 1.0,
+    "Recall": 1.0,
+    "F1 Score": 1.0,
+    "Avg Latency (ms)": 1.833,
+    "Train Time (s)": 2.71,
+    "Best Params": "{'criterion': 'gini', 'max_depth': 5, 'min_samples_split': 2, 'n_estimators': 50}",
+    "Confusion Matrix": [
+      [
+        40,
+        0
+      ],
+      [
+        0,
+        40
+      ]
+    ],
+    "TP": 40,
+    "TN": 40,
+    "FP": 0,
+    "FN": 0,
+    "Total Cost": 0,
+    "ROC AUC": 1.0,
+    "ROC Data": {
+      "fpr": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "tpr": [
+        0.0,
+        0.975,
+        1.0,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        1.0,
+        0.98,
+        0.0
+      ],
+      "auc": 1.0
+    }
+  },
+  {
+    "Model": "SVM",
+    "Accuracy": 0.9875,
+    "Precision": 1.0,
+    "Recall": 0.975,
+    "F1 Score": 0.9873,
+    "Avg Latency (ms)": 0.322,
+    "Train Time (s)": 0.15,
+    "Best Params": "{'estimator__C': 0.1, 'estimator__gamma': 'scale', 'estimator__kernel': 'rbf'}",
+    "Confusion Matrix": [
+      [
+        40,
+        0
+      ],
+      [
+        1,
+        39
+      ]
+    ],
+    "TP": 39,
+    "TN": 40,
+    "FP": 0,
+    "FN": 1,
+    "Total Cost": 10,
+    "ROC AUC": 1.0,
+    "ROC Data": {
+      "fpr": [
+        0.0,
+        0.0,
+        0.0,
+        0.3,
+        0.375,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.825,
+        0.875,
+        1.0
+      ],
+      "tpr": [
+        0.0,
+        0.025,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        0.9990487767985587,
+        0.36142083418265697,
+        0.008385086626814,
+        0.008223460585206207,
+        0.0061880560255945455,
+        0.0061576125776831685,
+        0.006010667996039297,
+        0.005930786937380966,
+        0.005843580944960098,
+        0.005787862570905392,
+        0.00538283884271269
+      ],
+      "auc": 1.0
+    }
+  },
+  {
+    "Model": "AdaBoost",
+    "Accuracy": 1.0,
+    "Precision": 1.0,
+    "Recall": 1.0,
+    "F1 Score": 1.0,
+    "Avg Latency (ms)": 0.106,
+    "Train Time (s)": 0.06,
+    "Best Params": "{'learning_rate': 0.5, 'n_estimators': 50}",
+    "Confusion Matrix": [
+      [
+        40,
+        0
+      ],
+      [
+        0,
+        40
+      ]
+    ],
+    "TP": 40,
+    "TN": 40,
+    "FP": 0,
+    "FN": 0,
+    "Total Cost": 0,
+    "ROC AUC": 1.0,
+    "ROC Data": {
+      "fpr": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "tpr": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        0.9999999999999998,
+        2.220446049250318e-16
+      ],
+      "auc": 1.0
+    }
+  },
+  {
+    "Model": "XGBoost",
+    "Accuracy": 1.0,
+    "Precision": 1.0,
+    "Recall": 1.0,
+    "F1 Score": 1.0,
+    "Avg Latency (ms)": 0.844,
+    "Train Time (s)": 2.02,
+    "Best Params": "{'gamma': 0, 'learning_rate': 0.1, 'max_depth': 3, 'n_estimators': 50, 'subsample': 0.7}",
+    "Confusion Matrix": [
+      [
+        40,
+        0
+      ],
+      [
+        0,
+        40
+      ]
+    ],
+    "TP": 40,
+    "TN": 40,
+    "FP": 0,
+    "FN": 0,
+    "Total Cost": 0,
+    "ROC AUC": 1.0,
+    "ROC Data": {
+      "fpr": [
+        0.0,
+        0.0,
+        0.05,
+        1.0
+      ],
+      "tpr": [
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "thresholds": [
+        null,
+        0.9910922646522522,
+        0.011221596971154213,
+        0.008854269050061703
+      ],
+      "auc": 1.0
+    }
+  }
+]

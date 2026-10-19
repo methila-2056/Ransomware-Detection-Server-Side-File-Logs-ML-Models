@@ -1,0 +1,669 @@
+{
+  "Sizes": [
+    10000,
+    100000,
+    500000,
+    2500000
+  ],
+  "Budget": 200000,
+  "Subsampled Models": [
+    "AdaBoost",
+    "Random Forest",
+    "SVM"
+  ],
+  "Base Paper": {
+    "Sensitivity": 0.9187,
+    "Attack Windows": 209,
+    "Total Cost": 175,
+    "Cost Per Attack Window": 0.8373,
+    "Log Entries": 2500000,
+    "Note": "the paper's cost is a sum over its own test split and cannot be compared with a different split size; cost per attack window is the comparable quantity"
+  },
+  "Runs": [
+    {
+      "Windows": 10000,
+      "Attack Ratio Requested": 0.05,
+      "Timings": {
+        "build_seconds": 0.02,
+        "build_memory_mb": 1.3,
+        "feature_seconds": 0.02,
+        "feature_memory_mb": 3.6,
+        "split_seconds": 0.01
+      },
+      "Budget": 200000,
+      "Feature Count": 26,
+      "Models": [
+        {
+          "Model": "Decision Tree",
+          "Windows Requested": 10000,
+          "Train Rows": 6010,
+          "Trained On Rows": 6010,
+          "Subsampled": false,
+          "Test Rows": 1259,
+          "Test Attack Windows": 531,
+          "Fit Seconds": 0.03,
+          "Accuracy": 0.932486,
+          "Sensitivity": 0.845574,
+          "Specificity": 0.995879,
+          "F1 Score": 0.91353,
+          "ROC AUC": 0.921235,
+          "Total Cost": 823,
+          "Cost Per 1000 Windows": 653.693407,
+          "Cost Per Attack Window": 1.549906
+        },
+        {
+          "Model": "Random Forest",
+          "Windows Requested": 10000,
+          "Train Rows": 6010,
+          "Trained On Rows": 6010,
+          "Subsampled": false,
+          "Test Rows": 1259,
+          "Test Attack Windows": 531,
+          "Fit Seconds": 0.16,
+          "Accuracy": 0.982526,
+          "Sensitivity": 0.958569,
+          "Specificity": 1.0,
+          "F1 Score": 0.978846,
+          "ROC AUC": 0.999877,
+          "Total Cost": 220,
+          "Cost Per 1000 Windows": 174.741859,
+          "Cost Per Attack Window": 0.414313
+        },
+        {
+          "Model": "SVM",
+          "Windows Requested": 10000,
+          "Train Rows": 6010,
+          "Trained On Rows": 6010,
+          "Subsampled": false,
+          "Test Rows": 1259,
+          "Test Attack Windows": 531,
+          "Fit Seconds": 0.38,
+          "Accuracy": 0.97776,
+          "Sensitivity": 0.951036,
+          "Specificity": 0.997253,
+          "F1 Score": 0.973025,
+          "ROC AUC": 0.995261,
+          "Total Cost": 262,
+          "Cost Per 1000 Windows": 208.101668,
+          "Cost Per Attack Window": 0.493409
+        },
+        {
+          "Model": "AdaBoost",
+          "Windows Requested": 10000,
+          "Train Rows": 6010,
+          "Trained On Rows": 6010,
+          "Subsampled": false,
+          "Test Rows": 1259,
+          "Test Attack Windows": 531,
+          "Fit Seconds": 0.72,
+          "Accuracy": 0.973789,
+          "Sensitivity": 0.94162,
+          "Specificity": 0.997253,
+          "F1 Score": 0.968054,
+          "ROC AUC": 0.999327,
+          "Total Cost": 312,
+          "Cost Per 1000 Windows": 247.815727,
+          "Cost Per Attack Window": 0.587571
+        },
+        {
+          "Model": "XGBoost",
+          "Windows Requested": 10000,
+          "Train Rows": 6010,
+          "Trained On Rows": 6010,
+          "Subsampled": false,
+          "Test Rows": 1259,
+          "Test Attack Windows": 531,
+          "Fit Seconds": 0.14,
+          "Accuracy": 0.95552,
+          "Sensitivity": 0.896422,
+          "Specificity": 0.998626,
+          "F1 Score": 0.944444,
+          "ROC AUC": 0.999465,
+          "Total Cost": 551,
+          "Cost Per 1000 Windows": 437.648928,
+          "Cost Per Attack Window": 1.037665
+        }
+      ]
+    },
+    {
+      "Windows": 100000,
+      "Attack Ratio Requested": 0.05,
+      "Timings": {
+        "build_seconds": 0.2,
+        "build_memory_mb": 12.9,
+        "feature_seconds": 0.09,
+        "feature_memory_mb": 36.1,
+        "split_seconds": 0.07
+      },
+      "Budget": 200000,
+      "Feature Count": 26,
+      "Models": [
+        {
+          "Model": "Decision Tree",
+          "Windows Requested": 100000,
+          "Train Rows": 47794,
+          "Trained On Rows": 47794,
+          "Subsampled": false,
+          "Test Rows": 7039,
+          "Test Attack Windows": 1767,
+          "Fit Seconds": 0.21,
+          "Accuracy": 0.983094,
+          "Sensitivity": 0.941709,
+          "Specificity": 0.996965,
+          "F1 Score": 0.965477,
+          "ROC AUC": 0.971995,
+          "Total Cost": 1046,
+          "Cost Per 1000 Windows": 148.600654,
+          "Cost Per Attack Window": 0.591964
+        },
+        {
+          "Model": "Random Forest",
+          "Windows Requested": 100000,
+          "Train Rows": 47794,
+          "Trained On Rows": 47794,
+          "Subsampled": false,
+          "Test Rows": 7039,
+          "Test Attack Windows": 1767,
+          "Fit Seconds": 0.59,
+          "Accuracy": 0.993749,
+          "Sensitivity": 0.977929,
+          "Specificity": 0.999052,
+          "F1 Score": 0.987429,
+          "ROC AUC": 0.999322,
+          "Total Cost": 395,
+          "Cost Per 1000 Windows": 56.115926,
+          "Cost Per Attack Window": 0.223543
+        },
+        {
+          "Model": "SVM",
+          "Windows Requested": 100000,
+          "Train Rows": 47794,
+          "Trained On Rows": 47794,
+          "Subsampled": false,
+          "Test Rows": 7039,
+          "Test Attack Windows": 1767,
+          "Fit Seconds": 8.64,
+          "Accuracy": 0.985083,
+          "Sensitivity": 0.942841,
+          "Specificity": 0.999241,
+          "F1 Score": 0.96945,
+          "ROC AUC": 0.994989,
+          "Total Cost": 1014,
+          "Cost Per 1000 Windows": 144.054553,
+          "Cost Per Attack Window": 0.573854
+        },
+        {
+          "Model": "AdaBoost",
+          "Windows Requested": 100000,
+          "Train Rows": 47794,
+          "Trained On Rows": 47794,
+          "Subsampled": false,
+          "Test Rows": 7039,
+          "Test Attack Windows": 1767,
+          "Fit Seconds": 4.11,
+          "Accuracy": 0.993039,
+          "Sensitivity": 0.975665,
+          "Specificity": 0.998862,
+          "F1 Score": 0.985988,
+          "ROC AUC": 0.998893,
+          "Total Cost": 436,
+          "Cost Per 1000 Windows": 61.940617,
+          "Cost Per Attack Window": 0.246746
+        },
+        {
+          "Model": "XGBoost",
+          "Windows Requested": 100000,
+          "Train Rows": 47794,
+          "Trained On Rows": 47794,
+          "Subsampled": false,
+          "Test Rows": 7039,
+          "Test Attack Windows": 1767,
+          "Fit Seconds": 0.22,
+          "Accuracy": 0.992328,
+          "Sensitivity": 0.973401,
+          "Specificity": 0.998672,
+          "F1 Score": 0.984545,
+          "ROC AUC": 0.999126,
+          "Total Cost": 477,
+          "Cost Per 1000 Windows": 67.765308,
+          "Cost Per Attack Window": 0.269949
+        }
+      ]
+    },
+    {
+      "Windows": 500000,
+      "Attack Ratio Requested": 0.05,
+      "Timings": {
+        "build_seconds": 0.8,
+        "build_memory_mb": 64.6,
+        "feature_seconds": 0.5,
+        "feature_memory_mb": 180.6,
+        "split_seconds": 0.45
+      },
+      "Budget": 200000,
+      "Feature Count": 26,
+      "Models": [
+        {
+          "Model": "Decision Tree",
+          "Windows Requested": 500000,
+          "Train Rows": 229345,
+          "Trained On Rows": 229345,
+          "Subsampled": false,
+          "Test Rows": 35482,
+          "Test Attack Windows": 8612,
+          "Fit Seconds": 1.23,
+          "Accuracy": 0.988839,
+          "Sensitivity": 0.960288,
+          "Specificity": 0.99799,
+          "F1 Score": 0.976618,
+          "ROC AUC": 0.990748,
+          "Total Cost": 3474,
+          "Cost Per 1000 Windows": 97.908799,
+          "Cost Per Attack Window": 0.403391
+        },
+        {
+          "Model": "Random Forest",
+          "Windows Requested": 500000,
+          "Train Rows": 200000,
+          "Trained On Rows": 200000,
+          "Subsampled": true,
+          "Test Rows": 35482,
+          "Test Attack Windows": 8612,
+          "Fit Seconds": 5.2,
+          "Accuracy": 0.98991,
+          "Sensitivity": 0.963191,
+          "Specificity": 0.998474,
+          "F1 Score": 0.978877,
+          "ROC AUC": 0.999287,
+          "Total Cost": 3211,
+          "Cost Per 1000 Windows": 90.49659,
+          "Cost Per Attack Window": 0.372852
+        },
+        {
+          "Model": "SVM",
+          "Windows Requested": 500000,
+          "Train Rows": 200000,
+          "Trained On Rows": 200000,
+          "Subsampled": true,
+          "Test Rows": 35482,
+          "Test Attack Windows": 8612,
+          "Fit Seconds": 200.02,
+          "Accuracy": 0.989375,
+          "Sensitivity": 0.961681,
+          "Specificity": 0.998251,
+          "F1 Score": 0.977746,
+          "ROC AUC": 0.996538,
+          "Total Cost": 3347,
+          "Cost Per 1000 Windows": 94.329519,
+          "Cost Per Attack Window": 0.388644
+        },
+        {
+          "Model": "AdaBoost",
+          "Windows Requested": 500000,
+          "Train Rows": 200000,
+          "Trained On Rows": 200000,
+          "Subsampled": true,
+          "Test Rows": 35482,
+          "Test Attack Windows": 8612,
+          "Fit Seconds": 22.1,
+          "Accuracy": 0.990079,
+          "Sensitivity": 0.965165,
+          "Specificity": 0.998065,
+          "F1 Score": 0.979265,
+          "ROC AUC": 0.999168,
+          "Total Cost": 3052,
+          "Cost Per 1000 Windows": 86.015444,
+          "Cost Per Attack Window": 0.354389
+        },
+        {
+          "Model": "XGBoost",
+          "Windows Requested": 500000,
+          "Train Rows": 229345,
+          "Trained On Rows": 229345,
+          "Subsampled": false,
+          "Test Rows": 35482,
+          "Test Attack Windows": 8612,
+          "Fit Seconds": 0.63,
+          "Accuracy": 0.991658,
+          "Sensitivity": 0.971203,
+          "Specificity": 0.998214,
+          "F1 Score": 0.982613,
+          "ROC AUC": 0.999452,
+          "Total Cost": 2528,
+          "Cost Per 1000 Windows": 71.247393,
+          "Cost Per Attack Window": 0.293544
+        }
+      ]
+    },
+    {
+      "Windows": 2500000,
+      "Attack Ratio Requested": 0.05,
+      "Timings": {
+        "build_seconds": 3.85,
+        "build_memory_mb": 322.7,
+        "feature_seconds": 2.49,
+        "feature_memory_mb": 902.7,
+        "split_seconds": 6.64
+      },
+      "Budget": 200000,
+      "Feature Count": 26,
+      "Models": [
+        {
+          "Model": "Decision Tree",
+          "Windows Requested": 2500000,
+          "Train Rows": 1145517,
+          "Trained On Rows": 1145517,
+          "Subsampled": false,
+          "Test Rows": 172737,
+          "Test Attack Windows": 42729,
+          "Fit Seconds": 6.54,
+          "Accuracy": 0.98969,
+          "Sensitivity": 0.962836,
+          "Specificity": 0.998515,
+          "F1 Score": 0.978814,
+          "ROC AUC": 0.992104,
+          "Total Cost": 16073,
+          "Cost Per 1000 Windows": 93.04897,
+          "Cost Per Attack Window": 0.376161
+        },
+        {
+          "Model": "Random Forest",
+          "Windows Requested": 2500000,
+          "Train Rows": 200000,
+          "Trained On Rows": 200000,
+          "Subsampled": true,
+          "Test Rows": 172737,
+          "Test Attack Windows": 42729,
+          "Fit Seconds": 5.61,
+          "Accuracy": 0.987773,
+          "Sensitivity": 0.954083,
+          "Specificity": 0.998846,
+          "F1 Score": 0.974751,
+          "ROC AUC": 0.999467,
+          "Total Cost": 19770,
+          "Cost Per 1000 Windows": 114.451449,
+          "Cost Per Attack Window": 0.462683
+        },
+        {
+          "Model": "SVM",
+          "Windows Requested": 2500000,
+          "Train Rows": 200000,
+          "Trained On Rows": 200000,
+          "Subsampled": true,
+          "Test Rows": 172737,
+          "Test Attack Windows": 42729,
+          "Fit Seconds": 317.02,
+          "Accuracy": 0.988491,
+          "Sensitivity": 0.95757,
+          "Specificity": 0.998654,
+          "F1 Score": 0.976283,
+          "ROC AUC": 0.996039,
+          "Total Cost": 18305,
+          "Cost Per 1000 Windows": 105.970348,
+          "Cost Per Attack Window": 0.428398
+        },
+        {
+          "Model": "AdaBoost",
+          "Windows Requested": 2500000,
+          "Train Rows": 200000,
+          "Trained On Rows": 200000,
+          "Subsampled": true,
+          "Test Rows": 172737,
+          "Test Attack Windows": 42729,
+          "Fit Seconds": 78.08,
+          "Accuracy": 0.990454,
+          "Sensitivity": 0.966674,
+          "Specificity": 0.998269,
+          "F1 Score": 0.980429,
+          "ROC AUC": 0.999451,
+          "Total Cost": 14465,
+          "Cost Per 1000 Windows": 83.740021,
+          "Cost Per Attack Window": 0.338529
+        },
+        {
+          "Model": "XGBoost",
+          "Windows Requested": 2500000,
+          "Train Rows": 1145517,
+          "Trained On Rows": 1145517,
+          "Subsampled": false,
+          "Test Rows": 172737,
+          "Test Attack Windows": 42729,
+          "Fit Seconds": 12.29,
+          "Accuracy": 0.990946,
+          "Sensitivity": 0.966978,
+          "Specificity": 0.998823,
+          "F1 Score": 0.981425,
+          "ROC AUC": 0.999604,
+          "Total Cost": 14263,
+          "Cost Per 1000 Windows": 82.570613,
+          "Cost Per Attack Window": 0.333801
+        }
+      ]
+    }
+  ],
+  "Curves": {
+    "Decision Tree": [
+      {
+        "Windows": 10000,
+        "Sensitivity": 0.845574,
+        "Specificity": 0.995879,
+        "Accuracy": 0.932486,
+        "Cost Per Attack Window": 1.549906,
+        "Fit Seconds": 0.03,
+        "Subsampled": false
+      },
+      {
+        "Windows": 100000,
+        "Sensitivity": 0.941709,
+        "Specificity": 0.996965,
+        "Accuracy": 0.983094,
+        "Cost Per Attack Window": 0.591964,
+        "Fit Seconds": 0.21,
+        "Subsampled": false
+      },
+      {
+        "Windows": 500000,
+        "Sensitivity": 0.960288,
+        "Specificity": 0.99799,
+        "Accuracy": 0.988839,
+        "Cost Per Attack Window": 0.403391,
+        "Fit Seconds": 1.23,
+        "Subsampled": false
+      },
+      {
+        "Windows": 2500000,
+        "Sensitivity": 0.962836,
+        "Specificity": 0.998515,
+        "Accuracy": 0.98969,
+        "Cost Per Attack Window": 0.376161,
+        "Fit Seconds": 6.54,
+        "Subsampled": false
+      }
+    ],
+    "Random Forest": [
+      {
+        "Windows": 10000,
+        "Sensitivity": 0.958569,
+        "Specificity": 1.0,
+        "Accuracy": 0.982526,
+        "Cost Per Attack Window": 0.414313,
+        "Fit Seconds": 0.16,
+        "Subsampled": false
+      },
+      {
+        "Windows": 100000,
+        "Sensitivity": 0.977929,
+        "Specificity": 0.999052,
+        "Accuracy": 0.993749,
+        "Cost Per Attack Window": 0.223543,
+        "Fit Seconds": 0.59,
+        "Subsampled": false
+      },
+      {
+        "Windows": 500000,
+        "Sensitivity": 0.963191,
+        "Specificity": 0.998474,
+        "Accuracy": 0.98991,
+        "Cost Per Attack Window": 0.372852,
+        "Fit Seconds": 5.2,
+        "Subsampled": true
+      },
+      {
+        "Windows": 2500000,
+        "Sensitivity": 0.954083,
+        "Specificity": 0.998846,
+        "Accuracy": 0.987773,
+        "Cost Per Attack Window": 0.462683,
+        "Fit Seconds": 5.61,
+        "Subsampled": true
+      }
+    ],
+    "SVM": [
+      {
+        "Windows": 10000,
+        "Sensitivity": 0.951036,
+        "Specificity": 0.997253,
+        "Accuracy": 0.97776,
+        "Cost Per Attack Window": 0.493409,
+        "Fit Seconds": 0.38,
+        "Subsampled": false
+      },
+      {
+        "Windows": 100000,
+        "Sensitivity": 0.942841,
+        "Specificity": 0.999241,
+        "Accuracy": 0.985083,
+        "Cost Per Attack Window": 0.573854,
+        "Fit Seconds": 8.64,
+        "Subsampled": false
+      },
+      {
+        "Windows": 500000,
+        "Sensitivity": 0.961681,
+        "Specificity": 0.998251,
+        "Accuracy": 0.989375,
+        "Cost Per Attack Window": 0.388644,
+        "Fit Seconds": 200.02,
+        "Subsampled": true
+      },
+      {
+        "Windows": 2500000,
+        "Sensitivity": 0.95757,
+        "Specificity": 0.998654,
+        "Accuracy": 0.988491,
+        "Cost Per Attack Window": 0.428398,
+        "Fit Seconds": 317.02,
+        "Subsampled": true
+      }
+    ],
+    "AdaBoost": [
+      {
+        "Windows": 10000,
+        "Sensitivity": 0.94162,
+        "Specificity": 0.997253,
+        "Accuracy": 0.973789,
+        "Cost Per Attack Window": 0.587571,
+        "Fit Seconds": 0.72,
+        "Subsampled": false
+      },
+      {
+        "Windows": 100000,
+        "Sensitivity": 0.975665,
+        "Specificity": 0.998862,
+        "Accuracy": 0.993039,
+        "Cost Per Attack Window": 0.246746,
+        "Fit Seconds": 4.11,
+        "Subsampled": false
+      },
+      {
+        "Windows": 500000,
+        "Sensitivity": 0.965165,
+        "Specificity": 0.998065,
+        "Accuracy": 0.990079,
+        "Cost Per Attack Window": 0.354389,
+        "Fit Seconds": 22.1,
+        "Subsampled": true
+      },
+      {
+        "Windows": 2500000,
+        "Sensitivity": 0.966674,
+        "Specificity": 0.998269,
+        "Accuracy": 0.990454,
+        "Cost Per Attack Window": 0.338529,
+        "Fit Seconds": 78.08,
+        "Subsampled": true
+      }
+    ],
+    "XGBoost": [
+      {
+        "Windows": 10000,
+        "Sensitivity": 0.896422,
+        "Specificity": 0.998626,
+        "Accuracy": 0.95552,
+        "Cost Per Attack Window": 1.037665,
+        "Fit Seconds": 0.14,
+        "Subsampled": false
+      },
+      {
+        "Windows": 100000,
+        "Sensitivity": 0.973401,
+        "Specificity": 0.998672,
+        "Accuracy": 0.992328,
+        "Cost Per Attack Window": 0.269949,
+        "Fit Seconds": 0.22,
+        "Subsampled": false
+      },
+      {
+        "Windows": 500000,
+        "Sensitivity": 0.971203,
+        "Specificity": 0.998214,
+        "Accuracy": 0.991658,
+        "Cost Per Attack Window": 0.293544,
+        "Fit Seconds": 0.63,
+        "Subsampled": false
+      },
+      {
+        "Windows": 2500000,
+        "Sensitivity": 0.966978,
+        "Specificity": 0.998823,
+        "Accuracy": 0.990946,
+        "Cost Per Attack Window": 0.333801,
+        "Fit Seconds": 12.29,
+        "Subsampled": false
+      }
+    ]
+  },
+  "Trends": {
+    "Decision Tree": {
+      "Sensitivity At Smallest": 0.845574,
+      "Sensitivity At Largest": 0.962836,
+      "Delta": 0.117262,
+      "Converged": false
+    },
+    "Random Forest": {
+      "Sensitivity At Smallest": 0.958569,
+      "Sensitivity At Largest": 0.954083,
+      "Delta": -0.004486,
+      "Converged": true
+    },
+    "SVM": {
+      "Sensitivity At Smallest": 0.951036,
+      "Sensitivity At Largest": 0.95757,
+      "Delta": 0.006534,
+      "Converged": true
+    },
+    "AdaBoost": {
+      "Sensitivity At Smallest": 0.94162,
+      "Sensitivity At Largest": 0.966674,
+      "Delta": 0.025054,
+      "Converged": false
+    },
+    "XGBoost": {
+      "Sensitivity At Smallest": 0.896422,
+      "Sensitivity At Largest": 0.966978,
+      "Delta": 0.070556,
+      "Converged": false
+    }
+  },
+  "Elapsed Seconds": 845.0
+}

@@ -1,0 +1,105 @@
+{
+  "Width Sweep": [
+    {
+      "Width Seconds": 1,
+      "Stride Seconds": 1,
+      "Windows": 20096,
+      "Window Inflation vs 1s": 0.101,
+      "Test Attack Windows": 605,
+      "Sensitivity": 0.930579,
+      "Specificity": 0.994663,
+      "Total Cost": 434,
+      "Median Detection Latency (s)": 4.0,
+      "Cost Per Attack Window": 0.717355
+    },
+    {
+      "Width Seconds": 2,
+      "Stride Seconds": 1,
+      "Windows": 25227,
+      "Window Inflation vs 1s": 0.127,
+      "Test Attack Windows": 620,
+      "Sensitivity": 0.946774,
+      "Specificity": 0.996518,
+      "Total Cost": 343,
+      "Median Detection Latency (s)": 4.0,
+      "Cost Per Attack Window": 0.553226
+    },
+    {
+      "Width Seconds": 5,
+      "Stride Seconds": 2,
+      "Windows": 14738,
+      "Window Inflation vs 1s": 0.074,
+      "Test Attack Windows": 323,
+      "Sensitivity": 0.916409,
+      "Specificity": 0.997561,
+      "Total Cost": 275,
+      "Median Detection Latency (s)": 6.0,
+      "Cost Per Attack Window": 0.851393
+    },
+    {
+      "Width Seconds": 10,
+      "Stride Seconds": 5,
+      "Windows": 5997,
+      "Window Inflation vs 1s": 0.03,
+      "Test Attack Windows": 136,
+      "Sensitivity": 0.911765,
+      "Specificity": 0.99639,
+      "Total Cost": 123,
+      "Median Detection Latency (s)": 5.0,
+      "Cost Per Attack Window": 0.904412
+    },
+    {
+      "Width Seconds": 30,
+      "Stride Seconds": 15,
+      "Windows": 1999,
+      "Window Inflation vs 1s": 0.01,
+      "Test Attack Windows": 58,
+      "Sensitivity": 0.896552,
+      "Specificity": 0.996491,
+      "Total Cost": 61,
+      "Median Detection Latency (s)": 7.5,
+      "Cost Per Attack Window": 1.051724
+    }
+  ],
+  "Stride Analysis": [
+    {
+      "Width Seconds": 5,
+      "Stride Seconds": 1,
+      "Overlap Fraction": 0.8,
+      "Windows": 29472,
+      "Sensitivity": 0.931677,
+      "Specificity": 0.998377,
+      "Total Cost": 447
+    },
+    {
+      "Width Seconds": 5,
+      "Stride Seconds": 2,
+      "Overlap Fraction": 0.6,
+      "Windows": 14738,
+      "Sensitivity": 0.916409,
+      "Specificity": 0.997561,
+      "Total Cost": 275
+    },
+    {
+      "Width Seconds": 5,
+      "Stride Seconds": 3,
+      "Overlap Fraction": 0.4,
+      "Windows": 9828,
+      "Sensitivity": 0.934579,
+      "Specificity": 0.996518,
+      "Total Cost": 145
+    },
+    {
+      "Width Seconds": 5,
+      "Stride Seconds": 5,
+      "Overlap Fraction": 0.0,
+      "Windows": 5896,
+      "Sensitivity": 0.90625,
+      "Specificity": 0.995074,
+      "Total Cost": 124
+    }
+  ],
+  "Event Rows": 198368,
+  "Source Windows": 30000,
+  "Interpretation Note": "Total cost is not comparable across widths. Widening the window reduces the number of attack windows the model is judged on, so a falling cost alongside a falling sensitivity is arithmetic, not improvement. Compare sensitivity, or cost per attack window, instead."
+}

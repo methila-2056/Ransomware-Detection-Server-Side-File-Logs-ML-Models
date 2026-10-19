@@ -1,0 +1,191 @@
+{
+  "Best Single Model": "Logistic Regression",
+  "Single Models": {
+    "Decision Tree": {
+      "Accuracy": 0.950682,
+      "Sensitivity": 0.76936,
+      "Specificity": 0.998234,
+      "Total Cost": 1374
+    },
+    "Random Forest": {
+      "Accuracy": 0.975516,
+      "Sensitivity": 0.885522,
+      "Specificity": 0.999117,
+      "Total Cost": 682
+    },
+    "SVM": {
+      "Accuracy": 0.965373,
+      "Sensitivity": 0.838384,
+      "Specificity": 0.998675,
+      "Total Cost": 963
+    },
+    "AdaBoost": {
+      "Accuracy": 0.988108,
+      "Sensitivity": 0.951178,
+      "Specificity": 0.997792,
+      "Total Cost": 295
+    },
+    "XGBoost": {
+      "Accuracy": 0.985659,
+      "Sensitivity": 0.934343,
+      "Specificity": 0.999117,
+      "Total Cost": 392
+    },
+    "Logistic Regression": {
+      "Accuracy": 0.988458,
+      "Sensitivity": 0.952862,
+      "Specificity": 0.997792,
+      "Total Cost": 285
+    }
+  },
+  "Tuned Single Models": {
+    "Decision Tree": {
+      "Accuracy": 0.951032,
+      "Sensitivity": 0.774411,
+      "Specificity": 0.997351,
+      "Total Cost": 1346
+    },
+    "Random Forest": {
+      "Accuracy": 0.98531,
+      "Sensitivity": 0.93266,
+      "Specificity": 0.999117,
+      "Total Cost": 402
+    },
+    "SVM": {
+      "Accuracy": 0.965373,
+      "Sensitivity": 0.838384,
+      "Specificity": 0.998675,
+      "Total Cost": 963
+    },
+    "AdaBoost": {
+      "Accuracy": 0.988108,
+      "Sensitivity": 0.951178,
+      "Specificity": 0.997792,
+      "Total Cost": 295
+    },
+    "XGBoost": {
+      "Accuracy": 0.986359,
+      "Sensitivity": 0.939394,
+      "Specificity": 0.998675,
+      "Total Cost": 363
+    },
+    "Logistic Regression": {
+      "Accuracy": 0.988458,
+      "Sensitivity": 0.952862,
+      "Specificity": 0.997792,
+      "Total Cost": 285
+    }
+  },
+  "Comparison Basis": "Single Models and Voting are scored from identical probability arrays on the same test split at threshold 0.5. Tuned Single Models reports the separately tuned fits and is reference only.",
+  "Voting": {
+    "Members": [
+      "Decision Tree",
+      "Random Forest",
+      "SVM",
+      "AdaBoost",
+      "XGBoost",
+      "Logistic Regression"
+    ],
+    "Weights": null,
+    "Rules": {
+      "soft": {
+        "0.5": {
+          "Accuracy": 0.976915,
+          "Sensitivity": 0.893939,
+          "Specificity": 0.998675,
+          "F1 Score": 0.941489,
+          "MCC": 0.9292,
+          "Total Cost": 633,
+          "TP": 531,
+          "TN": 2262,
+          "FP": 3,
+          "FN": 63,
+          "Cost vs Best Single": -348,
+          "Sensitivity vs Best Single": -0.058923
+        }
+      },
+      "hard": {
+        "0.5": {
+          "Accuracy": 0.986359,
+          "Sensitivity": 0.941077,
+          "Specificity": 0.998234,
+          "F1 Score": 0.966292,
+          "MCC": 0.95829,
+          "Total Cost": 354,
+          "TP": 559,
+          "TN": 2261,
+          "FP": 4,
+          "FN": 35,
+          "Cost vs Best Single": -69,
+          "Sensitivity vs Best Single": -0.011785
+        }
+      }
+    },
+    "Best Single Member": {
+      "Decision Tree": {
+        "Accuracy": 0.950682,
+        "Sensitivity": 0.76936,
+        "Specificity": 0.998234,
+        "Total Cost": 1374
+      },
+      "Random Forest": {
+        "Accuracy": 0.975516,
+        "Sensitivity": 0.885522,
+        "Specificity": 0.999117,
+        "Total Cost": 682
+      },
+      "SVM": {
+        "Accuracy": 0.965373,
+        "Sensitivity": 0.838384,
+        "Specificity": 0.998675,
+        "Total Cost": 963
+      },
+      "AdaBoost": {
+        "Accuracy": 0.988108,
+        "Sensitivity": 0.951178,
+        "Specificity": 0.997792,
+        "Total Cost": 295
+      },
+      "XGBoost": {
+        "Accuracy": 0.985659,
+        "Sensitivity": 0.934343,
+        "Specificity": 0.999117,
+        "Total Cost": 392
+      },
+      "Logistic Regression": {
+        "Accuracy": 0.988458,
+        "Sensitivity": 0.952862,
+        "Specificity": 0.997792,
+        "Total Cost": 285
+      }
+    }
+  },
+  "Weight Search": {
+    "Best": {
+      "Members": [
+        "SVM",
+        "AdaBoost"
+      ],
+      "Total Cost": 233
+    },
+    "Trials Evaluated": 57,
+    "Uniform All": {
+      "Members": [
+        "Decision Tree",
+        "Random Forest",
+        "SVM",
+        "AdaBoost",
+        "XGBoost",
+        "Logistic Regression"
+      ],
+      "Total Cost": 334
+    },
+    "Grid": [
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ]
+  }
+}

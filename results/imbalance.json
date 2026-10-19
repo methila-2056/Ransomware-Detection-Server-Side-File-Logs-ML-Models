@@ -1,0 +1,301 @@
+{
+  "Ratios Requested": [
+    0.01,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "Ratios Achieved": [
+    0.013358856351566,
+    0.058638377244112846,
+    0.1104542283259281,
+    0.1925
+  ],
+  "Method": "single trace at max ratio; attack episodes dropped to reach each lower ratio, holding the benign background fixed",
+  "Rows": [
+    {
+      "Requested Ratio": 0.01,
+      "Achieved Ratio": 0.013358856351566,
+      "Episodes": 6,
+      "Train Attack Windows": 119,
+      "Test Attack Windows": 164,
+      "Models": {
+        "Decision Tree": {
+          "Accuracy": 0.955466,
+          "Sensitivity": 0.469512,
+          "Specificity": 0.999448,
+          "Total Cost": 871
+        },
+        "Random Forest": {
+          "Accuracy": 0.978239,
+          "Sensitivity": 0.737805,
+          "Specificity": 1.0,
+          "Total Cost": 430
+        },
+        "SVM": {
+          "Accuracy": 0.986336,
+          "Sensitivity": 0.841463,
+          "Specificity": 0.999448,
+          "Total Cost": 261
+        },
+        "AdaBoost": {
+          "Accuracy": 0.968623,
+          "Sensitivity": 0.628049,
+          "Specificity": 0.999448,
+          "Total Cost": 611
+        },
+        "XGBoost": {
+          "Accuracy": 0.967611,
+          "Sensitivity": 0.615854,
+          "Specificity": 0.999448,
+          "Total Cost": 631
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.981275,
+          "Sensitivity": 0.780488,
+          "Specificity": 0.999448,
+          "Total Cost": 361
+        }
+      }
+    },
+    {
+      "Requested Ratio": 0.05,
+      "Achieved Ratio": 0.058638377244112846,
+      "Episodes": 25,
+      "Train Attack Windows": 717,
+      "Test Attack Windows": 584,
+      "Models": {
+        "Decision Tree": {
+          "Accuracy": 0.958999,
+          "Sensitivity": 0.842466,
+          "Specificity": 0.998269,
+          "Total Cost": 923
+        },
+        "Random Forest": {
+          "Accuracy": 0.968925,
+          "Sensitivity": 0.878425,
+          "Specificity": 0.999423,
+          "Total Cost": 711
+        },
+        "SVM": {
+          "Accuracy": 0.980147,
+          "Sensitivity": 0.92637,
+          "Specificity": 0.998269,
+          "Total Cost": 433
+        },
+        "AdaBoost": {
+          "Accuracy": 0.959862,
+          "Sensitivity": 0.842466,
+          "Specificity": 0.999423,
+          "Total Cost": 921
+        },
+        "XGBoost": {
+          "Accuracy": 0.962883,
+          "Sensitivity": 0.854452,
+          "Specificity": 0.999423,
+          "Total Cost": 851
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.97022,
+          "Sensitivity": 0.885274,
+          "Specificity": 0.998846,
+          "Total Cost": 672
+        }
+      }
+    },
+    {
+      "Requested Ratio": 0.1,
+      "Achieved Ratio": 0.1104542283259281,
+      "Episodes": 55,
+      "Train Attack Windows": 1483,
+      "Test Attack Windows": 1051,
+      "Models": {
+        "Decision Tree": {
+          "Accuracy": 0.963337,
+          "Sensitivity": 0.900095,
+          "Specificity": 0.997919,
+          "Total Cost": 1054
+        },
+        "Random Forest": {
+          "Accuracy": 0.961991,
+          "Sensitivity": 0.899144,
+          "Specificity": 0.996358,
+          "Total Cost": 1067
+        },
+        "SVM": {
+          "Accuracy": 0.94181,
+          "Sensitivity": 0.843958,
+          "Specificity": 0.995317,
+          "Total Cost": 1649
+        },
+        "AdaBoost": {
+          "Accuracy": 0.982509,
+          "Sensitivity": 0.957184,
+          "Specificity": 0.996358,
+          "Total Cost": 457
+        },
+        "XGBoost": {
+          "Accuracy": 0.9815,
+          "Sensitivity": 0.953378,
+          "Specificity": 0.996878,
+          "Total Cost": 496
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.974437,
+          "Sensitivity": 0.937203,
+          "Specificity": 0.994797,
+          "Total Cost": 670
+        }
+      }
+    },
+    {
+      "Requested Ratio": 0.2,
+      "Achieved Ratio": 0.1925,
+      "Episodes": 109,
+      "Train Attack Windows": 2990,
+      "Test Attack Windows": 2006,
+      "Models": {
+        "Decision Tree": {
+          "Accuracy": 0.976517,
+          "Sensitivity": 0.962612,
+          "Specificity": 0.992152,
+          "Total Cost": 764
+        },
+        "Random Forest": {
+          "Accuracy": 0.980211,
+          "Sensitivity": 0.97009,
+          "Specificity": 0.991592,
+          "Total Cost": 615
+        },
+        "SVM": {
+          "Accuracy": 0.967546,
+          "Sensitivity": 0.947159,
+          "Specificity": 0.990471,
+          "Total Cost": 1077
+        },
+        "AdaBoost": {
+          "Accuracy": 0.96781,
+          "Sensitivity": 0.949651,
+          "Specificity": 0.988229,
+          "Total Cost": 1031
+        },
+        "XGBoost": {
+          "Accuracy": 0.97942,
+          "Sensitivity": 0.968096,
+          "Specificity": 0.992152,
+          "Total Cost": 654
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.95752,
+          "Sensitivity": 0.930209,
+          "Specificity": 0.988229,
+          "Total Cost": 1421
+        }
+      }
+    }
+  ],
+  "Summary": {
+    "Decision Tree": {
+      "metric": "Sensitivity",
+      "by_ratio": {
+        "0.01": 0.469512,
+        "0.05": 0.842466,
+        "0.1": 0.900095,
+        "0.2": 0.962612
+      },
+      "mean": 0.793671,
+      "ci_low": 0.577158,
+      "ci_high": 0.932576,
+      "std": 0.221606,
+      "min": 0.469512,
+      "max": 0.962612,
+      "n": 4,
+      "confidence": 0.95
+    },
+    "Random Forest": {
+      "metric": "Sensitivity",
+      "by_ratio": {
+        "0.01": 0.737805,
+        "0.05": 0.878425,
+        "0.1": 0.899144,
+        "0.2": 0.97009
+      },
+      "mean": 0.871366,
+      "ci_low": 0.77814,
+      "ci_high": 0.947174,
+      "std": 0.097308,
+      "min": 0.737805,
+      "max": 0.97009,
+      "n": 4,
+      "confidence": 0.95
+    },
+    "SVM": {
+      "metric": "Sensitivity",
+      "by_ratio": {
+        "0.01": 0.841463,
+        "0.05": 0.92637,
+        "0.1": 0.843958,
+        "0.2": 0.947159
+      },
+      "mean": 0.889738,
+      "ci_low": 0.84271,
+      "ci_high": 0.936764,
+      "std": 0.054971,
+      "min": 0.841463,
+      "max": 0.947159,
+      "n": 4,
+      "confidence": 0.95
+    },
+    "AdaBoost": {
+      "metric": "Sensitivity",
+      "by_ratio": {
+        "0.01": 0.628049,
+        "0.05": 0.842466,
+        "0.1": 0.957184,
+        "0.2": 0.949651
+      },
+      "mean": 0.844337,
+      "ci_low": 0.708449,
+      "ci_high": 0.953418,
+      "std": 0.153416,
+      "min": 0.628049,
+      "max": 0.957184,
+      "n": 4,
+      "confidence": 0.95
+    },
+    "XGBoost": {
+      "metric": "Sensitivity",
+      "by_ratio": {
+        "0.01": 0.615854,
+        "0.05": 0.854452,
+        "0.1": 0.953378,
+        "0.2": 0.968096
+      },
+      "mean": 0.847945,
+      "ci_low": 0.700235,
+      "ci_high": 0.960737,
+      "std": 0.162748,
+      "min": 0.615854,
+      "max": 0.968096,
+      "n": 4,
+      "confidence": 0.95
+    },
+    "Logistic Regression": {
+      "metric": "Sensitivity",
+      "by_ratio": {
+        "0.01": 0.780488,
+        "0.05": 0.885274,
+        "0.1": 0.937203,
+        "0.2": 0.930209
+      },
+      "mean": 0.883294,
+      "ci_low": 0.817918,
+      "ci_high": 0.933706,
+      "std": 0.072296,
+      "min": 0.780488,
+      "max": 0.937203,
+      "n": 4,
+      "confidence": 0.95
+    }
+  }
+}

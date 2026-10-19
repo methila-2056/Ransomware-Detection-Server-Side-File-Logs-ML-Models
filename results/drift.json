@@ -1,0 +1,363 @@
+{
+  "Reference Windows": 15000,
+  "Future Windows": 15000,
+  "Feature PSI": [
+    {
+      "Feature": "ops_max_30s",
+      "PSI": 0.042379,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "active_frac_30s",
+      "PSI": 0.042211,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_absdelta_mean_30s",
+      "PSI": 0.029139,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_sum_30s",
+      "PSI": 0.028563,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_mean_30s",
+      "PSI": 0.028302,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_cv_3s",
+      "PSI": 0.025032,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_cv_30s",
+      "PSI": 0.022455,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "active_frac_10s",
+      "PSI": 0.016414,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "burst_ratio",
+      "PSI": 0.016105,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_max_10s",
+      "PSI": 0.016045,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_max_5s",
+      "PSI": 0.012037,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_mean_10s",
+      "PSI": 0.010159,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_sum_10s",
+      "PSI": 0.010097,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_cv_10s",
+      "PSI": 0.009647,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_absdelta_mean_10s",
+      "PSI": 0.008207,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_cv_5s",
+      "PSI": 0.007435,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "active_frac_5s",
+      "PSI": 0.007279,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_absdelta_mean_3s",
+      "PSI": 0.006809,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_absdelta_mean_5s",
+      "PSI": 0.005557,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_mean_5s",
+      "PSI": 0.004991,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_sum_5s",
+      "PSI": 0.004936,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_max_3s",
+      "PSI": 0.004423,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_mean_3s",
+      "PSI": 0.004042,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "ops_sum_3s",
+      "PSI": 0.004008,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "active_frac_3s",
+      "PSI": 0.002696,
+      "Severity": "stable"
+    },
+    {
+      "Feature": "active_run_length",
+      "PSI": 0.000942,
+      "Severity": "stable"
+    }
+  ],
+  "Most Drifted Feature": "ops_max_30s",
+  "Max PSI": 0.042379,
+  "Severity": "stable",
+  "Label Rate Shift": {
+    "Reference Attack Rate": 0.053867,
+    "Current Attack Rate": 0.0556,
+    "Absolute Change": 0.001733,
+    "Relative Change": 0.032178
+  },
+  "Degradation": {
+    "Degraded": true,
+    "First Sensitivity": 0.987578,
+    "Final Sensitivity": 0.935897,
+    "Sensitivity Drop": 0.051681,
+    "Worst Sensitivity": 0.935484,
+    "Worst At Chunk": 8000,
+    "First Cost": 29,
+    "Final Cost": 56
+  },
+  "Curve": [
+    {
+      "Chunk Start": 0,
+      "Attack Windows": 161,
+      "Sensitivity": 0.987578,
+      "Specificity": 0.995106,
+      "Total Cost": 29,
+      "Attack Rate": 0.0805
+    },
+    {
+      "Chunk Start": 2000,
+      "Attack Windows": 76,
+      "Sensitivity": 0.960526,
+      "Specificity": 0.99948,
+      "Total Cost": 31,
+      "Attack Rate": 0.038
+    },
+    {
+      "Chunk Start": 4000,
+      "Attack Windows": 134,
+      "Sensitivity": 0.970149,
+      "Specificity": 0.994105,
+      "Total Cost": 51,
+      "Attack Rate": 0.067
+    },
+    {
+      "Chunk Start": 6000,
+      "Attack Windows": 133,
+      "Sensitivity": 0.962406,
+      "Specificity": 0.997322,
+      "Total Cost": 55,
+      "Attack Rate": 0.0665
+    },
+    {
+      "Chunk Start": 8000,
+      "Attack Windows": 93,
+      "Sensitivity": 0.935484,
+      "Specificity": 0.997378,
+      "Total Cost": 65,
+      "Attack Rate": 0.0465
+    },
+    {
+      "Chunk Start": 10000,
+      "Attack Windows": 114,
+      "Sensitivity": 0.982456,
+      "Specificity": 0.995228,
+      "Total Cost": 29,
+      "Attack Rate": 0.057
+    },
+    {
+      "Chunk Start": 12000,
+      "Attack Windows": 78,
+      "Sensitivity": 0.935897,
+      "Specificity": 0.996878,
+      "Total Cost": 56,
+      "Attack Rate": 0.039
+    }
+  ],
+  "Recovery": {
+    "Stale": {
+      "Available": true,
+      "Sensitivity": 0.960606,
+      "Specificity": 0.996932,
+      "Total Cost": 152
+    },
+    "Retrained": {
+      "Available": true,
+      "Sensitivity": 0.972067,
+      "Specificity": 0.99664,
+      "Total Cost": 62
+    },
+    "Fresh Oracle": {
+      "Available": true,
+      "Sensitivity": 0.990909,
+      "Specificity": 1.0,
+      "Total Cost": 30
+    },
+    "Recovery Gain": 0.011461,
+    "Cost Improvement": 90,
+    "Retraining Helps": true,
+    "Oracle Gap": 0.018842
+  },
+  "Monitor": {
+    "Chunks": [
+      {
+        "Chunk Start": 0,
+        "Chunk Size": 2000,
+        "Max PSI": 0.187464,
+        "Most Drifted Feature": "f14",
+        "Severity": "moderate",
+        "Phase": "baseline",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 2000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.056795,
+        "Most Drifted Feature": "f14",
+        "Severity": "stable",
+        "Phase": "baseline",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 4000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.240093,
+        "Most Drifted Feature": "f22",
+        "Severity": "moderate",
+        "Phase": "baseline",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 6000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.123503,
+        "Most Drifted Feature": "f22",
+        "Severity": "moderate",
+        "Phase": "drift",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 8000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.126802,
+        "Most Drifted Feature": "f22",
+        "Severity": "moderate",
+        "Phase": "drift",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 10000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.111474,
+        "Most Drifted Feature": "f19",
+        "Severity": "moderate",
+        "Phase": "drift",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 12000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.52671,
+        "Most Drifted Feature": "f22",
+        "Severity": "significant",
+        "Phase": "drift",
+        "Fired": true
+      },
+      {
+        "Chunk Start": 14000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.415883,
+        "Most Drifted Feature": "f22",
+        "Severity": "significant",
+        "Phase": "drift",
+        "Fired": true
+      },
+      {
+        "Chunk Start": 16000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.323014,
+        "Most Drifted Feature": "f22",
+        "Severity": "significant",
+        "Phase": "drift",
+        "Fired": true
+      },
+      {
+        "Chunk Start": 18000,
+        "Chunk Size": 2000,
+        "Max PSI": 0.242297,
+        "Most Drifted Feature": "f14",
+        "Severity": "moderate",
+        "Phase": "drift",
+        "Fired": false
+      },
+      {
+        "Chunk Start": 20000,
+        "Chunk Size": 2000,
+        "Max PSI": 1.638194,
+        "Most Drifted Feature": "f22",
+        "Severity": "significant",
+        "Phase": "drift",
+        "Fired": true
+      }
+    ],
+    "Trigger Chunk": {
+      "Chunk Start": 12000,
+      "Chunk Size": 2000,
+      "Max PSI": 0.52671,
+      "Most Drifted Feature": "f22",
+      "Severity": "significant",
+      "Phase": "drift",
+      "Fired": true
+    },
+    "Triggered": true,
+    "PSI Small": 0.1,
+    "PSI Large": 0.25,
+    "Chunk Size": 2000,
+    "Baseline Windows": 7500,
+    "Baseline Chunks Evaluated": 3,
+    "False Alarms": 0,
+    "False Alarm Rate": 0.0,
+    "Detection Delay Windows": 6000,
+    "Detection Delay Seconds": 6000.0,
+    "Note": "Baseline chunks contain no drift, so a trigger there is a false alarm. Detection delay is measured from the first drifted chunk."
+  },
+  "Drift Detection Delay Seconds": 6000.0,
+  "Drift False Alarms": 0,
+  "Drift False Alarm Rate": 0.0
+}

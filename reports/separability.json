@@ -1,0 +1,71 @@
+{
+  "base_counts": {
+    "Per Feature": {
+      "create_count": {
+        "Benign Min": 0.0,
+        "Benign Max": 8.0,
+        "Attack Min": 10.0,
+        "Attack Max": 80.0,
+        "Separable By This Feature": true,
+        "Gap": 2.0,
+        "Overlap Windows": 0
+      },
+      "rename_count": {
+        "Benign Min": 0.0,
+        "Benign Max": 5.0,
+        "Attack Min": 5.0,
+        "Attack Max": 40.0,
+        "Separable By This Feature": false,
+        "Gap": 0.0,
+        "Overlap Windows": 1
+      },
+      "delete_count": {
+        "Benign Min": 0.0,
+        "Benign Max": 4.0,
+        "Attack Min": 3.0,
+        "Attack Max": 33.0,
+        "Separable By This Feature": false,
+        "Gap": -1.0,
+        "Overlap Windows": 2
+      }
+    },
+    "Perfectly Linearly Separable": false
+  },
+  "full_feature_set": {
+    "Per Feature": {
+      "create_count": {
+        "Benign Min": 0.0,
+        "Benign Max": 8.0,
+        "Attack Min": 10.0,
+        "Attack Max": 80.0,
+        "Separable By This Feature": true,
+        "Gap": 2.0,
+        "Overlap Windows": 0
+      },
+      "rename_count": {
+        "Benign Min": 0.0,
+        "Benign Max": 5.0,
+        "Attack Min": 5.0,
+        "Attack Max": 40.0,
+        "Separable By This Feature": false,
+        "Gap": 0.0,
+        "Overlap Windows": 1
+      },
+      "delete_count": {
+        "Benign Min": 0.0,
+        "Benign Max": 4.0,
+        "Attack Min": 3.0,
+        "Attack Max": 33.0,
+        "Separable By This Feature": false,
+        "Gap": -1.0,
+        "Overlap Windows": 2
+      }
+    },
+    "Perfectly Linearly Separable": false
+  },
+  "feature_set": "counts",
+  "feature_count": 3,
+  "split_policy": "row-level stratified 80-10-10",
+  "leakage_check": null,
+  "test_window_count": 80
+}
