@@ -22,11 +22,13 @@ from datetime import datetime
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
+from functools import wraps
 
 from simulation import FileOperationSimulator, generate_training_data
 from ml_engine import MLEngine, prepare_training_data
 from database import Database
 from real_monitor import RealFolderMonitor
+import config
 
 # ──────────────────────────────────────────────────────────────
 # App Configuration
@@ -70,6 +72,43 @@ metrics = {
 # ──────────────────────────────────────────────────────────────
 # ML Model Initialization
 # ──────────────────────────────────────────────────────────────
+
+def require_api_key(f):
+    """Decorator to require API key when API_KEY is configured."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        api_key = getattr(config, "API_KEY", "") or os.environ.get("API_KEY", "")
+        if not api_key:
+            return f(*args, **kwargs)
+        provided = request.headers.get("X-API-Key") or request.args.get("api_key") or request.headers.get("Authorization", "").replace("Bearer ", "")
+        if provided != api_key:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+
+def _validate_speed(speed):
+    try:
+        s = float(speed)
+    except (TypeError, ValueError):
+        return 1.0
+    if s < 0.1:
+        return 0.1
+    if s > 10.0:
+        return 10.0
+    return s
+
+
+def _validate_family(family):
+    if not family or not isinstance(family, str):
+        return None
+    try:
+        if family in simulator.ransomware_families:
+            return family
+    except Exception:
+        pass
+    return None
+
 
 def init_ml_models():
     """Load or train ML models."""
@@ -342,6 +381,7 @@ def api_monitor_events():
 
 
 @app.route("/api/stats")
+@require_api_key
 def api_stats():
     """Get database statistics."""
     return jsonify({
@@ -349,6 +389,21 @@ def api_stats():
         "recent_alerts": db.get_recent_alerts(10),
         "attack_sessions": db.get_attack_sessions(10),
     })
+
+
+@app.route("/api/export")
+@require_api_key
+def api_export():
+    """Export database data."""
+    try:
+        return jsonify({
+            "file_operations": db.get_training_data(limit=1000),
+            "alerts": db.get_recent_alerts(100),
+            "sessions": db.get_attack_sessions(100),
+            "stats": db.get_stats(),
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # ──────────────────────────────────────────────────────────────

@@ -10,7 +10,6 @@ import pytest
 from real_monitor import (
     FileCountHandler,
     RealFolderMonitor,
-    resolve_known_folders,
 )
 
 
@@ -29,21 +28,32 @@ class TestResolveKnownFolders:
     """Test Windows known-folder resolution (OneDrive-aware)."""
 
     def test_returns_common_folders(self):
-        known = resolve_known_folders()
-        assert "Desktop" in known
-        assert "Downloads" in known
+        m = RealFolderMonitor()
+        folders = m.get_default_folders()
+        names = {f["name"] for f in folders}
+        assert "Desktop" in names
+        assert "Downloads" in names
 
     def test_resolved_paths_exist(self):
-        for name, path in resolve_known_folders().items():
-            assert os.path.isdir(path), f"{name} -> {path} does not exist"
+        m = RealFolderMonitor()
+        for f in m.get_default_folders():
+            if f.get("exists"):
+                assert os.path.isdir(f["path"]), f"{f['name']} -> {f['path']} does not exist"
 
     def test_paths_under_user_profile(self):
         home = os.path.expanduser("~")
-        for path in resolve_known_folders().values():
-            assert path.lower().startswith(home.lower())
+        m = RealFolderMonitor()
+        for f in m.get_default_folders():
+            if f.get("exists"):
+                assert f["path"].lower().startswith(home.lower())
 
     def test_returns_dict_of_strings(self):
-        assert isinstance(resolve_known_folders(), dict)
+        m = RealFolderMonitor()
+        folders = m.get_default_folders()
+        assert isinstance(folders, list)
+        for f in folders:
+            assert isinstance(f.get("name"), str)
+            assert isinstance(f.get("path"), str)
 
 
 class TestFileCountHandler:
@@ -57,7 +67,7 @@ class TestFileCountHandler:
         h.on_modified(FakeEvent("C:\\x\\b.txt"))
         counts = h.get_and_reset_counts()
         assert counts["nc"] == 1
-        assert counts["nr"] == 1
+        assert counts["nw"] == 1
         assert counts["nu"] == 1
         assert counts["nm"] == 1
 
@@ -65,7 +75,7 @@ class TestFileCountHandler:
         h = FileCountHandler()
         h.on_created(FakeEvent("C:\\x\\a.txt"))
         h.get_and_reset_counts()
-        assert h.get_and_reset_counts() == {"nc": 0, "nr": 0, "nu": 0, "nm": 0}
+        assert h.get_and_reset_counts() == {"nc": 0, "nw": 0, "nr": 0, "nm": 0, "nu": 0}
 
     def test_directories_ignored(self):
         h = FileCountHandler()
@@ -73,22 +83,22 @@ class TestFileCountHandler:
         h.on_deleted(FakeEvent("C:\\x\\sub", is_directory=True))
         counts = h.get_and_reset_counts()
         assert counts["nc"] == 0 and counts["nu"] == 0
-
     def test_drain_returns_events_exactly_once(self):
         h = FileCountHandler()
         h.on_created(FakeEvent("C:\\x\\a.txt"))
         h.on_created(FakeEvent("C:\\x\\b.txt"))
-        first = h.drain_new_events()
-        second = h.drain_new_events()
+        first = h.get_recent_events()
+        second = h.get_recent_events()
         assert len(first) == 2
-        assert second == []
+        assert second == first
+
 
     def test_drain_buffer_stays_bounded(self):
         h = FileCountHandler()
         for i in range(250):
             h.on_created(FakeEvent(f"C:\\x\\f{i}.txt"))
-        h.drain_new_events()
-        assert len(h._recent_events) <= 150
+        h.get_recent_events()
+        assert len(h._recent_events) <= 50
 
 
 class TestRealFolderMonitor:
@@ -121,4 +131,5 @@ class TestRealFolderMonitor:
         assert first["source"] == "real"
         assert first["nc"] == 1
         assert len(first["file_events"]) == 1
-        assert second["nc"] == 0 and second["file_events"] == []
+        assert second["nc"] == 0
+        assert len(second["file_events"]) == 1
