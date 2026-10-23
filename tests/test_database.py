@@ -12,8 +12,8 @@ class TestDatabase:
     """Test database schema, writes, and queries."""
 
     @staticmethod
-    def _tick(ts=1, nc=5, nr=3, nu=2, att=0):
-        return {"timestamp": ts, "nc": nc, "nr": nr, "nu": nu,
+    def _tick(ts=1, nc=5, nr=3, nu=2, att=0, nw=0, nm=0):
+        return {"timestamp": ts, "nc": nc, "nw": nw, "nr": nr, "nm": nm, "nu": nu,
                 "att": att, "user": "Secretary", "family": None}
 
     def test_schema_created(self, tmp_path):

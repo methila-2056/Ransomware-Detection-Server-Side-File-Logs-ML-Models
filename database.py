@@ -169,6 +169,8 @@ class Database:
         timestamp_ns = tick.get("timestamp_ns", None)
         if timestamp_ns is None:
             timestamp_ns = time.time_ns()
+        nw = tick.get("nw", 0)
+        nm = tick.get("nm", 0)
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -178,8 +180,8 @@ class Database:
                 (
                     tick["timestamp"],
                     timestamp_ns,
-                    tick["nc"], tick["nw"], tick["nr"], tick["nm"], tick["nu"],
-                    tick["att"],
+                    tick.get("nc", 0), nw, tick.get("nr", 0), nm, tick.get("nu", 0),
+                    tick.get("att", 0),
                     tick.get("user", ""),
                     tick.get("family", ""),
                 ),

@@ -40,9 +40,9 @@ def _reset_globals(tmp_path):
 
 
 def _make_tick(nc=5, nr=2, nu=1, att=0, family=None, is_attack=False,
-               source="simulation", ts=1, file_events=None):
+               source="simulation", ts=1, file_events=None, nw=0, nm=0):
     return {
-        "timestamp": ts, "nc": nc, "nr": nr, "nu": nu,
+        "timestamp": ts, "nc": nc, "nw": nw, "nr": nr, "nm": nm, "nu": nu,
         "att": att, "user": "Secretary", "family": family,
         "is_attack": is_attack, "source": source,
         "file_events": file_events or [],
