@@ -1,0 +1,1616 @@
+{
+  "Seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "Windows Per Trace": 30000,
+  "Elapsed Seconds": 64.39,
+  "Summary": {
+    "Decision Tree": {
+      "Accuracy": {
+        "bootstrap": {
+          "mean": 0.975202,
+          "ci_low": 0.970241,
+          "ci_high": 0.979165,
+          "std": 0.007765,
+          "min": 0.959238,
+          "max": 0.981926,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.975202,
+          "ci_low": 0.969647,
+          "ci_high": 0.980757,
+          "std": 0.007765,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Sensitivity": {
+        "bootstrap": {
+          "mean": 0.886581,
+          "ci_low": 0.858652,
+          "ci_high": 0.909083,
+          "std": 0.044101,
+          "min": 0.786325,
+          "max": 0.928453,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.886581,
+          "ci_low": 0.855033,
+          "ci_high": 0.918129,
+          "std": 0.044101,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Specificity": {
+        "bootstrap": {
+          "mean": 0.996729,
+          "ci_low": 0.995804,
+          "ci_high": 0.997623,
+          "std": 0.001566,
+          "min": 0.994135,
+          "max": 0.998681,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.996729,
+          "ci_low": 0.995609,
+          "ci_high": 0.997849,
+          "std": 0.001566,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Precision": {
+        "bootstrap": {
+          "mean": 0.985535,
+          "ci_low": 0.982064,
+          "ci_high": 0.988871,
+          "std": 0.005968,
+          "min": 0.978947,
+          "max": 0.994614,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.985535,
+          "ci_low": 0.981266,
+          "ci_high": 0.989804,
+          "std": 0.005968,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "F1 Score": {
+        "bootstrap": {
+          "mean": 0.932928,
+          "ci_low": 0.916779,
+          "ci_high": 0.945718,
+          "std": 0.02582,
+          "min": 0.873072,
+          "max": 0.955172,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.932928,
+          "ci_low": 0.914458,
+          "ci_high": 0.951399,
+          "std": 0.02582,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "ROC AUC": {
+        "bootstrap": {
+          "mean": 0.959441,
+          "ci_low": 0.949278,
+          "ci_high": 0.967492,
+          "std": 0.015735,
+          "min": 0.92245,
+          "max": 0.973333,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.959441,
+          "ci_low": 0.948185,
+          "ci_high": 0.970697,
+          "std": 0.015735,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Total Cost": {
+        "bootstrap": {
+          "mean": 613.1,
+          "ci_low": 507.885,
+          "ci_high": 738.705,
+          "std": 203.502907,
+          "min": 431.0,
+          "max": 1007.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 613.1,
+          "ci_low": 467.52279,
+          "ci_high": 758.67721,
+          "std": 203.502907,
+          "n": 10,
+          "confidence": 0.95
+        }
+      }
+    },
+    "Random Forest": {
+      "Accuracy": {
+        "bootstrap": {
+          "mean": 0.982824,
+          "ci_low": 0.977626,
+          "ci_high": 0.98761,
+          "std": 0.008386,
+          "min": 0.967238,
+          "max": 0.993957,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.982824,
+          "ci_low": 0.976824,
+          "ci_high": 0.988823,
+          "std": 0.008386,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Sensitivity": {
+        "bootstrap": {
+          "mean": 0.918411,
+          "ci_low": 0.887839,
+          "ci_high": 0.945203,
+          "std": 0.048483,
+          "min": 0.820513,
+          "max": 0.975083,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.918411,
+          "ci_low": 0.883728,
+          "ci_high": 0.953093,
+          "std": 0.048483,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Specificity": {
+        "bootstrap": {
+          "mean": 0.99829,
+          "ci_low": 0.997322,
+          "ci_high": 0.999043,
+          "std": 0.001461,
+          "min": 0.995112,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.99829,
+          "ci_low": 0.997245,
+          "ci_high": 0.999336,
+          "std": 0.001461,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Precision": {
+        "bootstrap": {
+          "mean": 0.992733,
+          "ci_low": 0.989391,
+          "ci_high": 0.995633,
+          "std": 0.005336,
+          "min": 0.982639,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.992733,
+          "ci_low": 0.988916,
+          "ci_high": 0.99655,
+          "std": 0.005336,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "F1 Score": {
+        "bootstrap": {
+          "mean": 0.9535,
+          "ci_low": 0.936695,
+          "ci_high": 0.967997,
+          "std": 0.026735,
+          "min": 0.899297,
+          "max": 0.985726,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.9535,
+          "ci_low": 0.934375,
+          "ci_high": 0.972625,
+          "std": 0.026735,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "ROC AUC": {
+        "bootstrap": {
+          "mean": 0.998804,
+          "ci_low": 0.998376,
+          "ci_high": 0.9992,
+          "std": 0.00072,
+          "min": 0.997679,
+          "max": 0.999681,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.998804,
+          "ci_low": 0.998289,
+          "ci_high": 0.999318,
+          "std": 0.00072,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Total Cost": {
+        "bootstrap": {
+          "mean": 433.7,
+          "ci_low": 303.5925,
+          "ci_high": 574.8025,
+          "std": 223.940493,
+          "min": 152.0,
+          "max": 842.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 433.7,
+          "ci_low": 273.502622,
+          "ci_high": 593.897378,
+          "std": 223.940493,
+          "n": 10,
+          "confidence": 0.95
+        }
+      }
+    },
+    "SVM": {
+      "Accuracy": {
+        "bootstrap": {
+          "mean": 0.979011,
+          "ci_low": 0.974264,
+          "ci_high": 0.984156,
+          "std": 0.008077,
+          "min": 0.968381,
+          "max": 0.990335,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.979011,
+          "ci_low": 0.973233,
+          "ci_high": 0.984789,
+          "std": 0.008077,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Sensitivity": {
+        "bootstrap": {
+          "mean": 0.901673,
+          "ci_low": 0.873329,
+          "ci_high": 0.930227,
+          "std": 0.047016,
+          "min": 0.824786,
+          "max": 0.971714,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.901673,
+          "ci_low": 0.86804,
+          "ci_high": 0.935306,
+          "std": 0.047016,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Specificity": {
+        "bootstrap": {
+          "mean": 0.997779,
+          "ci_low": 0.996812,
+          "ci_high": 0.998676,
+          "std": 0.0016,
+          "min": 0.994624,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.997779,
+          "ci_low": 0.996634,
+          "ci_high": 0.998923,
+          "std": 0.0016,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Precision": {
+        "bootstrap": {
+          "mean": 0.990632,
+          "ci_low": 0.987284,
+          "ci_high": 0.993989,
+          "std": 0.005776,
+          "min": 0.981513,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.990632,
+          "ci_low": 0.9865,
+          "ci_high": 0.994764,
+          "std": 0.005776,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "F1 Score": {
+        "bootstrap": {
+          "mean": 0.94341,
+          "ci_low": 0.928874,
+          "ci_high": 0.958216,
+          "std": 0.024462,
+          "min": 0.902924,
+          "max": 0.976589,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.94341,
+          "ci_low": 0.925911,
+          "ci_high": 0.960909,
+          "std": 0.024462,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "ROC AUC": {
+        "bootstrap": {
+          "mean": 0.992335,
+          "ci_low": 0.987958,
+          "ci_high": 0.995828,
+          "std": 0.006678,
+          "min": 0.97766,
+          "max": 0.998887,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.992335,
+          "ci_low": 0.987558,
+          "ci_high": 0.997112,
+          "std": 0.006678,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Total Cost": {
+        "bootstrap": {
+          "mean": 531.8,
+          "ci_low": 381.385,
+          "ci_high": 668.1075,
+          "std": 236.835057,
+          "min": 181.0,
+          "max": 821.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 531.8,
+          "ci_low": 362.378406,
+          "ci_high": 701.221594,
+          "std": 236.835057,
+          "n": 10,
+          "confidence": 0.95
+        }
+      }
+    },
+    "AdaBoost": {
+      "Accuracy": {
+        "bootstrap": {
+          "mean": 0.981774,
+          "ci_low": 0.976146,
+          "ci_high": 0.986141,
+          "std": 0.008649,
+          "min": 0.963048,
+          "max": 0.990402,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.981774,
+          "ci_low": 0.975587,
+          "ci_high": 0.987961,
+          "std": 0.008649,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Sensitivity": {
+        "bootstrap": {
+          "mean": 0.914884,
+          "ci_low": 0.882303,
+          "ci_high": 0.941108,
+          "std": 0.051042,
+          "min": 0.803419,
+          "max": 0.960133,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.914884,
+          "ci_low": 0.87837,
+          "ci_high": 0.951397,
+          "std": 0.051042,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Specificity": {
+        "bootstrap": {
+          "mean": 0.997601,
+          "ci_low": 0.996864,
+          "ci_high": 0.998252,
+          "std": 0.001193,
+          "min": 0.995112,
+          "max": 0.99956,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.997601,
+          "ci_low": 0.996748,
+          "ci_high": 0.998455,
+          "std": 0.001193,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Precision": {
+        "bootstrap": {
+          "mean": 0.989467,
+          "ci_low": 0.98676,
+          "ci_high": 0.992134,
+          "std": 0.004735,
+          "min": 0.982759,
+          "max": 0.998249,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.989467,
+          "ci_low": 0.98608,
+          "ci_high": 0.992854,
+          "std": 0.004735,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "F1 Score": {
+        "bootstrap": {
+          "mean": 0.950071,
+          "ci_low": 0.931174,
+          "ci_high": 0.965212,
+          "std": 0.029557,
+          "min": 0.885748,
+          "max": 0.977177,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.950071,
+          "ci_low": 0.928927,
+          "ci_high": 0.971215,
+          "std": 0.029557,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "ROC AUC": {
+        "bootstrap": {
+          "mean": 0.998043,
+          "ci_low": 0.996959,
+          "ci_high": 0.998873,
+          "std": 0.001692,
+          "min": 0.993868,
+          "max": 0.999477,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.998043,
+          "ci_low": 0.996832,
+          "ci_high": 0.999253,
+          "std": 0.001692,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Total Cost": {
+        "bootstrap": {
+          "mean": 449.2,
+          "ci_low": 334.1975,
+          "ci_high": 593.22,
+          "std": 224.459251,
+          "min": 243.0,
+          "max": 925.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 449.2,
+          "ci_low": 288.631524,
+          "ci_high": 609.768476,
+          "std": 224.459251,
+          "n": 10,
+          "confidence": 0.95
+        }
+      }
+    },
+    "XGBoost": {
+      "Accuracy": {
+        "bootstrap": {
+          "mean": 0.983866,
+          "ci_low": 0.9782,
+          "ci_high": 0.988687,
+          "std": 0.008826,
+          "min": 0.966095,
+          "max": 0.993246,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.983866,
+          "ci_low": 0.977553,
+          "ci_high": 0.99018,
+          "std": 0.008826,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Sensitivity": {
+        "bootstrap": {
+          "mean": 0.922972,
+          "ci_low": 0.888646,
+          "ci_high": 0.951175,
+          "std": 0.052801,
+          "min": 0.811966,
+          "max": 0.973422,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.922972,
+          "ci_low": 0.8852,
+          "ci_high": 0.960743,
+          "std": 0.052801,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Specificity": {
+        "bootstrap": {
+          "mean": 0.998299,
+          "ci_low": 0.997701,
+          "ci_high": 0.998877,
+          "std": 0.001009,
+          "min": 0.996845,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.998299,
+          "ci_low": 0.997577,
+          "ci_high": 0.99902,
+          "std": 0.001009,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Precision": {
+        "bootstrap": {
+          "mean": 0.992725,
+          "ci_low": 0.990402,
+          "ci_high": 0.995096,
+          "std": 0.004018,
+          "min": 0.986989,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.992725,
+          "ci_low": 0.989851,
+          "ci_high": 0.995599,
+          "std": 0.004018,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "F1 Score": {
+        "bootstrap": {
+          "mean": 0.955824,
+          "ci_low": 0.937004,
+          "ci_high": 0.970914,
+          "std": 0.028963,
+          "min": 0.895171,
+          "max": 0.984047,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.955824,
+          "ci_low": 0.935106,
+          "ci_high": 0.976543,
+          "std": 0.028963,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "ROC AUC": {
+        "bootstrap": {
+          "mean": 0.998821,
+          "ci_low": 0.998345,
+          "ci_high": 0.999234,
+          "std": 0.000771,
+          "min": 0.997312,
+          "max": 0.999699,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.998821,
+          "ci_low": 0.998269,
+          "ci_high": 0.999372,
+          "std": 0.000771,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Total Cost": {
+        "bootstrap": {
+          "mean": 406.7,
+          "ci_low": 274.19,
+          "ci_high": 560.8075,
+          "std": 242.246454,
+          "min": 163.0,
+          "max": 881.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 406.7,
+          "ci_low": 233.407326,
+          "ci_high": 579.992674,
+          "std": 242.246454,
+          "n": 10,
+          "confidence": 0.95
+        }
+      }
+    },
+    "Logistic Regression": {
+      "Accuracy": {
+        "bootstrap": {
+          "mean": 0.978307,
+          "ci_low": 0.974494,
+          "ci_high": 0.982416,
+          "std": 0.006749,
+          "min": 0.968381,
+          "max": 0.990933,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.978307,
+          "ci_low": 0.973479,
+          "ci_high": 0.983135,
+          "std": 0.006749,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Sensitivity": {
+        "bootstrap": {
+          "mean": 0.895034,
+          "ci_low": 0.871951,
+          "ci_high": 0.920076,
+          "std": 0.041627,
+          "min": 0.82906,
+          "max": 0.966722,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.895034,
+          "ci_low": 0.865256,
+          "ci_high": 0.924812,
+          "std": 0.041627,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Specificity": {
+        "bootstrap": {
+          "mean": 0.998256,
+          "ci_low": 0.997659,
+          "ci_high": 0.998817,
+          "std": 0.001012,
+          "min": 0.996679,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.998256,
+          "ci_low": 0.997533,
+          "ci_high": 0.99898,
+          "std": 0.001012,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Precision": {
+        "bootstrap": {
+          "mean": 0.992277,
+          "ci_low": 0.989803,
+          "ci_high": 0.994651,
+          "std": 0.004222,
+          "min": 0.986139,
+          "max": 1.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.992277,
+          "ci_low": 0.989256,
+          "ci_high": 0.995297,
+          "std": 0.004222,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "F1 Score": {
+        "bootstrap": {
+          "mean": 0.940677,
+          "ci_low": 0.928143,
+          "ci_high": 0.954237,
+          "std": 0.022673,
+          "min": 0.903376,
+          "max": 0.979764,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.940677,
+          "ci_low": 0.924459,
+          "ci_high": 0.956896,
+          "std": 0.022673,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "ROC AUC": {
+        "bootstrap": {
+          "mean": 0.993641,
+          "ci_low": 0.992191,
+          "ci_high": 0.994923,
+          "std": 0.002344,
+          "min": 0.989188,
+          "max": 0.996118,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 0.993641,
+          "ci_low": 0.991964,
+          "ci_high": 0.995317,
+          "std": 0.002344,
+          "n": 10,
+          "confidence": 0.95
+        }
+      },
+      "Total Cost": {
+        "bootstrap": {
+          "mean": 557.8,
+          "ci_low": 445.34,
+          "ci_high": 660.12,
+          "std": 184.565436,
+          "min": 204.0,
+          "max": 803.0,
+          "n": 10,
+          "confidence": 0.95
+        },
+        "t_interval": {
+          "mean": 557.8,
+          "ci_low": 425.769841,
+          "ci_high": 689.830159,
+          "std": 184.565436,
+          "n": 10,
+          "confidence": 0.95
+        }
+      }
+    }
+  },
+  "Sensitivity Stability": {
+    "metric": "Sensitivity",
+    "threshold": 0.05,
+    "models": [
+      {
+        "Model": "XGBoost",
+        "Mean": 0.922972,
+        "Std": 0.052801,
+        "Min": 0.811966,
+        "Max": 0.973422,
+        "Range": 0.161456,
+        "Stable": false
+      },
+      {
+        "Model": "Random Forest",
+        "Mean": 0.918411,
+        "Std": 0.048483,
+        "Min": 0.820513,
+        "Max": 0.975083,
+        "Range": 0.15457,
+        "Stable": false
+      },
+      {
+        "Model": "AdaBoost",
+        "Mean": 0.914884,
+        "Std": 0.051042,
+        "Min": 0.803419,
+        "Max": 0.960133,
+        "Range": 0.156714,
+        "Stable": false
+      },
+      {
+        "Model": "SVM",
+        "Mean": 0.901673,
+        "Std": 0.047016,
+        "Min": 0.824786,
+        "Max": 0.971714,
+        "Range": 0.146928,
+        "Stable": false
+      },
+      {
+        "Model": "Logistic Regression",
+        "Mean": 0.895034,
+        "Std": 0.041627,
+        "Min": 0.82906,
+        "Max": 0.966722,
+        "Range": 0.137662,
+        "Stable": false
+      },
+      {
+        "Model": "Decision Tree",
+        "Mean": 0.886581,
+        "Std": 0.044101,
+        "Min": 0.786325,
+        "Max": 0.928453,
+        "Range": 0.142128,
+        "Stable": false
+      }
+    ]
+  },
+  "Accuracy Stability": {
+    "metric": "Accuracy",
+    "threshold": 0.05,
+    "models": [
+      {
+        "Model": "XGBoost",
+        "Mean": 0.983866,
+        "Std": 0.008826,
+        "Min": 0.966095,
+        "Max": 0.993246,
+        "Range": 0.027151,
+        "Stable": true
+      },
+      {
+        "Model": "Random Forest",
+        "Mean": 0.982824,
+        "Std": 0.008386,
+        "Min": 0.967238,
+        "Max": 0.993957,
+        "Range": 0.026719,
+        "Stable": true
+      },
+      {
+        "Model": "AdaBoost",
+        "Mean": 0.981774,
+        "Std": 0.008649,
+        "Min": 0.963048,
+        "Max": 0.990402,
+        "Range": 0.027354,
+        "Stable": true
+      },
+      {
+        "Model": "SVM",
+        "Mean": 0.979011,
+        "Std": 0.008077,
+        "Min": 0.968381,
+        "Max": 0.990335,
+        "Range": 0.021954,
+        "Stable": true
+      },
+      {
+        "Model": "Logistic Regression",
+        "Mean": 0.978307,
+        "Std": 0.006749,
+        "Min": 0.968381,
+        "Max": 0.990933,
+        "Range": 0.022552,
+        "Stable": true
+      },
+      {
+        "Model": "Decision Tree",
+        "Mean": 0.975202,
+        "Std": 0.007765,
+        "Min": 0.959238,
+        "Max": 0.981926,
+        "Range": 0.022688,
+        "Stable": true
+      }
+    ]
+  },
+  "Cost Stability": {
+    "metric": "Total Cost",
+    "threshold": 0.05,
+    "models": [
+      {
+        "Model": "Decision Tree",
+        "Mean": 613.1,
+        "Std": 203.502907,
+        "Min": 431.0,
+        "Max": 1007.0,
+        "Range": 576.0,
+        "Stable": false
+      },
+      {
+        "Model": "Logistic Regression",
+        "Mean": 557.8,
+        "Std": 184.565436,
+        "Min": 204.0,
+        "Max": 803.0,
+        "Range": 599.0,
+        "Stable": false
+      },
+      {
+        "Model": "SVM",
+        "Mean": 531.8,
+        "Std": 236.835057,
+        "Min": 181.0,
+        "Max": 821.0,
+        "Range": 640.0,
+        "Stable": false
+      },
+      {
+        "Model": "AdaBoost",
+        "Mean": 449.2,
+        "Std": 224.459251,
+        "Min": 243.0,
+        "Max": 925.0,
+        "Range": 682.0,
+        "Stable": false
+      },
+      {
+        "Model": "Random Forest",
+        "Mean": 433.7,
+        "Std": 223.940493,
+        "Min": 152.0,
+        "Max": 842.0,
+        "Range": 690.0,
+        "Stable": false
+      },
+      {
+        "Model": "XGBoost",
+        "Mean": 406.7,
+        "Std": 242.246454,
+        "Min": 163.0,
+        "Max": 881.0,
+        "Range": 718.0,
+        "Stable": false
+      }
+    ]
+  },
+  "Comparison (Sensitivity)": {
+    "reference": "XGBoost",
+    "metric": "Sensitivity",
+    "higher_is_better": true,
+    "comparisons": {
+      "Decision Tree": {
+        "n": 10,
+        "mean_difference": 0.036391,
+        "n_better_a": 9,
+        "n_better_b": 1,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 7.0,
+          "p_value": 0.037109
+        },
+        "paired_t": {
+          "statistic": 2.51657,
+          "p_value": 0.032954
+        },
+        "alpha": 0.05,
+        "significant": true,
+        "holm_adjusted_p": 0.185545,
+        "significant_after_correction": false
+      },
+      "Random Forest": {
+        "n": 10,
+        "mean_difference": 0.004561,
+        "n_better_a": 4,
+        "n_better_b": 5,
+        "n_tied": 1,
+        "wilcoxon": {
+          "statistic": 22.0,
+          "p_value": 1.0
+        },
+        "paired_t": {
+          "statistic": 0.835565,
+          "p_value": 0.425025
+        },
+        "alpha": 0.05,
+        "significant": false,
+        "holm_adjusted_p": 1.0,
+        "significant_after_correction": false
+      },
+      "SVM": {
+        "n": 10,
+        "mean_difference": 0.021298,
+        "n_better_a": 7,
+        "n_better_b": 3,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 10.0,
+          "p_value": 0.083984
+        },
+        "paired_t": {
+          "statistic": 2.257085,
+          "p_value": 0.050416
+        },
+        "alpha": 0.05,
+        "significant": false,
+        "holm_adjusted_p": 0.251952,
+        "significant_after_correction": false
+      },
+      "AdaBoost": {
+        "n": 10,
+        "mean_difference": 0.008088,
+        "n_better_a": 6,
+        "n_better_b": 3,
+        "n_tied": 1,
+        "wilcoxon": {
+          "statistic": 10.0,
+          "p_value": 0.164062
+        },
+        "paired_t": {
+          "statistic": 1.387984,
+          "p_value": 0.198537
+        },
+        "alpha": 0.05,
+        "significant": false,
+        "holm_adjusted_p": 0.328124,
+        "significant_after_correction": false
+      },
+      "Logistic Regression": {
+        "n": 10,
+        "mean_difference": 0.027938,
+        "n_better_a": 8,
+        "n_better_b": 2,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 8.0,
+          "p_value": 0.048828
+        },
+        "paired_t": {
+          "statistic": 2.129273,
+          "p_value": 0.062095
+        },
+        "alpha": 0.05,
+        "significant": true,
+        "holm_adjusted_p": 0.195312,
+        "significant_after_correction": false
+      }
+    }
+  },
+  "Comparison (Cost)": {
+    "reference": "XGBoost",
+    "metric": "Total Cost",
+    "higher_is_better": false,
+    "comparisons": {
+      "Decision Tree": {
+        "n": 10,
+        "mean_difference": -206.4,
+        "n_better_a": 1,
+        "n_better_b": 9,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 7.0,
+          "p_value": 0.037109
+        },
+        "paired_t": {
+          "statistic": -2.641814,
+          "p_value": 0.026834
+        },
+        "alpha": 0.05,
+        "significant": true,
+        "holm_adjusted_p": 0.185545,
+        "significant_after_correction": false
+      },
+      "Random Forest": {
+        "n": 10,
+        "mean_difference": -27.0,
+        "n_better_a": 6,
+        "n_better_b": 4,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 27.5,
+          "p_value": 1.0
+        },
+        "paired_t": {
+          "statistic": -0.876816,
+          "p_value": 0.403383
+        },
+        "alpha": 0.05,
+        "significant": false,
+        "holm_adjusted_p": 1.0,
+        "significant_after_correction": false
+      },
+      "SVM": {
+        "n": 10,
+        "mean_difference": -125.1,
+        "n_better_a": 3,
+        "n_better_b": 7,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 9.0,
+          "p_value": 0.064453
+        },
+        "paired_t": {
+          "statistic": -2.358471,
+          "p_value": 0.042708
+        },
+        "alpha": 0.05,
+        "significant": false,
+        "holm_adjusted_p": 0.195312,
+        "significant_after_correction": false
+      },
+      "AdaBoost": {
+        "n": 10,
+        "mean_difference": -42.5,
+        "n_better_a": 3,
+        "n_better_b": 7,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 13.5,
+          "p_value": 0.167969
+        },
+        "paired_t": {
+          "statistic": -1.442207,
+          "p_value": 0.183124
+        },
+        "alpha": 0.05,
+        "significant": false,
+        "holm_adjusted_p": 0.335938,
+        "significant_after_correction": false
+      },
+      "Logistic Regression": {
+        "n": 10,
+        "mean_difference": -151.1,
+        "n_better_a": 2,
+        "n_better_b": 8,
+        "n_tied": 0,
+        "wilcoxon": {
+          "statistic": 8.0,
+          "p_value": 0.048828
+        },
+        "paired_t": {
+          "statistic": -2.325175,
+          "p_value": 0.045102
+        },
+        "alpha": 0.05,
+        "significant": true,
+        "holm_adjusted_p": 0.195312,
+        "significant_after_correction": false
+      }
+    }
+  },
+  "Per Run": [
+    {
+      "seed": 1,
+      "elapsed_s": 6.56,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.98012,
+          "Recall": 0.924731,
+          "Total Cost": 431
+        },
+        "Random Forest": {
+          "Accuracy": 0.977869,
+          "Recall": 0.897849,
+          "Total Cost": 572
+        },
+        "SVM": {
+          "Accuracy": 0.975994,
+          "Recall": 0.897849,
+          "Total Cost": 577
+        },
+        "AdaBoost": {
+          "Accuracy": 0.984996,
+          "Recall": 0.94086,
+          "Total Cost": 337
+        },
+        "XGBoost": {
+          "Accuracy": 0.985371,
+          "Recall": 0.939068,
+          "Total Cost": 345
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.974869,
+          "Recall": 0.892473,
+          "Total Cost": 607
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "elapsed_s": 6.67,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.976904,
+          "Recall": 0.898734,
+          "Total Cost": 568
+        },
+        "Random Forest": {
+          "Accuracy": 0.980873,
+          "Recall": 0.909584,
+          "Total Cost": 503
+        },
+        "SVM": {
+          "Accuracy": 0.971851,
+          "Recall": 0.864376,
+          "Total Cost": 753
+        },
+        "AdaBoost": {
+          "Accuracy": 0.984482,
+          "Recall": 0.931284,
+          "Total Cost": 385
+        },
+        "XGBoost": {
+          "Accuracy": 0.981595,
+          "Recall": 0.913201,
+          "Total Cost": 483
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.973295,
+          "Recall": 0.869801,
+          "Total Cost": 722
+        }
+      }
+    },
+    {
+      "seed": 3,
+      "elapsed_s": 6.52,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.979222,
+          "Recall": 0.928453,
+          "Total Cost": 442
+        },
+        "Random Forest": {
+          "Accuracy": 0.983,
+          "Recall": 0.941764,
+          "Total Cost": 360
+        },
+        "SVM": {
+          "Accuracy": 0.989422,
+          "Recall": 0.971714,
+          "Total Cost": 181
+        },
+        "AdaBoost": {
+          "Accuracy": 0.984511,
+          "Recall": 0.948419,
+          "Total Cost": 320
+        },
+        "XGBoost": {
+          "Accuracy": 0.990933,
+          "Recall": 0.97005,
+          "Total Cost": 186
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.990933,
+          "Recall": 0.966722,
+          "Total Cost": 204
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "elapsed_s": 6.53,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.959238,
+          "Recall": 0.786325,
+          "Total Cost": 1007
+        },
+        "Random Forest": {
+          "Accuracy": 0.967238,
+          "Recall": 0.820513,
+          "Total Cost": 842
+        },
+        "SVM": {
+          "Accuracy": 0.968381,
+          "Recall": 0.824786,
+          "Total Cost": 821
+        },
+        "AdaBoost": {
+          "Accuracy": 0.963048,
+          "Recall": 0.803419,
+          "Total Cost": 925
+        },
+        "XGBoost": {
+          "Accuracy": 0.966095,
+          "Recall": 0.811966,
+          "Total Cost": 881
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.968381,
+          "Recall": 0.82906,
+          "Total Cost": 803
+        }
+      }
+    },
+    {
+      "seed": 5,
+      "elapsed_s": 6.54,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.981926,
+          "Recall": 0.91874,
+          "Total Cost": 493
+        },
+        "Random Forest": {
+          "Accuracy": 0.989572,
+          "Recall": 0.950249,
+          "Total Cost": 300
+        },
+        "SVM": {
+          "Accuracy": 0.976364,
+          "Recall": 0.887231,
+          "Total Cost": 680
+        },
+        "AdaBoost": {
+          "Accuracy": 0.988182,
+          "Recall": 0.945274,
+          "Total Cost": 331
+        },
+        "XGBoost": {
+          "Accuracy": 0.98853,
+          "Recall": 0.945274,
+          "Total Cost": 330
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.979145,
+          "Recall": 0.900498,
+          "Total Cost": 600
+        }
+      }
+    },
+    {
+      "seed": 6,
+      "elapsed_s": 6.53,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.963786,
+          "Recall": 0.840351,
+          "Total Cost": 920
+        },
+        "Random Forest": {
+          "Accuracy": 0.985658,
+          "Recall": 0.94386,
+          "Total Cost": 328
+        },
+        "SVM": {
+          "Accuracy": 0.970957,
+          "Recall": 0.87193,
+          "Total Cost": 738
+        },
+        "AdaBoost": {
+          "Accuracy": 0.985299,
+          "Recall": 0.936842,
+          "Total Cost": 365
+        },
+        "XGBoost": {
+          "Accuracy": 0.983507,
+          "Recall": 0.931579,
+          "Total Cost": 397
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.982072,
+          "Recall": 0.921053,
+          "Total Cost": 455
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "elapsed_s": 6.38,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.972983,
+          "Recall": 0.883721,
+          "Total Cost": 706
+        },
+        "Random Forest": {
+          "Accuracy": 0.993957,
+          "Recall": 0.975083,
+          "Total Cost": 152
+        },
+        "SVM": {
+          "Accuracy": 0.987558,
+          "Recall": 0.951827,
+          "Total Cost": 296
+        },
+        "AdaBoost": {
+          "Accuracy": 0.990402,
+          "Recall": 0.960133,
+          "Total Cost": 243
+        },
+        "XGBoost": {
+          "Accuracy": 0.993246,
+          "Recall": 0.973422,
+          "Total Cost": 163
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.986847,
+          "Recall": 0.948505,
+          "Total Cost": 316
+        }
+      }
+    },
+    {
+      "seed": 8,
+      "elapsed_s": 6.6,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.976208,
+          "Recall": 0.873418,
+          "Total Cost": 604
+        },
+        "Random Forest": {
+          "Accuracy": 0.99145,
+          "Recall": 0.959916,
+          "Total Cost": 194
+        },
+        "SVM": {
+          "Accuracy": 0.990335,
+          "Recall": 0.955696,
+          "Total Cost": 215
+        },
+        "AdaBoost": {
+          "Accuracy": 0.982528,
+          "Recall": 0.909283,
+          "Total Cost": 434
+        },
+        "XGBoost": {
+          "Accuracy": 0.991078,
+          "Recall": 0.959916,
+          "Total Cost": 195
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.973978,
+          "Recall": 0.85654,
+          "Total Cost": 682
+        }
+      }
+    },
+    {
+      "seed": 9,
+      "elapsed_s": 5.97,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.980611,
+          "Recall": 0.90297,
+          "Total Cost": 493
+        },
+        "Random Forest": {
+          "Accuracy": 0.985831,
+          "Recall": 0.928713,
+          "Total Cost": 362
+        },
+        "SVM": {
+          "Accuracy": 0.983594,
+          "Recall": 0.918812,
+          "Total Cost": 413
+        },
+        "AdaBoost": {
+          "Accuracy": 0.985086,
+          "Recall": 0.930693,
+          "Total Cost": 355
+        },
+        "XGBoost": {
+          "Accuracy": 0.98695,
+          "Recall": 0.936634,
+          "Total Cost": 323
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.975391,
+          "Recall": 0.875248,
+          "Total Cost": 633
+        }
+      }
+    },
+    {
+      "seed": 10,
+      "elapsed_s": 6.09,
+      "models": {
+        "Decision Tree": {
+          "Accuracy": 0.981024,
+          "Recall": 0.908367,
+          "Total Cost": 467
+        },
+        "Random Forest": {
+          "Accuracy": 0.972789,
+          "Recall": 0.856574,
+          "Total Cost": 724
+        },
+        "SVM": {
+          "Accuracy": 0.975653,
+          "Recall": 0.87251,
+          "Total Cost": 644
+        },
+        "AdaBoost": {
+          "Accuracy": 0.969209,
+          "Recall": 0.842629,
+          "Total Cost": 797
+        },
+        "XGBoost": {
+          "Accuracy": 0.971357,
+          "Recall": 0.848606,
+          "Total Cost": 764
+        },
+        "Logistic Regression": {
+          "Accuracy": 0.97816,
+          "Recall": 0.890438,
+          "Total Cost": 556
+        }
+      }
+    }
+  ]
+}

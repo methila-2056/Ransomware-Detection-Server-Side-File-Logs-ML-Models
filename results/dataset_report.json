@@ -1,0 +1,63 @@
+{
+  "Trace": {
+    "Windows": 20000,
+    "Benign": 18619,
+    "Attack": 1381,
+    "Attack Fraction": 0.06905,
+    "Episodes": 24,
+    "Stealth Attack Windows": 262,
+    "Zero Windows": 8983,
+    "Families": {
+      "lockbit": 352,
+      "wannacry": 290,
+      "notpetya": 278,
+      "ryuk": 232,
+      "teslacrypt": 229
+    },
+    "Requested Attack Fraction": 0.05
+  },
+  "Partitions": {
+    "train": 12351,
+    "validation": 1424,
+    "test": 1932
+  },
+  "Variant": "nozeroatt",
+  "Variants": [
+    {
+      "Variant": "raw",
+      "Records": 20000,
+      "Benign": 18619,
+      "Attack": 1381,
+      "Attack Fraction": 0.06905,
+      "Zero Windows": 8983,
+      "Reduction vs Raw": 0.0
+    },
+    {
+      "Variant": "one_zero",
+      "Records": 15738,
+      "Benign": 14359,
+      "Attack": 1379,
+      "Attack Fraction": 0.087622,
+      "Zero Windows": 4721,
+      "Reduction vs Raw": 0.2131
+    },
+    {
+      "Variant": "nozeroatt",
+      "Records": 15707,
+      "Benign": 14359,
+      "Attack": 1348,
+      "Attack Fraction": 0.085822,
+      "Zero Windows": 4690,
+      "Reduction vs Raw": 0.21465
+    },
+    {
+      "Variant": "nozero",
+      "Records": 19967,
+      "Benign": 18619,
+      "Attack": 1348,
+      "Attack Fraction": 0.067511,
+      "Zero Windows": 8950,
+      "Reduction vs Raw": 0.00165
+    }
+  ]
+}

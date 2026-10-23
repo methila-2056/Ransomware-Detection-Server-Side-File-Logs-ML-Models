@@ -1,0 +1,76 @@
+{
+  "Ingest": {
+    "Events Requested": 200000,
+    "Events Parsed": 200000,
+    "Windows": 4000,
+    "Parse Seconds": 2.115,
+    "Aggregate Seconds": 0.612,
+    "Total Seconds": 2.727,
+    "Events Per Second": 73342,
+    "Windows Per Second": 1467
+  },
+  "Features": {
+    "Windows": 10000,
+    "Feature Columns": 26,
+    "Milliseconds": 19.405,
+    "Windows Per Second": 515323
+  },
+  "Inference": {
+    "Available": true,
+    "Repeats": 200,
+    "Models": {
+      "decision_tree": {
+        "Mean ms": 0.1126,
+        "P50 ms": 0.0937,
+        "P95 ms": 0.1959,
+        "P99 ms": 0.2596,
+        "Max ms": 0.3227,
+        "Windows Per Second": 8883
+      },
+      "random_forest": {
+        "Mean ms": 4.2633,
+        "P50 ms": 4.0376,
+        "P95 ms": 5.4421,
+        "P99 ms": 6.5303,
+        "Max ms": 9.4263,
+        "Windows Per Second": 235
+      },
+      "svm": {
+        "Mean ms": 0.6326,
+        "P50 ms": 0.5105,
+        "P95 ms": 1.1723,
+        "P99 ms": 1.6429,
+        "Max ms": 2.0491,
+        "Windows Per Second": 1581
+      },
+      "adaboost": {
+        "Mean ms": 16.2447,
+        "P50 ms": 15.4659,
+        "P95 ms": 20.1315,
+        "P99 ms": 27.7666,
+        "Max ms": 29.9692,
+        "Windows Per Second": 62
+      },
+      "xgboost": {
+        "Mean ms": 0.3256,
+        "P50 ms": 0.2857,
+        "P95 ms": 0.4814,
+        "P99 ms": 0.639,
+        "Max ms": 0.8877,
+        "Windows Per Second": 3071
+      },
+      "logistic_regression": {
+        "Mean ms": 0.1062,
+        "P50 ms": 0.1007,
+        "P95 ms": 0.1332,
+        "P99 ms": 0.2035,
+        "Max ms": 0.2638,
+        "Windows Per Second": 9414
+      }
+    }
+  },
+  "Interpretation": {
+    "Monitoring Headroom": "One tick per second per share. A model's p99 latency must sit far below 1000 ms for many shares to be served by one process.",
+    "Paper Comparison": "The paper reports prediction latencies of 0.00019-0.01208 s (Table 7 context, Sect. 5.3) and extrapolates to several hundred clients without measuring it (Sect. 6.3). The p99 figures here bound that claim directly."
+  }
+}

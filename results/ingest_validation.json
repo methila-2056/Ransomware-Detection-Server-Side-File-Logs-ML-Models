@@ -1,0 +1,99 @@
+{
+  "Purpose": "Verify that the log parsers implement the documented formats of the servers the base paper used, and measure their throughput.",
+  "Formats Supported": [
+    "Samba vfs_full_audit (PREFIX|OPERATION|RESULT|FILE)",
+    "Linux auditd (type=SYSCALL)",
+    "Windows Security 4663 access masks",
+    "Sysmon event IDs 1/2/11/23"
+  ],
+  "Parsers": [
+    {
+      "Parser": "samba_full_audit",
+      "Sample Lines": 5,
+      "Parsed": 5,
+      "Skipped": 0,
+      "Parse Rate": 1.0,
+      "Operations": {
+        "create": 2,
+        "rename": 1,
+        "delete": 1,
+        "other": 1
+      },
+      "Events Emitted": 5,
+      "Windows Produced": 5,
+      "Schema Complete": true,
+      "Counts Non Negative": true,
+      "Parse Milliseconds": 3.884,
+      "Detection": "samba",
+      "Expected Format": "samba",
+      "Format Detected Correctly": true
+    },
+    {
+      "Parser": "linux_auditd",
+      "Sample Lines": 5,
+      "Parsed": 3,
+      "Skipped": 2,
+      "Parse Rate": 0.6,
+      "Operations": {
+        "create": 1,
+        "rename": 1,
+        "delete": 1,
+        "other": 1
+      },
+      "Events Emitted": 3,
+      "Windows Produced": 1,
+      "Schema Complete": true,
+      "Counts Non Negative": true,
+      "Parse Milliseconds": 0.13,
+      "Detection": "auditd",
+      "Expected Format": "auditd",
+      "Format Detected Correctly": true
+    },
+    {
+      "Parser": "windows_events",
+      "Sample Lines": 5,
+      "Parsed": 4,
+      "Skipped": 1,
+      "Parse Rate": 0.8,
+      "Operations": {
+        "create": 2,
+        "rename": 1,
+        "delete": 1
+      },
+      "Events Emitted": 4,
+      "Windows Produced": 4,
+      "Schema Complete": true,
+      "Counts Non Negative": true,
+      "Parse Milliseconds": 0.467,
+      "Detection": "windows",
+      "Expected Format": "windows",
+      "Format Detected Correctly": true
+    }
+  ],
+  "Throughput": {
+    "Events": 200000,
+    "Parse Seconds": 2.234,
+    "Aggregate Seconds": 0.708,
+    "Total Seconds": 2.942,
+    "Events Per Second": 67980,
+    "Parsed": 200000,
+    "Windows": 4000,
+    "Realtime Headroom At 1Hz": 67980
+  },
+  "Validation Status": {
+    "Tested Against": "synthetic lines written to each format's documented syntax",
+    "Not Tested Against": "live capture from a running Samba server, auditd host or Windows endpoint",
+    "Known Gaps": [
+      "syslog year is absent in RFC3164 and is inferred as the current year, so logs spanning 31 December parse with a one-year jump",
+      "multi-host interleaving assumes monotonic timestamps within a source; a clock skew between hosts can order windows wrongly",
+      "non-UTF8 paths and filenames with embedded pipes are not decoded",
+      "truncated or rotated log lines are skipped rather than partially recovered"
+    ],
+    "Conclusion": "The parsers implement the documented formats and produce the same window schema as the trace generator, so real and emulated data share one pipeline. They have not been validated against production traffic and should be treated as unproven against real logs until they are."
+  },
+  "Base Paper Comparison": {
+    "Paper": "Fluent Bit -> InfluxDB -> CSV -> one-second aggregation (Sect. 3.2, 4.2)",
+    "This Project": "watchdog observer for live monitoring; ml.ingest for offline replay of Samba, auditd, Windows and Sysmon logs into the same window schema",
+    "Still Absent": "an InfluxDB time-series backend and a Fluent Bit forwarder; see docker/smb-testbed for a provisioning scaffold that was authored but not executed in this environment"
+  }
+}
