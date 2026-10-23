@@ -19,12 +19,13 @@ class TestMLEngine:
         engine.train(X, y, use_grid_search=False)
         assert engine.is_trained
 
-        predictions = engine.predict([5, 2, 1])
+        predictions = engine.predict([5, 2, 1, 1, 1])
         assert "xgb" in predictions
         assert "rf" in predictions
         assert "svm" in predictions
         assert "dt" in predictions
         assert "ada" in predictions
+        assert "lr" in predictions
 
     def test_zero_prediction(self):
         data = generate_training_data(num_samples=200)
@@ -32,7 +33,7 @@ class TestMLEngine:
         engine = MLEngine()
         engine.train(X, y, use_grid_search=False)
 
-        result = engine.predict([0, 0, 0])
+        result = engine.predict([0, 0, 0, 0, 0])
         assert result["xgb"]["prediction"] == 0, "Zero values should be SAFE"
 
     def test_attack_prediction(self):
@@ -41,7 +42,7 @@ class TestMLEngine:
         engine = MLEngine()
         engine.train(X, y, use_grid_search=False)
 
-        result = engine.predict([120, 80, 60])
+        result = engine.predict([120, 80, 60, 60, 40])
         assert result["xgb"]["prediction"] == 1, "High values should be ATTACK"
 
     def test_model_comparison(self):
@@ -51,7 +52,7 @@ class TestMLEngine:
         engine.train(X, y, use_grid_search=False)
 
         comparison = engine.get_model_comparison()
-        assert len(comparison) == 5
+        assert len(comparison) == 6
         for model in comparison:
             assert "name" in model
             assert "accuracy" in model

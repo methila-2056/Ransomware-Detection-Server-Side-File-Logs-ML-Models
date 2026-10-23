@@ -22,7 +22,7 @@ The system follows the paper's methodology for:
    - Captures ransomware's characteristic file operation patterns
 
 3. **Machine learning detection**
-   - 5 classifiers trained and compared
+   - 6 classifiers trained and compared
    - XGBoost used as primary detector
    - GridSearchCV hyperparameter optimization
    - Recall (sensitivity) prioritized for attack detection

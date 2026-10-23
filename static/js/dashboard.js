@@ -50,6 +50,7 @@ const MODEL_DISPLAY = {
     "dt": "Decision Tree",
     "ada": "AdaBoost",
     "xgb": "XGBoost",
+    "lr": "Logistic Regression",
 };
 
 // ──────────────────────────────────────────────────────────────

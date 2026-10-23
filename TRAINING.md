@@ -51,6 +51,7 @@ After training, models are saved to `models/` directory:
 | `ransomware_svm.joblib` | SVM with probability calibration |
 | `ransomware_dt.joblib` | Decision Tree classifier |
 | `ransomware_ada.joblib` | AdaBoost classifier |
+| `ransomware_lr.joblib` | Logistic Regression classifier |
 | `ransomware_scaler.joblib` | Feature StandardScaler |
 | `ransomware_metrics.joblib` | Training performance metrics |
 
@@ -64,7 +65,7 @@ python ml_engine.py
 
 This:
 1. Generates 8000 synthetic training samples
-2. Trains all 5 models with grid search
+2. Trains all 6 models with grid search
 3. Prints model comparison metrics
 4. Runs inference tests
 

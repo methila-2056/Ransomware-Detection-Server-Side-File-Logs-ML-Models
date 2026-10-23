@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Initial release of Ransomware Detection System
-- 5 ML models: Random Forest, SVM, Decision Tree, AdaBoost, XGBoost
+- 6 ML models: Random Forest, SVM, Decision Tree, AdaBoost, XGBoost, Logistic Regression
 - Real-time folder monitoring via watchdog
 - Ransomware attack simulation with 5 families
 - Web dashboard with real-time visualization

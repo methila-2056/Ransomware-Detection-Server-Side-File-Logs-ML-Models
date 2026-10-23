@@ -41,11 +41,12 @@ Each 1-second window captures 5 operation types:
 
 ## ML Models
 
-Five ML models are trained for detection:
+Six ML models are trained for detection:
 - Random Forest (RF)
 - Support Vector Machine (SVM)
 - Decision Tree (DT)
 - AdaBoost (ADA)
 - XGBoost (XGB) - primary detector
+- Logistic Regression (LR)
 
 All models optimized for recall (sensitivity) via GridSearchCV.

@@ -14,12 +14,13 @@ SQLite-based storage managing four tables:
 - **system_stats**: Aggregate runtime statistics
 
 ### 2. ML Engine (`ml_engine.py`)
-Trains and evaluates 5 classifiers:
+Trains and evaluates 6 classifiers:
 - Random Forest
 - Support Vector Machine (with probability calibration)
 - Decision Tree
 - AdaBoost
 - XGBoost
+- Logistic Regression (standardised linear control)
 
 Each model uses GridSearchCV hyperparameter optimization focused on maximizing recall (sensitivity).
 
@@ -42,7 +43,7 @@ Uses Watchdog (Windows ReadDirectoryChangesW) to observe:
 
 1. Tick generation (simulated or real events)
 2. Feature extraction: [nc, nw, nr, nm, nu] per 1-second window
-3. ML inference across all 5 models
+3. ML inference across all 6 models
 4. XGBoost primary detection decision
 5. WebSocket emission to dashboard
 6. Periodic SQLite logging

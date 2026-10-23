@@ -8,7 +8,7 @@ Real-time ransomware detection using server-side file operation logs and machine
 
 ## Features
 
-- **5 ML Models**: Random Forest, SVM, Decision Tree, AdaBoost, XGBoost
+- **6 ML Models**: Random Forest, SVM, Decision Tree, AdaBoost, XGBoost, Logistic Regression
 - **Real-time Monitoring**: Watchdog-based filesystem monitoring
 - **Simulation Mode**: Realistic ransomware attack simulation
 - **Live Dashboard**: WebSocket-powered real-time visualization
