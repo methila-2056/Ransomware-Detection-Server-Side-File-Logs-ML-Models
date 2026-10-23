@@ -1,12 +1,13 @@
 """
 Ransomware Detection - Machine Learning Engine
 
-Trains and evaluates 5 ML models for ransomware detection:
+Trains and evaluates 6 ML models for ransomware detection:
 - Random Forest (RF)
 - Support Vector Machine (SVM)
 - Decision Tree (DT)
 - AdaBoost (ADA)
 - XGBoost (XGB)
+- Logistic Regression (LR), a standardised linear control
 
 Based on Aranyi et al. (2026) methodology.
 """
@@ -21,6 +22,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
     accuracy_score,
@@ -41,14 +43,15 @@ class MLEngine:
     """
     Machine Learning engine for ransomware detection.
 
-    Trains, saves, loads, and runs inference with 5 ML models.
+    Trains, saves, loads, and runs inference with 6 ML models.
     """
 
     def __init__(self):
         self.models = {}
         self.scaler = StandardScaler()
-        self.model_names = ["Random Forest", "SVM", "Decision Tree", "AdaBoost", "XGBoost"]
-        self.model_keys = ["rf", "svm", "dt", "ada", "xgb"]
+        self.model_names = ["Random Forest", "SVM", "Decision Tree", "AdaBoost",
+                            "XGBoost", "Logistic Regression"]
+        self.model_keys = ["rf", "svm", "dt", "ada", "xgb", "lr"]
         self.is_trained = False
         self.training_metrics = {}
         self.feature_names = ["nc", "nw", "nr", "nm", "nu"]
@@ -102,11 +105,23 @@ class MLEngine:
                     "colsample_bytree": [0.8, 1.0],
                 },
             },
+            "lr": {
+                "model": LogisticRegression(
+                    max_iter=2000,
+                    random_state=42,
+                ),
+                "params": {
+                    "C": [0.01, 0.1, 1.0, 10.0],
+                    "penalty": ["l1", "l2"],
+                    "solver": ["liblinear"],
+                    "class_weight": [None, "balanced"],
+                },
+            },
         }
 
     def train(self, X: np.ndarray, y: np.ndarray, use_grid_search: bool = True) -> Dict:
         """
-        Train all 5 ML models.
+        Train all 6 ML models.
 
         Args:
             X: Feature matrix (nc, nw, nr, nm, nu)

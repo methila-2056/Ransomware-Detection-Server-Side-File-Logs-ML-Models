@@ -1,0 +1,142 @@
+{
+  "Policy": {
+    "CLEAR": "SOUND",
+    "SUSPECT": "ESCALATE",
+    "ALARMING": "SOUND"
+  },
+  "Baselines": {
+    "{'Threshold': 0.5, 'K of N': 1, 'Clear K': 1}": {
+      "Config": {
+        "Threshold": 0.5,
+        "K of N": 1,
+        "Clear K": 1
+      },
+      "Validation Cost": 444,
+      "Test Cost": 295,
+      "Test Sensitivity": 0.9511784511784511,
+      "Test Specificity": 0.9977924944812362
+    },
+    "{'Threshold': 0.3, 'K of N': 1, 'Clear K': 1}": {
+      "Config": {
+        "Threshold": 0.3,
+        "K of N": 1,
+        "Clear K": 1
+      },
+      "Validation Cost": 988,
+      "Test Cost": 1045,
+      "Test Sensitivity": 1.0,
+      "Test Specificity": 0.5386313465783664
+    },
+    "{'Threshold': 0.3, 'K of N': 2, 'Clear K': 2}": {
+      "Config": {
+        "Threshold": 0.3,
+        "K of N": 2,
+        "Clear K": 2
+      },
+      "Validation Cost": 1064,
+      "Test Cost": 1135,
+      "Test Sensitivity": 0.9966329966329966,
+      "Test Specificity": 0.5077262693156733
+    },
+    "{'Threshold': 0.5, 'K of N': 3, 'Clear K': 3}": {
+      "Config": {
+        "Threshold": 0.5,
+        "K of N": 3,
+        "Clear K": 3
+      },
+      "Validation Cost": 497,
+      "Test Cost": 310,
+      "Test Sensitivity": 0.9494949494949495,
+      "Test Specificity": 0.9955849889624724
+    },
+    "{'Threshold': 0.2, 'K of N': 3, 'Clear K': 5}": {
+      "Config": {
+        "Threshold": 0.2,
+        "K of N": 3,
+        "Clear K": 5
+      },
+      "Validation Cost": 2195,
+      "Test Cost": 2263,
+      "Test Sensitivity": 1.0,
+      "Test Specificity": 0.0008830022075055188
+    }
+  },
+  "DP Search": [
+    {
+      "Threshold": 0.5,
+      "K of N": 2,
+      "Clear K": 2,
+      "Validation Cost": 455,
+      "Test Cost": 277,
+      "Test Sensitivity": 0.9545454545454546,
+      "Test Specificity": 0.9969094922737307,
+      "Test FP": 7,
+      "Test FN": 27
+    },
+    {
+      "Threshold": 0.4,
+      "K of N": 2,
+      "Clear K": 2,
+      "Validation Cost": 112,
+      "Test Cost": 161,
+      "Test Sensitivity": 0.9915824915824916,
+      "Test Specificity": 0.9509933774834437,
+      "Test FP": 111,
+      "Test FN": 5
+    },
+    {
+      "Threshold": 0.3,
+      "K of N": 2,
+      "Clear K": 2,
+      "Validation Cost": 1064,
+      "Test Cost": 1135,
+      "Test Sensitivity": 0.9966329966329966,
+      "Test Specificity": 0.5077262693156733,
+      "Test FP": 1115,
+      "Test FN": 2
+    },
+    {
+      "Threshold": 0.2,
+      "K of N": 2,
+      "Clear K": 2,
+      "Validation Cost": 2196,
+      "Test Cost": 2264,
+      "Test Sensitivity": 1.0,
+      "Test Specificity": 0.0004415011037527594,
+      "Test FP": 2264,
+      "Test FN": 0
+    },
+    {
+      "Threshold": 0.1,
+      "K of N": 2,
+      "Clear K": 2,
+      "Validation Cost": 2196,
+      "Test Cost": 2264,
+      "Test Sensitivity": 1.0,
+      "Test Specificity": 0.0004415011037527594,
+      "Test FP": 2264,
+      "Test FN": 0
+    }
+  ],
+  "Summary": {
+    "Best Baseline Config": {
+      "Threshold": 0.5,
+      "K of N": 1,
+      "Clear K": 1
+    },
+    "Best Baseline Test Cost": 295,
+    "Best Baseline Test Sensitivity": 0.9511784511784511,
+    "Best Baseline Test Specificity": 0.9977924944812362,
+    "DP Test Cost": 161,
+    "DP Test Sensitivity": 0.9915824915824916,
+    "DP Test Specificity": 0.9509933774834437,
+    "DP Config": {
+      "Threshold": 0.4,
+      "K of N": 2,
+      "Clear K": 2
+    },
+    "Cost Improvement": 134,
+    "Sensitivity Change": 0.040404,
+    "Specificity Change": -0.046799
+  }
+}

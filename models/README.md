@@ -11,6 +11,7 @@ This directory contains the trained ML models used by the Ransomware Detection S
 | ransomware_svm.joblib | SVM | Support vector machine with calibration |
 | ransomware_dt.joblib | Decision Tree | Single decision tree |
 | ransomware_ada.joblib | AdaBoost | Adaptive boosting |
+| ransomware_lr.joblib | Logistic Regression | Standardised linear control |
 
 ## Supporting Files
 

@@ -16,6 +16,7 @@ RANSOMWARE DETECTION/
 │   ├── ransomware_svm.joblib
 │   ├── ransomware_dt.joblib
 │   ├── ransomware_ada.joblib
+│   ├── ransomware_lr.joblib
 │   ├── ransomware_scaler.joblib
 │   └── ransomware_metrics.joblib
 │

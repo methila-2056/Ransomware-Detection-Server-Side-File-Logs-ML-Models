@@ -1,0 +1,75 @@
+{
+  "Feature Counts": {
+    "A_counts_only": 3,
+    "B_plus_trailing": 15,
+    "C_plus_deltas": 23,
+    "D_plus_persistence": 24,
+    "E_full": 29
+  },
+  "Feature Count Reconciliation": {
+    "Base Counts": 3,
+    "Sequence Features": 26,
+    "Deployed Model Feature Count": 26,
+    "E_full Feature Count": 29,
+    "Explanation": "E_full = 3 base counts + 26 sequence features = 29. The deployed model uses the 26 sequence features only; the raw counts are deliberately excluded so that the temporal aggregates, not the per-second volume, carry the decision."
+  },
+  "Results": [
+    {
+      "Group": "A_counts_only",
+      "Features": 3,
+      "AUROC": 0.956427,
+      "Sensitivity At 0.5": 0.580808,
+      "Specificity At 0.5": 0.993819,
+      "Cost At 0.5": 2504,
+      "Selected Threshold": 0.36,
+      "Sensitivity At Selected": 0.893939,
+      "Cost At Selected": 719
+    },
+    {
+      "Group": "B_plus_trailing",
+      "Features": 15,
+      "AUROC": 0.999652,
+      "Sensitivity At 0.5": 0.962963,
+      "Specificity At 0.5": 0.997351,
+      "Cost At 0.5": 226,
+      "Selected Threshold": 0.4,
+      "Sensitivity At Selected": 1.0,
+      "Cost At Selected": 113
+    },
+    {
+      "Group": "C_plus_deltas",
+      "Features": 23,
+      "AUROC": 0.999822,
+      "Sensitivity At 0.5": 0.97138,
+      "Specificity At 0.5": 0.999117,
+      "Cost At 0.5": 172,
+      "Selected Threshold": 0.4,
+      "Sensitivity At Selected": 1.0,
+      "Cost At Selected": 93
+    },
+    {
+      "Group": "D_plus_persistence",
+      "Features": 24,
+      "AUROC": 0.999774,
+      "Sensitivity At 0.5": 0.978114,
+      "Specificity At 0.5": 0.997792,
+      "Cost At 0.5": 135,
+      "Selected Threshold": 0.4,
+      "Sensitivity At Selected": 1.0,
+      "Cost At Selected": 113
+    },
+    {
+      "Group": "E_full",
+      "Features": 29,
+      "AUROC": 0.999804,
+      "Sensitivity At 0.5": 0.964646,
+      "Specificity At 0.5": 0.998675,
+      "Cost At 0.5": 213,
+      "Selected Threshold": 0.38,
+      "Sensitivity At Selected": 1.0,
+      "Cost At Selected": 132
+    }
+  ],
+  "Model": "AdaBoost(n_estimators=100, learning_rate=1.0)",
+  "Threshold Note": "0.5 is the base paper's fixed threshold; the selected threshold is chosen on the validation split"
+}
