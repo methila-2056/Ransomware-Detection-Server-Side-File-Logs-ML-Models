@@ -1,12 +1,13 @@
-"""Soft-voting ensemble over the five base classifiers.
+"""Soft-voting ensemble over the six base classifiers.
 
 The base paper selects a single best model -- XGBoost, on cost 175 -- and reports
 one operating point per model (Sect. 3.6, Table 7). It does not evaluate whether
-combining the five would do better than the best of them.
+combining the classifiers would do better than the best of them.
 
-That question is worth asking here because the five models do not fail alike. On
+That question is worth asking here because the six models do not fail alike. On
 this project's data the Decision Tree reaches AUROC 0.98 while Random Forest, SVM,
-AdaBoost and XGBoost all sit above 0.999, and their confusion matrices differ:
+AdaBoost, XGBoost and Logistic Regression all sit above 0.999, and their
+confusion matrices differ:
 the tree misses different windows than the boosted models. An average of
 decorrelated-but-comparable classifiers is usually stronger than any one of them.
 
@@ -257,7 +258,7 @@ def weight_search(y_val, member_probas, member_names, grid=None):
     trials = []
 
     # Uniform weight on subsets of members, plus uniform on all with a global
-    # scale. Exhaustive search over the full grid is exponential in five members.
+    # scale. Exhaustive search over the full grid is exponential in the members.
     subsets = []
     for mask in range(1, 1 << len(names)):
         subsets.append([n for i, n in enumerate(names) if mask & (1 << i)])

@@ -287,7 +287,7 @@ def separability_report(x, y, feature_names=None):
 
     Included as a dataset sanity check rather than a model metric. On a synthetic
     generator the two classes can be separated by a single count threshold, which
-    is the reason five classifiers all score 1.000. Reporting the gap makes that
+    is the reason every classifier scores 1.000. Reporting the gap makes that
     condition visible instead of letting a perfect score look like a strong result.
 
     ``feature_names`` must be passed whenever ``x`` has more than three columns.

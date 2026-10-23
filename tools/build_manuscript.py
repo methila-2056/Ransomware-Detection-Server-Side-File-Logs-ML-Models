@@ -381,7 +381,7 @@ def build(out_path):
         f"recovery comparison.",
 
         f"A ten-seed dispersion study with bootstrap confidence intervals and "
-        f"Holm-corrected paired Wilcoxon tests, establishing that the five "
+        f"Holm-corrected paired Wilcoxon tests, establishing that the six "
         f"classifiers are not statistically separable on either sensitivity or "
         f"cost, and correcting the model-ranking inference of [1].",
 
@@ -505,9 +505,10 @@ def build(out_path):
 
     add_heading(doc, "D. Classifiers and cost-sensitive threshold selection", 2)
     add_body(doc,
-        "Each one-second window is classified independently. Five classifiers "
+        "Each one-second window is classified independently. Six classifiers "
         "are evaluated — Decision Tree, Random Forest, a probability-calibrated "
-        "SVM, AdaBoost and XGBoost — using the same feature vector. No sequence "
+        "SVM, AdaBoost, XGBoost and Logistic Regression as a linear control — "
+        "using the same feature vector. No sequence "
         "model is used; temporal context enters entirely through the trailing "
         "aggregates of Section III-B. Following [1], a missed attack costs "
         "C_FN = 10 and a false alarm C_FP = 1, with C_TP = C_TN = 0:")
@@ -990,7 +991,7 @@ def build(out_path):
     add_heading(doc, "D. Negative results", 2)
     add_body(doc,
         "Two negative results are reported deliberately. A soft-voting "
-        "ensemble of the five classifiers does not improve on the best single "
+        "ensemble of the six classifiers does not improve on the best single "
         "model; on this feature basis the members are too correlated for "
         "averaging to add anything. And no classifier is significantly better "
         "than any other across ten seeds, which means that selecting a "
@@ -1055,7 +1056,7 @@ def build(out_path):
     add_heading(doc, "IX. CONCLUSION", 1)
     add_body(doc,
         "We presented ASSRD, a server-side ransomware detector that combines "
-        "multi-scale temporal aggregation, five cost-sensitive classifiers, "
+        "multi-scale temporal aggregation, six cost-sensitive classifiers, "
         "offline cost-selected thresholding, permutation and decision-path "
         "attribution, and Population Stability Index drift monitoring with "
         "offline model recovery. It addresses the structural limit of "
@@ -1065,7 +1066,7 @@ def build(out_path):
         f"{b_trail['AUROC']:.4f} and reduces total cost from "
         f"{a_counts['Cost At 0.5']} to {b_trail['Cost At 0.5']}; transfer to an "
         f"unseen family costs a mean of {zsum['Overall Mean Drop']:.4f} "
-        "sensitivity; and a ten-seed study shows the five classifiers are not "
+        "sensitivity; and a ten-seed study shows the six classifiers are not "
         "statistically separable. The detector is nonetheless defeated by slow "
         "encryption, with zero sensitivity at or below fifteen files per second, "
         "which is the most important finding of this work and the priority for "

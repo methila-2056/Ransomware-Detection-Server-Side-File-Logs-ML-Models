@@ -167,7 +167,7 @@ def aggregate_seed_results(seed_results):
 def compare_all_models(seed_results, metric="Accuracy", reference=None):
     """Compare every model on one metric, each against a reference model.
 
-    With five models this is four paired tests against the chosen reference,
+    With six models this is five paired tests against the chosen reference,
     defaulting to the model with the best mean. Multiplicity across models is
     handled with Holm-Bonferroni so the set of comparisons as a whole stays
     interpretable.

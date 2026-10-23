@@ -8,7 +8,7 @@ Practical constraint, measured not assumed
 ------------------------------------------
 A single Decision Tree fits 1.15M training rows in roughly 17 seconds, but
 AdaBoost with 100 boosted stages takes about 420 seconds on the same matrix.
-Five models under 5-fold cross-validation at full scale would therefore take
+Six models under 5-fold cross-validation at full scale would therefore take
 several hours.
 
 ``budget`` exists for that reason. It caps the rows a slow model trains on while
